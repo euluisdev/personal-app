@@ -17,8 +17,7 @@ export default function HomePage() {
     e.preventDefault();
     const endpoint = formType === 'login' ? '/api/login' : '/api/register';
 
-    try {
-      //faz a requisição à API correspondente
+    try {  //makes the request to the corresponding API  
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
@@ -31,8 +30,7 @@ export default function HomePage() {
       setMessage(data.message);
 
       if (response.ok) {
-        // Limpa os campos após sucesso
-        setFormData({
+        setFormData({ //clears the fields after success
           nome: '',
           email: '',
           senha: '',
@@ -44,7 +42,7 @@ export default function HomePage() {
     }
   };
 
-  // Atualiza os valores dos campos do formulário
+  //updates the fields values from form
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
