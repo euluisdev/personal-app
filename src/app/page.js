@@ -7,6 +7,15 @@ export default function HomePage() {
   const [formType, setFormType] = useState('login'); //alternate between login/register
   const [formData, setFormData] = useState({
     nome: '',
+    datanasc: '',
+    sexo: '',
+    peso: '',
+    altura: '',
+    alergia: '',
+    lesao: '',
+    iniciante: '',
+    objetivo: '',
+    hora: '',
     email: '',
     senha: '',
   });
@@ -32,6 +41,15 @@ export default function HomePage() {
       if (response.ok) {
         setFormData({ //clears the fields after success
           nome: '',
+          datanasc: '',
+          sexo: '',
+          peso: '',
+          altura: '',
+          alergia: '',
+          lesao: '',
+          iniciante: '',
+          objetivo: '',
+          hora: '',
           email: '',
           senha: '',
         });
@@ -49,20 +67,112 @@ export default function HomePage() {
 
 
   return (
-<div style={{ maxWidth: '400px', margin: '0 auto' }}>
+    <div style={{ maxWidth: '400px', margin: '0 auto' }}>
       <h1>{formType === 'login' ? 'Login' : 'Cadastro'}</h1>
       <form onSubmit={handleSubmit}>
         {formType === 'register' && (
-          <div>
-            <label>Nome:</label>
-            <input
-              type="text"
-              name="nome"
-              value={formData.nome}
-              onChange={handleChange}
-              required
-            />
-          </div>
+          <>
+            <div>
+              <label>Nome:</label>
+              <input
+                type="text"
+                name="nome"
+                value={formData.nome}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div>
+              <label>Data de Nascimento:</label>
+              <input
+                type="date"
+                name="datanasc"
+                value={formData.datanasc}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div>
+              <label>sexo:</label>
+              <input
+                type="radio"
+                name="sexo"
+                value={formData.sexo}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div>
+              <label>Peso:</label>
+              <input
+                type="number"
+                name="peso"
+                value={formData.peso}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div>
+              <label>Altura:</label>
+              <input
+                type="number"
+                name="altura"
+                value={formData.altura}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div>
+              <label>Alergia:</label>
+              <input
+                type="text"
+                name="alergia"
+                value={formData.alergia}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div>
+              <label>Lesão:</label>
+              <input
+                type="text"
+                name="lesao"
+                value={formData.lesao}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div>
+              <label>É iniciante?:</label>
+              <input
+                type="text"
+                name="iniciante"
+                value={formData.iniciante}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div>
+              <label>Objetivo:</label>
+              <input
+                type="text"
+                name="objetivo"
+                value={formData.objetivo}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div>
+              <label>Horário disponível do treino:</label>
+              <input
+                type="number"
+                name="hora"
+                value={formData.hora}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </>
         )}
         <div>
           <label>Email:</label>
