@@ -1,10 +1,9 @@
 'use client';
 import { useState } from 'react';
-
-import "./page.module.css";
+import styles from './page.module.css'; // Importando o arquivo CSS
 
 export default function HomePage() {
-  const [formType, setFormType] = useState('login'); //alternate between login/register
+  const [formType, setFormType] = useState('login'); // Alterna entre login e cadastro
   const [formData, setFormData] = useState({
     nome: '',
     datanasc: '',
@@ -21,12 +20,13 @@ export default function HomePage() {
   });
   const [message, setMessage] = useState('');
 
-  //send form
+  // Enviar formulário
   const handleSubmit = async (e) => {
     e.preventDefault();
     const endpoint = formType === 'login' ? '/api/login' : '/api/register';
 
-    try {  //makes the request to the corresponding API  
+    try {
+      // Faz a requisição à API correspondente
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
@@ -39,7 +39,8 @@ export default function HomePage() {
       setMessage(data.message);
 
       if (response.ok) {
-        setFormData({ //clears the fields after success
+        // Limpa os campos após sucesso
+        setFormData({
           nome: '',
           datanasc: '',
           sexo: '',
@@ -60,14 +61,13 @@ export default function HomePage() {
     }
   };
 
-  //updates the fields values from form
+  // Atualiza os valores dos campos do formulário
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-
   return (
-    <div style={{ maxWidth: '400px', margin: '0 auto' }}>
+    <div className={styles.container}>
       <h1>{formType === 'login' ? 'Login' : 'Cadastro'}</h1>
       <form onSubmit={handleSubmit}>
         {formType === 'register' && (
@@ -93,17 +93,26 @@ export default function HomePage() {
               />
             </div>
             <div>
-              <label>sexo:</label>
+              <label>Sexo:</label>
               <input
                 type="radio"
                 name="sexo"
-                value={formData.sexo}
+                value="masculino"
+                checked={formData.sexo === 'masculino'}
                 onChange={handleChange}
                 required
-              />
+              /> Masculino
+              <input
+                type="radio"
+                name="sexo"
+                value="feminino"
+                checked={formData.sexo === 'feminino'}
+                onChange={handleChange}
+                required
+              /> Feminino
             </div>
             <div>
-              <label>Peso:</label>
+              <label>Peso (kg):</label>
               <input
                 type="number"
                 name="peso"
@@ -113,7 +122,7 @@ export default function HomePage() {
               />
             </div>
             <div>
-              <label>Altura:</label>
+              <label>Altura (cm):</label>
               <input
                 type="number"
                 name="altura"
@@ -163,7 +172,7 @@ export default function HomePage() {
               />
             </div>
             <div>
-              <label>Horário disponível do treino:</label>
+              <label>Horário disponível do treino (horas):</label>
               <input
                 type="number"
                 name="hora"
@@ -199,10 +208,9 @@ export default function HomePage() {
         </button>
       </form>
       <p>{message}</p>
-      <button onClick={() => setFormType(formType === 'login' ? 'register' : 'login')}>
+      <button className={styles.toggle} onClick={() => setFormType(formType === 'login' ? 'register' : 'login')}>
         {formType === 'login' ? 'Criar Conta' : 'Já tenho conta'}
       </button>
     </div>
-
   );
-};
+}
