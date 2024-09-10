@@ -55,9 +55,13 @@ export async function POST(req) {
     }
 
     //responde com sucesso se a autenticação for ok
-    return new Response(JSON.stringify({ message: 'Login bem-sucedido.' }), {
-      status: 200,
-    });
+    return new Response(
+        JSON.stringify({ 
+            message: 'Login bem-sucedido.', 
+            userName: user.nome 
+        }), 
+    { status: 200 } 
+    );
 
   } catch (error) {
     console.error('Erro na requisição de login:', error);
