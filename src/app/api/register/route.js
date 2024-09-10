@@ -1,7 +1,7 @@
 // src/app/api/form-register/route.js
 import fs from 'fs';
 import path from 'path';
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcryptjs'; 
 
 //caminho do arquivo json
 const filePath = path.join(process.cwd(), 'src', 'data', 'users.json');
