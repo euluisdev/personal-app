@@ -54,6 +54,10 @@ export default function HomePage() {
           email: '',
           senha: '',
         });
+
+        router.push(`/dashboard?name=${encodeURIComponent(data.userName)}`);
+      } else {
+        setMessage(data.message);
       }
     } catch (error) {
       console.error('Erro ao enviar o formulário:', error);
@@ -83,7 +87,7 @@ export default function HomePage() {
                   required
                 />
               </div>
-{/*               <div>
+              {/*               <div>
                 <label>Data de Nascimento:</label>
                 <input
                   type="date"
