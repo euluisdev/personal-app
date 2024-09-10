@@ -83,7 +83,7 @@ export default function HomePage() {
                   required
                 />
               </div>
-              <div>
+{/*               <div>
                 <label>Data de Nascimento:</label>
                 <input
                   type="date"
@@ -181,7 +181,7 @@ export default function HomePage() {
                   onChange={handleChange}
                   required
                 />
-              </div>
+              </div> */}
             </>
           )}
           <div>
