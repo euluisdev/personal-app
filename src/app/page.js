@@ -76,9 +76,9 @@ export default function HomePage() {
   };
 
   return (
-    <div className='modal-overlay'>
+    <div className={styles['modal-overlay']}>
       <div className={styles['modal-container']}>
-        <h1 className="modal-title">{formType === 'login' ? 'Login' : 'Cadastro'}</h1>
+        <h1 className={styles['modal-title']}>{formType === 'login' ? 'Login' : 'Cadastro'}</h1>
         <form onSubmit={handleSubmit}>
           {formType === 'register' && (
             <>
