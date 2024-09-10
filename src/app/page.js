@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import styles from './page.css'; // Importando o arquivo CSS
+import styles from './page.module.css'; 
 
 export default function HomePage() {
   const router = useRouter();
@@ -42,7 +42,7 @@ export default function HomePage() {
       setMessage(data.message);
 
       if (response.ok) {
-        // Limpa os campos após sucesso
+        //clean fields
         setFormData({
           nome: '',
           datanasc: '',
@@ -58,8 +58,9 @@ export default function HomePage() {
           senha: '',
         });
 
-        alert(data.message);
-        router.push('/dashboard');
+        setMessage(data.message);
+        router.push(`/dashboard?userName=${encodeURIComponent(data.userName)}`);  
+
       } else {
         setMessage(data.message);
       }
@@ -76,7 +77,7 @@ export default function HomePage() {
 
   return (
     <div className='modal-overlay'>
-      <div className="modal-container">
+      <div className={styles['modal-container']}>
         <h1 className="modal-title">{formType === 'login' ? 'Login' : 'Cadastro'}</h1>
         <form onSubmit={handleSubmit}>
           {formType === 'register' && (
