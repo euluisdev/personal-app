@@ -1,8 +1,11 @@
 'use client';
+
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import styles from './page.css'; // Importando o arquivo CSS
 
 export default function HomePage() {
+  const router = useRouter();
   const [formType, setFormType] = useState('login'); // Alterna entre login e cadastro
   const [formData, setFormData] = useState({
     nome: '',
@@ -55,7 +58,8 @@ export default function HomePage() {
           senha: '',
         });
 
-        router.push(`/dashboard?name=${encodeURIComponent(data.userName)}`);
+        alert(data.message);
+        router.push('/dashboard');
       } else {
         setMessage(data.message);
       }
