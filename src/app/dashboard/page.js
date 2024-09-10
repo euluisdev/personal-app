@@ -3,7 +3,7 @@ import { useSearchParams } from 'next/navigation'; // Verifique se o import estÃ
 import { useState, useEffect, Suspense } from 'react';
 
 const Page = () => {
-  const searchParams = useSearchParams();
+/*   const searchParams = useSearchParams();
   const userName = searchParams.get('userName');
 
   const [data, setData] = useState(null);
@@ -13,15 +13,15 @@ const Page = () => {
     if (userName) {
       console.log(`UserName from query: ${userName}`);
     }
-  }, [userName]);
+  }, [userName]); */
 
   return (
     <>
-        <Suspense fallback={<div>Carregando...</div>}>
+{/*         <Suspense fallback={<div>Carregando...</div>}>
 
-        </Suspense>
+        </Suspense> */}
         <div style={{ opacity: 1, display: 'block', position: 'relative', zIndex: 10 }} > 
-            <h1>Bem-vindo, {userName}!</h1>
+            <h1>Bem-vindo, {/* {userName} */}!</h1>
             <p>Estamos felizes em tÃª-lo de volta. Aproveite seu treino!</p>
         </div>
     </>
