@@ -18,11 +18,12 @@ const Page = () => {
   return (
     <>
         <Suspense fallback={<div>Carregando...</div>}>
+
+        </Suspense>
         <div style={{ opacity: 1, display: 'block', position: 'relative', zIndex: 10 }} > 
             <h1>Bem-vindo, {userName}!</h1>
             <p>Estamos felizes em tê-lo de volta. Aproveite seu treino!</p>
         </div>
-        </Suspense>
     </>
 );
 }
