@@ -1,19 +1,19 @@
 import { MongoClient } from 'mongodb';
 import bcrypt from 'bcryptjs';
 
-// Configurar a URL de conexão (use a variável de ambiente para a URL do MongoDB)
+//configura a URL de conexão
 const uri = process.env.MONGODB_URI || "mongodb+srv://fluisf00:<db_password>@cluster0.rw5mg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"; // substitua com sua string e mantenha senhas seguras.
 
-// Criar um novo cliente MongoDB
+//cria um novo cliente MongoDB
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-// Função para conectar ao banco de dados
+//conecta ao banco de dados
 async function connectToDatabase() {
   try {
     if (!client.isConnected()) await client.connect();
-    // Conectar ao banco de dados e coleção que deseja usar
+    //conecta ao banco de dados e coleção
     const db = client.db('bestFitData'); 
-    const collection = db.collection('usuarios');
+    const collection = db.collection('users');
     return { db, collection };
   } catch (error) {
     console.error('Erro ao conectar ao MongoDB:', error);
@@ -21,16 +21,16 @@ async function connectToDatabase() {
   }
 }
 
-// Função para registrar um novo usuário
+//registra um novo usuário
 export async function POST(req) {
   try {
-    // Extrair os dados da requisição
+    //extrair os dados da requisição
     const { nome, email, senha } = await req.json();
 
-    // Conectar ao banco de dados
+    //conecta ao banco de dados
     const { collection } = await connectToDatabase();
 
-    // Verificar se o usuário já está cadastrado pelo email
+    //verifica se o usuário já está cadastrado pelo email
     const existingUser = await collection.findOne({ email });
     if (existingUser) {
       return new Response(
@@ -39,14 +39,14 @@ export async function POST(req) {
       );
     }
 
-    // Criptografar a senha do usuário
+    //criptografa a senha do usuário
     const hashedPassword = await bcrypt.hash(senha, 10);
     const newUser = {
       nome,
       email,
       senha: hashedPassword,
       status: 'pendente',
-      createdAt: new Date(), // Data de criação
+      createdAt: new Date(), //data de criação
     };
 
     //adiciona novo usuário a coleção no bd

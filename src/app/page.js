@@ -25,16 +25,16 @@ export async function POST(req) {
 
     const { collection } = await connectToDatabase();
 
-    // Verifica se o email já existe
+    //verifica se o email já existe
     const userExists = await collection.findOne({ email });
     if (userExists) {
       return new Response(JSON.stringify({ message: 'Usuário já cadastrado.' }), { status: 409 });
     }
 
-    // Criptografa a senha
+    //criptografa a senha
     const hashedPassword = await bcrypt.hash(senha, 10);
 
-    // Cria o novo usuário
+    //cria o novo usuário
     await collection.insertOne({
       nome,
       datanasc,
@@ -48,7 +48,7 @@ export async function POST(req) {
       hora,
       email,
       senha: hashedPassword,
-      status: 'pendente' // ou 'aprovado', conforme a lógica da sua aplicação
+      status: 'pendente', 
     });
 
     return new Response(JSON.stringify({ message: 'Cadastro realizado com sucesso!' }), { status: 201 });
