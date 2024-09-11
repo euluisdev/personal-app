@@ -49,7 +49,7 @@ export async function POST(req) {
       createdAt: new Date(), // Data de criação
     };
 
-    // Adicionar o novo usuário à coleção no banco de dados
+    //adiciona novo usuário a coleção no bd
     await collection.insertOne(newUser);
 
     return new Response(
