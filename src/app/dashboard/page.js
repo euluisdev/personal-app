@@ -1,31 +1,33 @@
+// Page.js (renomeado corretamente)
+
 'use client';
-import { useSearchParams } from 'next/navigation'; 
-import { useState, useEffect, Suspense } from 'react';
 
-const Page = () => {
-/*   const searchParams = useSearchParams();
-  const userName = searchParams.get('userName');
+import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-
-    if (userName) {
-      console.log(`UserName from query: ${userName}`);
-    }
-  }, [userName]); */
+export default function Page() {
+  const searchParams = useSearchParams();
 
   return (
-    <>
-{/*         <Suspense fallback={<div>Carregando...</div>}>
-
-        </Suspense> */}
-        <div style={{ opacity: 1, display: 'block', position: 'relative', zIndex: 10 }} > 
-            <h1>Bem-vindo, {/* {userName} */}!</h1>
-            <p>Estamos felizes em tê-lo de volta. Aproveite seu treino!</p>
-        </div>
-    </>
-);
+    <Suspense fallback={<div>Carregando...</div>}>
+      <DashboardContent searchParams={searchParams} />
+    </Suspense>
+  );
 }
 
-export default Page;
+// Componente separado para o conteúdo principal
+function DashboardContent({ searchParams }) {
+  const userName = searchParams.get('userName');
+  const userEmail = searchParams.get('userEmail');
+
+  return (
+    <div>
+      <h1>Bem-vindo, {userName}</h1>
+      <p>Ficamos felizes em te ter de volta. </p>
+      <p>{userEmail}</p>
+    </div>
+  );
+}
+
+
+

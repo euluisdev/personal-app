@@ -39,6 +39,8 @@ export default function HomePage() {
       });
 
       const data = await response.json();
+
+      console.log(data);
       setMessage(data.message);
 
       if (response.ok) {
@@ -61,7 +63,7 @@ export default function HomePage() {
         setMessage(data.message);
         /* router.push(`/dashboard?userName=${encodeURIComponent(data.userName)}`);   */   
         router.push(
-          `/dashboard?userName=${encodeURIComponent(data.userName)}&email=${encodeURIComponent(data.email)}`
+          `/dashboard?userName=${encodeURIComponent(data.userName)}&userEmail=${encodeURIComponent(data.userEmail)}`
         );
 
       } else {

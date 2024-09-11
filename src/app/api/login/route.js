@@ -58,7 +58,8 @@ export async function POST(req) {
     return new Response(
         JSON.stringify({ 
             message: 'Login bem-sucedido.', 
-            userName: user.nome 
+            userName: user.nome, 
+            userEmail: user.email
         }), 
     { status: 200 } 
     );
