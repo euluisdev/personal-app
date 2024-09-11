@@ -14,8 +14,8 @@ async function connectToDatabase() {
   try {
     if (!client.isConnected()) await client.connect();
     //conecta ao banco de dados e coleção
-    const db = client.db(bestFitData);
-    const collection = db.collection('usuarios');
+    const db = client.db('bestFitData');
+    const collection = db.collection('users');
     return { db, collection };
   } catch (error) {
     console.error('Erro ao conectar ao MongoDB:', error);
