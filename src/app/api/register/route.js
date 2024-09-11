@@ -12,8 +12,8 @@ async function connectToDatabase() {
   try {
     if (!client.isConnected()) await client.connect();
     // Conectar ao banco de dados e coleção que deseja usar
-    const db = client.db('nomedobanco'); // substitua 'nomedobanco' pelo nome do seu banco
-    const collection = db.collection('usuarios'); // substitua 'usuarios' pelo nome da coleção desejada
+    const db = client.db('bestFitData'); 
+    const collection = db.collection('usuarios');
     return { db, collection };
   } catch (error) {
     console.error('Erro ao conectar ao MongoDB:', error);
