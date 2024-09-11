@@ -1,69 +1,57 @@
-// src/app/api/form-register/route.js
-import fs from 'fs';
-import path from 'path';
-import bcrypt from 'bcryptjs'; 
+import { MongoClient } from 'mongodb';
+import bcrypt from 'bcryptjs';
 
-//caminho do arquivo json
-const filePath = path.join(process.cwd(), 'src', 'data', 'users.json');
+// Configurar a URL de conexão (use a variável de ambiente para a URL do MongoDB)
+const uri = process.env.MONGODB_URI || "mongodb+srv://fluisf00:<db_password>@cluster0.rw5mg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"; // substitua com sua string e mantenha senhas seguras.
 
-//lê e salva os dados do arquivo json com tratamento de erros
-const readData = () => {
+// Criar um novo cliente MongoDB
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+// Função para conectar ao banco de dados
+async function connectToDatabase() {
   try {
-    //lê o arquivo json e retorna os dados
-    const data = fs.readFileSync(filePath, 'utf8');
-    return JSON.parse(data);
+    if (!client.isConnected()) await client.connect();
+    // Conectar ao banco de dados e coleção que deseja usar
+    const db = client.db('nomedobanco'); // substitua 'nomedobanco' pelo nome do seu banco
+    const collection = db.collection('usuarios'); // substitua 'usuarios' pelo nome da coleção desejada
+    return { db, collection };
   } catch (error) {
-    console.error('Erro ao ler o arquivo:', error);
-    //retorna um array vazio se ocorrer erro na leitura
-    return [];
+    console.error('Erro ao conectar ao MongoDB:', error);
+    throw new Error('Falha na conexão com o banco de dados');
   }
-};
+}
 
-const saveData = (data) => {
-  try {
-    //escreve os dados atualizados no arquivo json
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-  } catch (error) {
-    console.error('Erro ao salvar os dados:', error);
-    //captura erro para ser tratado na função chamadora
-    throw new Error('Falha ao salvar os dados');
-  }
-};
-
-//registro de novo usuário
+// Função para registrar um novo usuário
 export async function POST(req) {
   try {
-    //extrai os dados da requisição
+    // Extrair os dados da requisição
     const { nome, email, senha } = await req.json();
 
-    //lê os dados existentes
-    let users = readData();
+    // Conectar ao banco de dados
+    const { collection } = await connectToDatabase();
 
-    //verifica se o usuário já está cadastrado pelo email
-    const existingUser = users.find((user) => user.email === email);
+    // Verificar se o usuário já está cadastrado pelo email
+    const existingUser = await collection.findOne({ email });
     if (existingUser) {
-      // Responde com erro se o usuário já existir
       return new Response(
         JSON.stringify({ message: 'Usuário já cadastrado.' }),
         { status: 400 }
       );
     }
 
-    //criptografa a senha do usuário
+    // Criptografar a senha do usuário
     const hashedPassword = await bcrypt.hash(senha, 10);
     const newUser = {
-      id: Date.now(),
       nome,
       email,
       senha: hashedPassword,
       status: 'pendente',
+      createdAt: new Date(), // Data de criação
     };
 
-    //add o novo usuário à lista
-    users.push(newUser);
+    // Adicionar o novo usuário à coleção no banco de dados
+    await collection.insertOne(newUser);
 
-    //tenta salvar os dados e responde com sucesso se não houver erro
-    saveData(users);
     return new Response(
       JSON.stringify({ message: 'Cadastro enviado para aprovação.' }),
       { status: 201 }
@@ -71,10 +59,10 @@ export async function POST(req) {
 
   } catch (error) {
     console.error('Erro na requisição de cadastro:', error);
-    //erro em caso de falha
     return new Response(
       JSON.stringify({ message: 'Erro interno do servidor.' }),
       { status: 500 }
     );
   }
 };
+
