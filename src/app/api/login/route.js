@@ -1,9 +1,11 @@
 import { MongoClient } from 'mongodb';
 import bcrypt from 'bcryptjs';
+import dotenv from 'dotenv'; 
 
-// URL de conexão com o MongoDB (lembre-se de manter a senha segura, usando variáveis de ambiente)
-const uri = process.env.MONGODB_URI || "mongodb+srv://fluisf00:<db_password>@cluster0.rw5mg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"; // substitua com sua string e mantenha senhas seguras.
+dotenv.config();  
 
+//URL de conexão com o MongoDB  
+const uri = process.env.MONGODB_URI;
 //cria um novo cliente MongoDB
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -11,9 +13,9 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function connectToDatabase() {
   try {
     if (!client.isConnected()) await client.connect();
-    // Conectar ao banco de dados e coleção desejada
-    const db = client.db('nomedobanco'); // substitua 'nomedobanco' pelo nome do seu banco
-    const collection = db.collection('usuarios'); // substitua 'usuarios' pelo nome da coleção
+    //conecta ao banco de dados e coleção
+    const db = client.db(bestFitData);
+    const collection = db.collection('usuarios');
     return { db, collection };
   } catch (error) {
     console.error('Erro ao conectar ao MongoDB:', error);
@@ -21,27 +23,27 @@ async function connectToDatabase() {
   }
 }
 
-// Função para autenticar o usuário
+//autentica o usuário
 export async function POST(req) {
   try {
-    // Extrai os dados da requisição
+    //extrai os dados da requisição
     const { email, senha } = await req.json();
 
-    // Conectar ao banco de dados
+    //conecta ao banco de dados
     const { collection } = await connectToDatabase();
 
-    // Procura o usuário pelo email
+    //procura o usuário pelo email
     const user = await collection.findOne({ email });
 
     if (!user) {
-      // Retorna erro se o usuário não existir
+      //retorna erro se o usuário não existir
       return new Response(
         JSON.stringify({ message: 'Usuário não encontrado.' }),
         { status: 404 }
       );
     }
 
-    // Verifica se o usuário foi aprovado
+    //verifica se o usuário foi aprovado
     if (user.status !== 'aprovado') {
       return new Response(
         JSON.stringify({ message: 'Usuário ainda não aprovado.' }),
@@ -49,18 +51,18 @@ export async function POST(req) {
       );
     }
 
-    // Compara a senha fornecida com a senha criptografada
+    //compara a senha fornecida com a senha criptografada
     const isMatch = await bcrypt.compare(senha, user.senha);
 
     if (!isMatch) {
-      // Retorna erro se a senha estiver incorreta
+      //eetorna erro se a senha estiver incorreta
       return new Response(
         JSON.stringify({ message: 'Senha incorreta.' }),
         { status: 401 }
       );
     }
 
-    // Responde com sucesso se a autenticação for ok
+    //responde com sucesso se a autenticação for ok
     return new Response(
       JSON.stringify({
         message: 'Login bem-sucedido.',
@@ -71,13 +73,13 @@ export async function POST(req) {
     );
   } catch (error) {
     console.error('Erro na requisição de login:', error);
-    // Retorna erro se houver falha
+    //retorna erro se houver falha
     return new Response(
       JSON.stringify({ message: 'Erro interno do servidor.' }),
       { status: 500 }
     );
-  }
-}
+  };
+};  
 
 
   
