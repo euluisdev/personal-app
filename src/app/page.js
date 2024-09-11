@@ -59,7 +59,10 @@ export default function HomePage() {
         });
 
         setMessage(data.message);
-        router.push(`/dashboard?userName=${encodeURIComponent(data.userName)}`);  
+        /* router.push(`/dashboard?userName=${encodeURIComponent(data.userName)}`);   */   
+        router.push(
+          `/dashboard?userName=${encodeURIComponent(data.userName)}&email=${encodeURIComponent(data.email)}`
+        );
 
       } else {
         setMessage(data.message);

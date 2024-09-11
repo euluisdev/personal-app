@@ -1,5 +1,5 @@
 'use client';
-import { useSearchParams } from 'next/navigation'; // Verifique se o import está correto
+import { useSearchParams } from 'next/navigation'; 
 import { useState, useEffect, Suspense } from 'react';
 
 const Page = () => {
