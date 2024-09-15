@@ -14,7 +14,7 @@ async function connectToDatabase() {
   try {
     if (!client.isConnected()) await client.connect();
     //conecta ao banco de dados e coleção
-    const db = client.db('bestFitData');
+    const db = client.db('BestFitData');
     const collection = db.collection('users');
     return { db, collection };
   } catch (error) {
