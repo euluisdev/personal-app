@@ -1,15 +1,14 @@
 import { MongoClient } from 'mongodb';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv'; 
 
 dotenv.config();  
 
-//URL de conexão com o MongoDB  
 const uri = process.env.MONGODB_URI;
-//cria um novo cliente MongoDB
+
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-//conecta ao banco de dados
 async function connectToDatabase() {
   try {
     if (!client.isConnected()) await client.connect();
@@ -21,7 +20,7 @@ async function connectToDatabase() {
     console.error('Erro ao conectar ao MongoDB:', error);
     throw new Error('Falha na conexão com o banco de dados');
   }
-}
+};
 
 //autentica o usuário
 export async function POST(req) {
@@ -36,12 +35,11 @@ export async function POST(req) {
     const user = await collection.findOne({ email });
 
     if (!user) {
-      //retorna erro se o usuário não existir
       return new Response(
         JSON.stringify({ message: 'Usuário não encontrado.' }),
         { status: 404 }
       );
-    }
+    };
 
     //verifica se o usuário foi aprovado
     if (user.status !== 'aprovado') {
@@ -49,18 +47,20 @@ export async function POST(req) {
         JSON.stringify({ message: 'Usuário ainda não aprovado.' }),
         { status: 403 }
       );
-    }
+    };
 
-    //compara a senha fornecida com a senha criptografada
     const isMatch = await bcrypt.compare(senha, user.senha);
-
     if (!isMatch) {
-      //eetorna erro se a senha estiver incorreta
       return new Response(
         JSON.stringify({ message: 'Senha incorreta.' }),
         { status: 401 }
       );
-    }
+    };
+
+    //cria um token de sessão
+    const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
+      expiresIn: '1h',
+    });
 
     //responde com sucesso se a autenticação for ok
     return new Response(
@@ -73,7 +73,6 @@ export async function POST(req) {
     );
   } catch (error) {
     console.error('Erro na requisição de login:', error);
-    //retorna erro se houver falha
     return new Response(
       JSON.stringify({ message: 'Erro interno do servidor.' }),
       { status: 500 }
