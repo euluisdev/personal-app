@@ -68,7 +68,7 @@ export default function HomePage() {
         });
 
         setMessage(data.message);
-        router.push('/dashboard');
+/*         router.push('/dashboard'); */
 
       } else {
         setMessage(data.message);
