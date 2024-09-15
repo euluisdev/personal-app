@@ -1,36 +1,40 @@
 import { MongoClient } from 'mongodb';
 import bcrypt from 'bcryptjs';
+import dotenv from 'dotenv';
 
-//configura a URL de conexão
-const uri = process.env.MONGODB_URI || "mongodb+srv://fluisf00:<db_password>@cluster0.rw5mg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"; // substitua com sua string e mantenha senhas seguras.
+dotenv.config();
 
-//cria um novo cliente MongoDB
+const uri = process.env.MONGODB_URI;
+if (!uri) {
+  throw new Error('MongoDB URI não está definida.');
+}
+
+// Cria um novo cliente MongoDB
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-//conecta ao banco de dados
+// Conecta ao banco de dados
 async function connectToDatabase() {
   try {
-    if (!client.isConnected()) await client.connect();
-    //conecta ao banco de dados e coleção
-    const db = client.db('bestFitData'); 
+    await client.connect();
+    const db = client.db('BestFitData');
     const collection = db.collection('users');
     return { db, collection };
   } catch (error) {
-    console.error('Erro ao conectar ao MongoDB:', error);
+    console.error('Erro ao conectar ao MongoDB:', error.message);
     throw new Error('Falha na conexão com o banco de dados');
   }
 }
 
-//registra um novo usuário
+// Registra um novo usuário
 export async function POST(req) {
   try {
-    //extrair os dados da requisição
+    // Extrair os dados da requisição
     const { nome, email, senha } = await req.json();
 
-    //conecta ao banco de dados
+    // Conecta ao banco de dados
     const { collection } = await connectToDatabase();
 
-    //verifica se o usuário já está cadastrado pelo email
+    // Verifica se o usuário já está cadastrado pelo email
     const existingUser = await collection.findOne({ email });
     if (existingUser) {
       return new Response(
@@ -39,17 +43,17 @@ export async function POST(req) {
       );
     }
 
-    //criptografa a senha do usuário
+    // Criptografa a senha do usuário
     const hashedPassword = await bcrypt.hash(senha, 10);
     const newUser = {
       nome,
       email,
       senha: hashedPassword,
       status: 'pendente',
-      createdAt: new Date(), //data de criação
+      createdAt: new Date(),
     };
 
-    //adiciona novo usuário a coleção no bd
+    // Adiciona novo usuário à coleção no banco de dados
     await collection.insertOne(newUser);
 
     return new Response(
@@ -58,11 +62,11 @@ export async function POST(req) {
     );
 
   } catch (error) {
-    console.error('Erro na requisição de cadastro:', error);
+    console.error('Erro na requisição de cadastro:', error.message, error.stack);
     return new Response(
       JSON.stringify({ message: 'Erro interno do servidor.' }),
       { status: 500 }
     );
   }
-};
+}
 
