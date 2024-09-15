@@ -4,7 +4,10 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react'; 
 
 import dotenv from 'dotenv';
-dotenv.config();
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config();
+}
+
 
 
 import styles from './page.module.css'; 
