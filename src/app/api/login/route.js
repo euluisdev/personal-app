@@ -11,8 +11,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 async function connectToDatabase() {
   try {
-    if (!client.isConnected()) await client.connect();
-    //conecta ao banco de dados e coleção
+    await client.connect();
     const db = client.db('BestFitData');
     const collection = db.collection('users');
     return { db, collection };
@@ -20,34 +19,34 @@ async function connectToDatabase() {
     console.error('Erro ao conectar ao MongoDB:', error);
     throw new Error('Falha na conexão com o banco de dados');
   }
-};
+}
 
-//autentica o usuário
+//autenticar o usuário
 export async function POST(req) {
   try {
-    //extrai os dados da requisição
     const { email, senha } = await req.json();
+    console.log('Dados recebidos:', { email, senha });
 
     //conecta ao banco de dados
     const { collection } = await connectToDatabase();
 
     //procura o usuário pelo email
     const user = await collection.findOne({ email });
+    console.log('Usuário encontrado:', user);
 
     if (!user) {
       return new Response(
         JSON.stringify({ message: 'Usuário não encontrado.' }),
         { status: 404 }
       );
-    };
+    }
 
-    //verifica se o usuário foi aprovado
     if (user.status !== 'aprovado') {
       return new Response(
         JSON.stringify({ message: 'Usuário ainda não aprovado.' }),
         { status: 403 }
       );
-    };
+    }
 
     const isMatch = await bcrypt.compare(senha, user.senha);
     if (!isMatch) {
@@ -55,19 +54,20 @@ export async function POST(req) {
         JSON.stringify({ message: 'Senha incorreta.' }),
         { status: 401 }
       );
-    };
+    }
 
-    //cria um token de sessão
+    //crietes a token from section
     const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
       expiresIn: '1h',
     });
 
-    //responde com sucesso se a autenticação for ok
+    //responde com sucesso, autenticação ok
     return new Response(
       JSON.stringify({
         message: 'Login bem-sucedido.',
         userName: user.nome,
         userEmail: user.email,
+        token 
       }),
       { status: 200 }
     );
@@ -78,7 +78,4 @@ export async function POST(req) {
       { status: 500 }
     );
   };
-};  
-
-
-  
+};

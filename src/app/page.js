@@ -14,7 +14,7 @@ import styles from './page.module.css';
 
 export default function HomePage() {
   const router = useRouter();
-  const [formType, setFormType] = useState('login'); // Alterna entre login e cadastro
+  const [formType, setFormType] = useState('login'); 
   const [formData, setFormData] = useState({
     nome: '',
     datanasc: '',
@@ -67,8 +67,9 @@ export default function HomePage() {
           senha: '',
         });
 
-        setMessage(data.message);
-/*         router.push('/dashboard'); */
+        if (formType === 'login') {
+          router.push('/dashboard');
+        }
 
       } else {
         setMessage(data.message);
