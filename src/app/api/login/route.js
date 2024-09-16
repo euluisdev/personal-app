@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 dotenv.config();  
 
 const uri = process.env.MONGODB_URI;
+const jwtSecret = process.env.JWT_SECRET
 
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
