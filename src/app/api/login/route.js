@@ -58,7 +58,15 @@ export async function POST(req) {
     }
 
     //crietes a token from section
-    const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
+    if (!jwtSecret) {
+      console.error('JWT_SECRET não está definido');
+      return new Response(
+        JSON.stringify({ message: 'Erro de configuração do servidor.' }),
+        { status: 500 }
+      );
+    };
+    
+    const token = jwt.sign({ id: user._id, email: user.email }, jwtSecret, {
       expiresIn: '1h',
     });
 
