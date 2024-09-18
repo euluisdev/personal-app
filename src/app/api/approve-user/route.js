@@ -16,14 +16,14 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 export async function GET(req) {
   try {
-    //verifica se o token de autorização está presente
+    //verifica se o token está presente
     const authHeader = req.headers.get('authorization');
     if (!authHeader) {
       return new Response(JSON.stringify({ message: 'Autorização necessária.' }), { status: 401 });
     }
     const token = authHeader.split(' ')[1];
 
-    //verifica o token JWT
+    //verifica o token jwt
     const decoded = jwt.verify(token, jwtSecret);
     if (decoded.role !== 'admin') {
       return new Response(JSON.stringify({ message: 'Acesso não autorizado.' }), { status: 403 });
@@ -33,7 +33,7 @@ export async function GET(req) {
     const db = client.db('BestFitData');
     const collection = db.collection('users');
 
-    //busca usuários com status pendente
+    //busca usuários--status pendente
     const pendingUsers = await collection.find({ status: 'pendente' }).toArray();
 
     return new Response(JSON.stringify(pendingUsers), { status: 200 });
@@ -47,20 +47,20 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    //verifica se o token de autorização está presente
+    //verifica se o token está presente
     const authHeader = req.headers.get('authorization');
     if (!authHeader) {
       return new Response(JSON.stringify({ message: 'Autorização necessária.' }), { status: 401 });
     }
     const token = authHeader.split(' ')[1];
 
-    //verifica o token JWT
+    //verifica o token
     const decoded = jwt.verify(token, jwtSecret);
     if (decoded.role !== 'admin') {
       return new Response(JSON.stringify({ message: 'Acesso não autorizado.' }), { status: 403 });
     }
 
-    //obtém o e-mail do corpo da requisição
+    //recebe a e-mail do corpo da requisição
     const { email } = await req.json();
     if (!email) {
       return new Response(JSON.stringify({ message: 'E-mail do usuário é necessário.' }), { status: 400 });
@@ -70,10 +70,10 @@ export async function POST(req) {
     const db = client.db('BestFitData');
     const collection = db.collection('users');
 
-    //atualiza o status do usuário para 'aprovado'
+    //atualiza o status--aprovado
     const result = await collection.updateOne(
       { email },  // critério de busca
-      { $set: { status: 'aprovado' } }  // atualização  
+      { $set: { status: 'aprovado' } }   
     );
 
     if (result.matchedCount === 0) {
@@ -86,5 +86,6 @@ export async function POST(req) {
     return new Response(JSON.stringify({ message: 'Erro interno do servidor.' }), { status: 500 });
   } finally {
     await client.close();
-  }
-}
+  };
+};  
+

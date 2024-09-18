@@ -37,7 +37,7 @@ export async function POST(req) {
       return new Response(JSON.stringify({ message: 'Acesso não autorizado.' }), { status: 403 });
     }
 
-    //gera um token JWT para o admin
+    //gera um token--admin
     if (!jwtSecret) {
         console.error('JWT_SECRET não está definido');
         return new Response(
@@ -56,7 +56,7 @@ export async function POST(req) {
     return new Response(JSON.stringify({ message: 'Erro interno do servidor.' }), { status: 500 });
   } finally {
     await client.close();
-  }
-}
+  };
+};  
 
 
