@@ -10,24 +10,30 @@ if (!uri) {
 const jwtSecret = process.env.JWT_SECRET;
 
 export async function GET(req) {
-  const token = req.headers.authorization.split(' ')[1]; //obtém o token enviado no header
-  
-  try {
-    const decoded = jwt.verify(token, jwtSecret);
-    
-    if (decoded.role !== 'admin') {
-      return new Response(JSON.stringify({ message: 'Acesso não autorizado' }), { status: 403 });
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return new Response(JSON.stringify({ message: 'Token não fornecido' }), { status: 401 });
     }
-
-    const client = new MongoClient(uri);
-    await client.connect();
-    const collection = client.db('BestFitData').collection('users');
     
-    const users = await collection.find({ status: 'pendente' }).toArray();
-    return new Response(JSON.stringify(users), { status: 200 });
-
-  } catch (error) {
-    return new Response(JSON.stringify({ message: 'Token inválido' }), { status: 401 });
+    const token = authHeader.split(' ')[1];
+    
+    try {
+      const decoded = jwt.verify(token, jwtSecret);
+      
+      if (decoded.role !== 'admin') {
+        return new Response(JSON.stringify({ message: 'Acesso não autorizado' }), { status: 403 });
+      }
+  
+      const client = new MongoClient(uri);
+      await client.connect();
+      const collection = client.db('BestFitData').collection('users');
+      
+      const users = await collection.find({ status: 'pendente' }).toArray();
+      return new Response(JSON.stringify(users), { status: 200 });
+  
+    } catch (error) {
+      console.error('Erro durante a verificação do token ou consulta ao banco:', error.message);
+      return new Response(JSON.stringify({ message: 'Token inválido ou erro interno' }), { status: 401 });
+    };
   };
-};  
  
