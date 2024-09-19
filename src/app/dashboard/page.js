@@ -1,12 +1,14 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 
 function DashboardContent() {
   const searchParams = useSearchParams();
-  const userName = searchParams.get('userName');
-  const userEmail = searchParams.get('userEmail');
+  const [userName, setUserName] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState(null); 
 
   return (
     <div>
