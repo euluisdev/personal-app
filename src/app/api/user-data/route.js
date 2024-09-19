@@ -24,7 +24,7 @@ try {
 
     const user = await collection.findOne({ _id:userId });
 
-    await client.close();
+    await client.close();  //close connection
 
     
 } catch (error) {
