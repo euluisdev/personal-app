@@ -11,7 +11,7 @@ function DashboardContent() {
   useEffect(() => {
     async function fetchUserData() {
       try {
-        const token = localStorage.getItem('userToken'); 
+        const token = localStorage.getItem('userToken');    
         if (!token) {
           throw new Error('Token de autenticação não encontrado');
         }
