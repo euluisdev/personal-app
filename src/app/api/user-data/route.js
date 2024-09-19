@@ -21,7 +21,10 @@ try {
     const client = new MongoClient(uri);
     await client.connect(); 
     const collection = client. db('BestFitData').collection('users'); 
-    
+
+    const user = await collection.findOne({ _id:userId });
+
+    await client.close();
 
     
 } catch (error) {
