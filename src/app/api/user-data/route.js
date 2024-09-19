@@ -12,6 +12,7 @@ export async function GET(req) {
     };
 };
 
+const token = authHeader.split(' ')[1];
 
 try {
     
