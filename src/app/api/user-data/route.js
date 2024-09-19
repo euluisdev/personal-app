@@ -15,9 +15,14 @@ export async function GET(req) {
 const token = authHeader.split(' ')[1];
 
 try {
+    const decoded = jwt.verify(token, jwtSecret);
+    const userId = decoded.userId;
+
+    
     
 } catch (error) {
     console.error('Erro ao buscar dados do usuário:', error);
     return new Response(JSON.stringify({ message: 'Erro interno do servidor' }), { status: 500 });
 }; 
+
  
