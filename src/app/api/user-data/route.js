@@ -18,7 +18,11 @@ try {
     const decoded = jwt.verify(token, jwtSecret);
     const userId = decoded.userId;
 
+    const client = new MongoClient(uri);
+    await client.connect(); 
+    const collection = client. db('BestFitData').collection('users'); 
     
+
     
 } catch (error) {
     console.error('Erro ao buscar dados do usuário:', error);
