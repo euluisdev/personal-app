@@ -2,6 +2,7 @@ import { MongoClient } from 'mongodb';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv'; 
+import { cookies } from 'next/headers';
 
 dotenv.config();  
 
@@ -74,21 +75,40 @@ export async function POST(req) {
       expiresIn: '1h',
     });
 
+    //cookie http-only
+    cookies().set('authToken', token, {
+      httpOnly: true, 
+      secure: nodeEnv, 
+      sameSite: 'strict', 
+      maxAge: 3600, 
+      path: '/',
+    });  
+
     //responde com sucesso, autenticação ok
-    return new Response(
-      JSON.stringify({
+    return new Response(JSON.stringify({ 
         message: 'Login bem-sucedido.',
         userName: user.nome,
         userEmail: user.email,
-        token 
-      }),
-      { status: 200 }
+/*         token  */
+      }), { 
+        status: 200, 
+        headers: {
+          'Set-Cookie': `authToken=${token}; HttpOnly; Secure; SameSite=Strict; Max-Age=3600; Path=/`
+        }
+      }
     );
+
   } catch (error) {
     console.error('Erro na requisição de login:', error);
+    
     return new Response(
       JSON.stringify({ message: 'Erro interno do servidor.' }),
       { status: 500 }
     );
-  };
-};
+  } finally {
+    await client.close(); 
+  };  
+}; 
+
+
+ 
