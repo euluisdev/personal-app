@@ -22,9 +22,23 @@ try {
     await client.connect(); 
     const collection = client. db('BestFitData').collection('users'); 
 
-    const user = await collection.findOne({ _id:userId });
+    const user = await collection.findOne({ _id: userId });
 
     await client.close();  //close connection
+
+    if (!user) {
+        return new Response(JSON.stringify({ message: 'Usuário não encontrado' }), { status: 404 });
+    };
+  
+    return new Response(JSON.stringify({ 
+        name: user.nome, 
+        email: user.email 
+
+    }), { 
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+
+    });
 
     
 } catch (error) {

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-function DashboardContent() {
+const Page = () => {
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [loading, setLoading] = useState(true); 
@@ -51,13 +51,7 @@ function DashboardContent() {
   );
 };
 
-//página principal com `Suspense` encapsulando o uso do `useSearchParams`
-export default function Page() {
-  return/*  (
-    <Suspense fallback={<div>Carregando...</div>}> */
-      <DashboardContent />
-  /*   </Suspense>
-  ); */
-};
+export default Page;
+
 
 
