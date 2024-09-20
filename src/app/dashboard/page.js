@@ -29,12 +29,14 @@ const Page = () => {
         const userData = await response.json();
         setUserName(userData.name);
         setUserEmail(userData.email);
+
       } catch (err) {
         setError(err.message);
+
       } finally {
         setLoading(false);
-      }
-    }
+      };
+    };
 
     fetchUserData();
   }, []);
