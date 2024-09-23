@@ -64,9 +64,10 @@ export default function Page() {
       <h1>Bem-vindo, {userName || 'Aluno'}</h1>
       <p>Ficamos felizes em te ter de volta.</p>
       {userEmail && <p>Email: {userEmail}</p>}
+      <button onClick={handleLogout}>Logout</button>
     </div>
   );
-};
+};  
 
 
 
