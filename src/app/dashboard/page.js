@@ -21,7 +21,7 @@ export default function Page() {
 
         if (!response.ok) {
           if (response.status === 401) {
-            //se não estiver autenticado, redirecione para a página de login
+            //se não estiver autenticado, redireciona para a página de login
             router.push('/page');
             return;
           }
@@ -45,6 +45,19 @@ export default function Page() {
 
   if (loading) return <div>Carregando...</div>;
   if (error) return <div>Erro: {error}</div>;
+
+  //handle logout
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/logout', {
+        method: 'GET', 
+      });
+
+      router.push('/');
+    } catch (error) {
+      console.error(`Erro ao fazer logout:`, error);
+    };
+  };
 
   return (
     <div>
