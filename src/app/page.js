@@ -3,9 +3,6 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react'; 
 
-import dotenv from 'dotenv';
- dotenv.config();
-
 import styles from './page.module.css'; 
 
 export default function HomePage() {
@@ -43,10 +40,16 @@ export default function HomePage() {
 
       const data = await response.json();
 
-      console.log(data);
+      console.log(data);  
       setMessage(data.message);
 
       if (response.ok) {
+        
+        if (data.token) {
+          document.cookie = `authToken=${data.token}; path=/`;
+          router.push('/dashboard');
+        };
+
         //clean fields
         setFormData({
           nome: '',
@@ -62,10 +65,6 @@ export default function HomePage() {
           email: '',
           senha: '',
         });
-
-        if (formType === 'login') {
-          router.push('/dashboard');
-        }
 
       } else {
         setMessage(data.message);

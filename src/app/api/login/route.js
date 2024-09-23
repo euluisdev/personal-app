@@ -13,7 +13,9 @@ if (!uri) {
 
 const jwtSecret = process.env.JWT_SECRET;
 
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+const nodeEnv = process.env.NODE_ENV;
+
+const client = new MongoClient(uri);
 
 async function connectToDatabase() {
   try {
@@ -89,18 +91,18 @@ export async function POST(req) {
         message: 'Login bem-sucedido.',
         userName: user.nome,
         userEmail: user.email,
-/*         token  */
+        token: token,
       }), { 
         status: 200, 
         headers: {
           'Set-Cookie': `authToken=${token}; HttpOnly; Secure; SameSite=Strict; Max-Age=3600; Path=/`
         }
       }
-    );
+    );  
 
   } catch (error) {
     console.error('Erro na requisição de login:', error);
-    
+
     return new Response(
       JSON.stringify({ message: 'Erro interno do servidor.' }),
       { status: 500 }

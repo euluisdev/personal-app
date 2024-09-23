@@ -1,49 +1,63 @@
-import { MongoClient } from "mongodb"; 
+
+import { MongoClient, ObjectId } from "mongodb";
 import jwt from 'jsonwebtoken';
+import { cookies } from "next/headers";
 
-const uri = process.env.MONGODB_URI; 
-const jwtSecret = process.env.JWT_SECRET; 
+const uri = process.env.MONGODB_URI;
+const jwtSecret = process.env.JWT_SECRET;
 
-export async function GET(req) {
-    const authHeader = req.headers.get('authorization');
+let cachedClient = null;
+let cachedDb = null;
 
-    if (!authHeader || !authHeader.startsWith('Bearer')) {
-        return new Response(JSON.stringify({ message: 'Tokin não fornecido' }), { status: 401 }); 
-    };
-};
+async function connectToDatabase() {
+  if (cachedClient && cachedDb) {
+    return { client: cachedClient, db: cachedDb };
+  }
 
-const token = authHeader.split(' ')[1];
+  const client = new MongoClient(uri);
+  await client.connect();
+  const db = client.db('BestFitData');
 
-try {
-    const decoded = jwt.verify(token, jwtSecret);
-    const userId = decoded.userId;
+  cachedClient = client;
+  cachedDb = db;
 
-    const client = new MongoClient(uri);
-    await client.connect(); 
-    const collection = client. db('BestFitData').collection('users'); 
+  return { client, db };
+}
 
-    const user = await collection.findOne({ _id: userId });
+export async function GET() {
+  try {
+    const token = cookies().get('authToken')?.value;
 
-    await client.close();  //close connection
+    if (!token) {
+      return new Response(JSON.stringify({ message: 'Não autenticado' }), { status: 401 });
+    }
+
+    let decoded;
+    try {
+      decoded = jwt.verify(token, jwtSecret);
+    } catch (error) {
+      return new Response(JSON.stringify({ message: 'Token inválido ou expirado' }), { status: 401 });
+    }
+
+    const { db } = await connectToDatabase();
+    const collection = db.collection('users');
+
+    const user = await collection.findOne({ _id: new ObjectId(decoded.id) });
 
     if (!user) {
-        return new Response(JSON.stringify({ message: 'Usuário não encontrado' }), { status: 404 });
-    };
-  
-    return new Response(JSON.stringify({ 
-        name: user.nome, 
-        email: user.email 
+      return new Response(JSON.stringify({ message: 'Usuário não encontrado' }), { status: 404 });
+    }
 
-    }), { 
-        status: 200,
-        headers: { 'Content-Type': 'application/json' }
-
+    return new Response(JSON.stringify({
+      name: user.nome || 'Nome não encontrado',
+      email: user.email || 'Email não encontrado'
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
     });
 
-    
-} catch (error) {
+  } catch (error) {
     console.error('Erro ao buscar dados do usuário:', error);
     return new Response(JSON.stringify({ message: 'Erro interno do servidor' }), { status: 500 });
-}; 
-
- 
+  }
+}
