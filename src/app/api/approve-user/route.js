@@ -12,18 +12,29 @@ if (!uri) {
 
 const jwtSecret = process.env.JWT_SECRET;
 
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+const client = new MongoClient(uri);
 
 export async function GET(req) {
   try {
-    //verifica se o token está presente
-    const authHeader = req.headers.get('authorization');
-    if (!authHeader) {
+    //get cookie
+    const cookieHeader = req.headers.get('cookie');
+    if (!cookieHeader) {
+      return new Response(JSON.stringify({ message: 'Autenticação necessária.' }), { status: 401 });
+    }
+
+    //find token
+    const cookies = cookieHeader.split(';').reduce((acc, cookie) => {
+      const [name, value] = cookie.trim().split('=');
+      acc[name] = value;
+      return acc;
+    }, {});
+
+    const token = cookies['adminToken']; //cookie name
+    if (!token) {
       return new Response(JSON.stringify({ message: 'Autorização necessária.' }), { status: 401 });
     }
-    const token = authHeader.split(' ')[1];
 
-    //verifica o token jwt
+    //check token
     const decoded = jwt.verify(token, jwtSecret);
     if (decoded.role !== 'admin') {
       return new Response(JSON.stringify({ message: 'Acesso não autorizado.' }), { status: 403 });
@@ -33,34 +44,45 @@ export async function GET(req) {
     const db = client.db('BestFitData');
     const collection = db.collection('users');
 
-    //busca usuários--status pendente
-    const pendingUsers = await collection.find({ status: 'pendente' }).toArray();
-
+    //find users -- status pendente
+    const pendingUsers = await collection.find({ status: 'pendente' }).toArray(); 
     return new Response(JSON.stringify(pendingUsers), { status: 200 });
+    
   } catch (error) {
     console.error('Erro ao buscar usuários pendentes:', error.message);
     return new Response(JSON.stringify({ message: 'Erro interno do servidor.' }), { status: 500 });
+ 
   } finally {
     await client.close();
-  }
-}
+  }; 
+};  
 
 export async function POST(req) {
   try {
-    //verifica se o token está presente
-    const authHeader = req.headers.get('authorization');
-    if (!authHeader) {
+    //get cookie
+    const cookieHeader = req.headers.get('cookie');
+    if (!cookieHeader) {
+      return new Response(JSON.stringify({ message: 'Autenticação necessária.' }), { status: 401 });
+    }
+
+    //find token
+    const cookies = cookieHeader.split(';').reduce((acc, cookie) => {
+      const [name, value] = cookie.trim().split('=');
+      acc[name] = value;
+      return acc;
+    }, {});
+
+    const token = cookies['adminToken']; //cookie name
+    if (!token) {
       return new Response(JSON.stringify({ message: 'Autorização necessária.' }), { status: 401 });
     }
-    const token = authHeader.split(' ')[1];
 
-    //verifica o token
+    //check token
     const decoded = jwt.verify(token, jwtSecret);
     if (decoded.role !== 'admin') {
       return new Response(JSON.stringify({ message: 'Acesso não autorizado.' }), { status: 403 });
     }
 
-    //recebe a e-mail do corpo da requisição
     const { email } = await req.json();
     if (!email) {
       return new Response(JSON.stringify({ message: 'E-mail do usuário é necessário.' }), { status: 400 });
@@ -70,9 +92,9 @@ export async function POST(req) {
     const db = client.db('BestFitData');
     const collection = db.collection('users');
 
-    //atualiza o status--aprovado
+    //update status -- aprovado
     const result = await collection.updateOne(
-      { email },  // critério de busca
+      { email }, 
       { $set: { status: 'aprovado' } }   
     );
 
