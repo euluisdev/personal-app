@@ -10,57 +10,38 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const token = localStorage.getItem('adminToken');
-      console.log('Token:', token);
-      
-      if (!token) {
-        setMessage('Token não encontrado. Faça login novamente.');
-        router.push('/AdminLogin'); 
-        return;
-      }
-
       try {
-        const response = await fetch('/api/approve-user', {
-          headers: {
-            Authorization: `Bearer ${token}`, 
-          },
-        });
+        const response = await fetch('/api/approve-user');
 
         if (response.ok) {
           const data = await response.json();
-          console.log(data)
+/*           console.log(data) */
           setUsers(data);
+
         } else if (response.status === 401) {
           setMessage('Sessão expirada. Faça login novamente.');
           router.push('/AdminLogin');
+
         } else {
           const errorMessage = await response.json();
           setMessage(errorMessage.message || 'Erro ao carregar usuários.');
-        }
+        };
+
       } catch (error) {
         console.error('Erro ao buscar usuários pendentes:', error);
         setMessage('Erro ao processar a requisição.');
-      }
+      };
     };
 
     fetchUsers();
   }, [router]);
 
   const handleApprove = async (email) => {
-    const token = localStorage.getItem('adminToken');
-    
-    if (!token) {
-      setMessage('Token não encontrado. Faça login novamente.');
-      router.push('/login');
-      return;
-    }
-
     try {
       const response = await fetch('/api/approve-user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ email }),
       });
@@ -70,13 +51,15 @@ export default function AdminDashboard() {
       if (response.ok) {
         setMessage('Usuário aprovado com sucesso.');
         setUsers(users.filter(user => user.email !== email));
+
       } else {
         setMessage(data.message);
-      }
+      };
+
     } catch (error) {
       console.error('Erro ao aprovar usuário:', error);
       setMessage('Erro ao aprovar o usuário.');
-    }
+    };
   };
 
   return (
