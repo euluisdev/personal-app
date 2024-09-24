@@ -63,7 +63,7 @@ export default function AdminDashboard() {
 
   const handleLogout = async () => {
     try {
-      await fetch('/api/adimin-logout', {
+      await fetch('/api/admin-logout', {
         method: 'GET',
       });
   
