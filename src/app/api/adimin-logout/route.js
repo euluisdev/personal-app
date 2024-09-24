@@ -2,7 +2,7 @@
 
 import { NextResponse } from 'next/server';
 
-export async function POST() {
+export async function GET() {
   return new NextResponse(null, {
     headers: {
       'Set-Cookie': `authToken=; HttpOnly; Secure; SameSite=Strict; Max-Age=0; Path=/`, 

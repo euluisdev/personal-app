@@ -15,7 +15,6 @@ export default function AdminDashboard() {
 
         if (response.ok) {
           const data = await response.json();
-/*           console.log(data) */
           setUsers(data);
 
         } else if (response.status === 401) {
@@ -64,17 +63,11 @@ export default function AdminDashboard() {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('/api/logout', {
-        method: 'POST',
+      await fetch('/api/adimin-logout', {
+        method: 'GET',
       });
   
-      if (response.ok) {
-        setMessage('Logout realizado com sucesso.');
-        router.push('/AdminLogin'); // Redireciona para a página de login
-      } else {
-        const errorMessage = await response.json();
-        setMessage(errorMessage.message || 'Erro ao realizar logout.');
-      }
+      router.push('/AdminLogin'); 
     } catch (error) {
       console.error('Erro ao fazer logout:', error);
       setMessage('Erro ao realizar logout.');
