@@ -32,7 +32,7 @@ export default function AdminLogin() {
       const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem('adminToken', data.token);
+      /*   localStorage.setItem('adminToken', data.token); */
         router.push('/admin-dashboard');
       } else {
         setMessage(data.message);
