@@ -47,7 +47,7 @@ export default function AdminLogin() {
   return (
     <div className={styles['modal-overlay']} >
       <div className={styles['modal-container']}>
-      <h1>Login do Administrador</h1>
+      <h1 className={styles['modal-title']}>Login Administrador</h1>
       <form onSubmit={handleSubmit}>
         <div>
           <label>Email:</label>

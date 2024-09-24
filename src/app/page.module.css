@@ -19,15 +19,14 @@
   border-radius: 12px;
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.7); /* Sombra para destacar o modal */
   padding: 20px;
-  width: 90%; /* Largura do modal ajustada para não ocupar toda a tela */
-  max-width: 400px; /* Largura máxima do modal adequada para dispositivos móveis */
-  max-height: 90vh; /* Altura máxima do modal */
+  width: 90%; 
+  max-width: 400px; 
+  max-height: 90vh;
   overflow-y: auto; /* Adiciona rolagem vertical se necessário */
   position: relative;
   z-index: 1;
 }
 
-/* Estilo do título */
 .modal-container h1 {
   text-align: center;
   color: #f5f5f5;
@@ -36,13 +35,11 @@
   font-weight: 700;
 }
 
-/* Estilização do formulário */
 .modal-container form {
   display: flex;
   flex-direction: column;
 }
 
-/* Estilo dos campos do formulário */
 .modal-container div {
   margin-bottom: 15px;
 }
@@ -96,7 +93,6 @@
   transform: translateY(0);
 }
 
-/* Estilo para mensagens */
 .modal-container p {
   text-align: center;
   color: #f5f5f5;
@@ -105,7 +101,6 @@
   font-weight: 500;
 }
 
-/* Estilo do botão de alternar */
 .modal-container button.toggle {
   background-color: #6c757d;
 }
@@ -118,11 +113,11 @@
   background-color: #4e555b;
 }
 
-/* Estilos responsivos específicos para mobile */
+/* style mobile */
 @media (max-width: 480px) {
   .modal-container {
     padding: 15px;
-    max-width: 95%; /* Ajusta a largura para quase toda a tela */
+    max-width: 95%; 
   }
 
   .modal-container h1 {
