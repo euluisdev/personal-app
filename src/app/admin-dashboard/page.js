@@ -62,6 +62,26 @@ export default function AdminDashboard() {
     };
   };
 
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('/api/logout', {
+        method: 'POST',
+      });
+  
+      if (response.ok) {
+        setMessage('Logout realizado com sucesso.');
+        router.push('/AdminLogin'); // Redireciona para a página de login
+      } else {
+        const errorMessage = await response.json();
+        setMessage(errorMessage.message || 'Erro ao realizar logout.');
+      }
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error);
+      setMessage('Erro ao realizar logout.');
+    };
+  };
+  
+
   return (
     <div>
       <h1>Painel Administrativo</h1>
