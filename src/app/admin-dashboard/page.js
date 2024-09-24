@@ -86,6 +86,7 @@ export default function AdminDashboard() {
     <div>
       <h1>Painel Administrativo</h1>
       {message && <p>{message}</p>}
+      <button onClick={handleLogout}>Logout</button>
       <ul>
         {users.length > 0 ? (
           users.map(user => (
