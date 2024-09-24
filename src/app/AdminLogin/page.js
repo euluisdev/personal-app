@@ -46,6 +46,7 @@ export default function AdminLogin() {
 
   return (
     <div className={styles['modal-overlay']} >
+      <div className={styles['modal-container']}>
       <h1>Login do Administrador</h1>
       <form onSubmit={handleSubmit}>
         <div>
@@ -71,6 +72,7 @@ export default function AdminLogin() {
         <button type="submit">Entrar</button>
         {message && <p>{message}</p>}
       </form>
+      </div>
     </div>
   ); 
 };  

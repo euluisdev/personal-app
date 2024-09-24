@@ -8,3 +8,17 @@
     align-items: center;
     z-index: 1000;
 }
+
+.modal-container {
+    background: #1a1a1a; 
+    color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.7); 
+    padding: 20px;
+    width: 90%;
+    max-width: 400px; 
+    max-height: 90vh; 
+    overflow-y: auto;
+    position: relative;
+    z-index: 1;
+}
