@@ -6,7 +6,7 @@ import { useState } from 'react';
 import dotenv from 'dotenv';
  dotenv.config();
 
-/* import styles from './page.module.css'; */ 
+ import styles from '../../styles/admin-login/page.module.css';
 
 export default function AdminLogin() {
   const router = useRouter();
@@ -32,19 +32,20 @@ export default function AdminLogin() {
       const data = await response.json();
 
       if (response.ok) {
-      /*   localStorage.setItem('adminToken', data.token); */
         router.push('/admin-dashboard');
+
       } else {
         setMessage(data.message);
-      }
+
+      };
     } catch (error) {
       console.error('Erro ao fazer login do administrador:', error);
       setMessage('Erro ao processar o login.');
-    }
+    };
   };
 
   return (
-    <div /* className={styles['login-container']} */>
+    <div className={styles['modal-overlay']} >
       <h1>Login do Administrador</h1>
       <form onSubmit={handleSubmit}>
         <div>
