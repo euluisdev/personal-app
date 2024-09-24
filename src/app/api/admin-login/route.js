@@ -13,7 +13,9 @@ if (!uri) {
 
 const jwtSecret = process.env.JWT_SECRET;
 
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+const nodeEnv = process.env.NODE_ENV;
+
+const client = new MongoClient(uri);
 
 export async function POST(req) {
   try {
@@ -37,7 +39,7 @@ export async function POST(req) {
       return new Response(JSON.stringify({ message: 'Acesso não autorizado.' }), { status: 403 });
     }
 
-    //gera um token--admin
+    //gera um token -- admin
     if (!jwtSecret) {
         console.error('JWT_SECRET não está definido');
         return new Response(
@@ -50,7 +52,14 @@ export async function POST(req) {
       expiresIn: '1h',
     });
 
-    return new Response(JSON.stringify({ token }), { status: 200 });
+    //config cookie httponly with token
+    return new Response(JSON.stringify({ message: 'Login bem-sucedido' }), {
+      status: 200,
+      headers: {
+        'Set-Cookie': `adminToken=${token}; HttpOnly; Path=/; Max-Age=3600; Secure=${nodeEnv === 'production'}; SameSite=Strict`,
+      },
+    });
+
   } catch (error) {
     console.error('Erro no login do administrador:', error.message);
     return new Response(JSON.stringify({ message: 'Erro interno do servidor.' }), { status: 500 });
