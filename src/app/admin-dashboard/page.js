@@ -34,7 +34,7 @@ export default function AdminDashboard() {
 
     const fetchApprovedUsers = async () => {
       try {
-        const response = await fetch('/api/approved-users');
+        const response = await fetch('/api/list-users');
         if (response.ok) {
           const data = await response.json();
           setApprovedUsers(data);
