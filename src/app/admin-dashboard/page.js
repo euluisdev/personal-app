@@ -111,8 +111,8 @@ export default function AdminDashboard() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userEmail: selectedUser.email,
-          ...workoutForm
+          userId: selectedUser._id, 
+          workoutData: workoutForm
         }),
       });
 
