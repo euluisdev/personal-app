@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 
 import AdminNavBar from '@/components/AdminNavBar';
 
+import styles from '../../styles/admin-dashboard/page.module.css'
+
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [approvedUsers, setApprovedUsers] = useState([]);
@@ -132,7 +134,7 @@ export default function AdminDashboard() {
   };
 
   return (
-    <>
+    <div className={styles['container']}>
       <div>
         <AdminNavBar />
       </div>
@@ -199,7 +201,7 @@ export default function AdminDashboard() {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 }
 
