@@ -27,10 +27,10 @@ const AdminNavBar = () => {
                     <Link href="/admin-users">Alunos</Link>
                 </li>
                 <li className='navItem'>
-                    <Link href="/treinos">Treinos</Link>
+                    <Link href="/admin-workout">Treinos</Link>
                 </li>
                 <li className='navItem'>
-                    <Link href="/perfil">Perfil</Link>
+                    <Link href="/admin-profile">Perfil</Link>
                 </li>
             </ul>
         </nav>
