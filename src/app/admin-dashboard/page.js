@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+import AdminNavBar from '@/components/AdminNavBar';
 
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
@@ -133,7 +134,7 @@ export default function AdminDashboard() {
   return (
     <>
       <div>
-{/*         <AdminNavBar /> */}
+        <AdminNavBar />
       </div>
       <div>
         <h1>Painel Administrativo</h1>
