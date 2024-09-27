@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [approvedUsers, setApprovedUsers] = useState([]);
@@ -111,7 +112,7 @@ export default function AdminDashboard() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId: selectedUser._id, 
+          userId: selectedUser._id,
           workoutData: workoutForm
         }),
       });
@@ -130,69 +131,74 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div>
-      <h1>Painel Administrativo</h1>
-      {message && <p>{message}</p>}
-      <button onClick={handleLogout}>Logout</button>
-      
-      <h2>Usuários Pendentes</h2>
-      <ul>
-        {users.length > 0 ? (
-          users.map(user => (
-            <li key={user.email}>
-              {user.nome} - {user.email}
-              <button onClick={() => handleApprove(user.email)}>Aprovar</button>
-            </li>
-          ))
-        ) : (
-          <p>Não há usuários pendentes.</p>
-        )}
-      </ul>
+    <>
+      <div>
+{/*         <AdminNavBar /> */}
+      </div>
+      <div>
+        <h1>Painel Administrativo</h1>
+        {message && <p>{message}</p>}
+        <button onClick={handleLogout}>Logout</button>
 
-      <h2>Usuários Aprovados</h2>
-      <ul>
-        {approvedUsers.length > 0 ? (
-          approvedUsers.map(user => (
-            <li key={user.email}>
-              {user.nome} - {user.email}
-              <button onClick={() => handleSelectUser(user)}>Selecionar para Treino</button>
-            </li>
-          ))
-        ) : (
-          <p>Não há usuários aprovados.</p>
-        )}
-      </ul>
+        <h2>Usuários Pendentes</h2>
+        <ul>
+          {users.length > 0 ? (
+            users.map(user => (
+              <li key={user.email}>
+                {user.nome} - {user.email}
+                <button onClick={() => handleApprove(user.email)}>Aprovar</button>
+              </li>
+            ))
+          ) : (
+            <p>Não há usuários pendentes.</p>
+          )}
+        </ul>
 
-      {selectedUser && (
-        <div>
-          <h2>Criar Treino para {selectedUser.nome}</h2>
-          <form onSubmit={handleSubmitWorkout}>
-            <div>
-              <label htmlFor="description">Descrição do Treino:</label>
-              <textarea
-                id="description"
-                name="description"
-                value={workoutForm.description}
-                onChange={handleWorkoutFormChange}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="date">Data do Treino:</label>
-              <input
-                type="date"
-                id="date"
-                name="date"
-                value={workoutForm.date}
-                onChange={handleWorkoutFormChange}
-                required
-              />
-            </div>
-            <button type="submit">Criar Treino</button>
-          </form>
-        </div>
-      )}
-    </div>
+        <h2>Usuários Aprovados</h2>
+        <ul>
+          {approvedUsers.length > 0 ? (
+            approvedUsers.map(user => (
+              <li key={user.email}>
+                {user.nome} - {user.email}
+                <button onClick={() => handleSelectUser(user)}>Selecionar para Treino</button>
+              </li>
+            ))
+          ) : (
+            <p>Não há usuários aprovados.</p>
+          )}
+        </ul>
+
+        {selectedUser && (
+          <div>
+            <h2>Criar Treino para {selectedUser.nome}</h2>
+            <form onSubmit={handleSubmitWorkout}>
+              <div>
+                <label htmlFor="description">Descrição do Treino:</label>
+                <textarea
+                  id="description"
+                  name="description"
+                  value={workoutForm.description}
+                  onChange={handleWorkoutFormChange}
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="date">Data do Treino:</label>
+                <input
+                  type="date"
+                  id="date"
+                  name="date"
+                  value={workoutForm.date}
+                  onChange={handleWorkoutFormChange}
+                  required
+                />
+              </div>
+              <button type="submit">Criar Treino</button>
+            </form>
+          </div>
+        )}
+      </div>
+    </>
   );
 }
 
