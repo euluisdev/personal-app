@@ -2,11 +2,11 @@
 
 import AdminNavBar from '@/components/AdminNavBar';
 
-import React from 'react'
+import styles from '../../styles/admin-profile/page.module.css'
 
 const page = () => {
   return (
-    <div>
+    <div className={styles['profile-container']}>
       <div><AdminNavBar /></div>
       <h1>Profile</h1>
     </div>
