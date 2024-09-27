@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Link from 'next/link';
 import './AdminNavBar.css';
 
 const AdminNavBar = () => {
@@ -19,14 +20,23 @@ const AdminNavBar = () => {
                 <span className='bar'></span>
             </div>
             <ul className={`navList ${isOpen ? 'navListOpen' : ''}`}>
-                <li className='navItem'>Dashboard</li>
-                <li className='navItem'>Alunos</li>
-                <li className='navItem'>Treinos</li>
-                <li className='navItem'>Perfil</li>
+                <li className='navItem'>
+                    <Link href="/admin-dashboard">Dashboard</Link>
+                </li>
+                <li className='navItem'>
+                    <Link href="/admin-users">Alunos</Link>
+                </li>
+                <li className='navItem'>
+                    <Link href="/treinos">Treinos</Link>
+                </li>
+                <li className='navItem'>
+                    <Link href="/perfil">Perfil</Link>
+                </li>
             </ul>
         </nav>
     );
 };
 
 export default AdminNavBar;
+
 
