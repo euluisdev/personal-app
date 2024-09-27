@@ -1,21 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-import styles from './AdminNavBar.css'
+import './AdminNavBar.css'; 
 
 const AdminNavBar = () => {
-  return (
-    <nav className='navbar'>
-      <div className='brand'>
-        <p>BestFit</p>
-      </div>
-      <ul className='navList'>
-        <li className='navItem'>Dashboard</li>
-        <li className='navItem'>Alunos</li>
-        <li className='navItem'>Treinos</li>
-        <li className='navItem'>Perfil</li>
-      </ul>
-    </nav>
-  );
+    const [isOpen, setIsOpen] = useState(false);
+
+    const toggleMenu = () => {
+        setIsOpen(!isOpen);
+    };
+
+    return (
+        <nav className='navbar'>
+            <div className='brand'>
+                <p>BestFit</p>
+            </div>
+            <div className='hamburger' onClick={toggleMenu}>
+                <span className='bar'></span>
+                <span className='bar'></span>
+                <span className='bar'></span>
+            </div>
+            <ul className={`navList ${isOpen ? 'navListOpen' : ''}`}>
+                <li className='navItem'>Dashboard</li>
+                <li className='navItem'>Alunos</li>
+                <li className='navItem'>Treinos</li>
+                <li className='navItem'>Perfil</li>
+            </ul>
+        </nav>
+    );
 };
 
 export default AdminNavBar;
+
