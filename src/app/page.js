@@ -8,6 +8,7 @@ import styles from './page.module.css';
 export default function HomePage() {
   const router = useRouter();
   const [formType, setFormType] = useState('login'); 
+  const [isAdminLogin, setIsAdminLogin] = useState(false); 
   const [formData, setFormData] = useState({
     nome: '',
     datanasc: '',
@@ -39,8 +40,6 @@ export default function HomePage() {
       });
 
       const data = await response.json();
-
-      console.log(data);  
       setMessage(data.message);
 
       if (response.ok) {
@@ -68,22 +67,36 @@ export default function HomePage() {
 
       } else {
         setMessage(data.message);
-      }
+      };
+
     } catch (error) {
       console.error('Erro ao enviar o formulário:', error);
       setMessage('Erro ao processar a requisição.');
-    }
-  };
+    }; 
+  }; 
 
   //update fields values from form
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const toggleAdminLogin = () => {
+    if (isAdminLogin) {
+      setIsAdminLogin(false);
+    } else {
+      router.push('/AdminLogin');
+    };
+  }; 
+
   return (
     <div className={styles['modal-overlay']}>
       <div className={styles['modal-container']}>
-        <h1 className={styles['modal-title']}>{formType === 'login' ? 'Login' : 'Cadastro'}</h1>
+        <div className={styles['modal-title']}>
+          <h1 className={styles['modal-title']}>{formType === 'login' ? 'Login' : 'Cadastro'}</h1> 
+          <button onClick={toggleAdminLogin} className={styles['admin-toggle']}>
+            {isAdminLogin ? 'Aluno' : 'Adm'}
+          </button>
+        </div>
         <form onSubmit={handleSubmit}>
           {formType === 'register' && (
             <>
