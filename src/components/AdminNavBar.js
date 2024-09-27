@@ -1,5 +1,7 @@
 import React from 'react';
 
+import styles from './AdminNavBar.css'
+
 const AdminNavBar = () => {
   return (
     <nav className='navbar'>

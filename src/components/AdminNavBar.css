@@ -1,0 +1,53 @@
+/* Mobile-first approach */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #2b2b2b;
+    color: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.brand p {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #f5ba13;
+    /* Cor de destaque */
+}
+
+.navList {
+    display: none;
+}
+
+.navItem {
+    list-style: none;
+    padding: 0.75rem 1rem;
+    color: #fff;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.navItem:hover {
+    color: #f5ba13;
+    /* Cor de destaque no hover */
+}
+
+/* Desktop styles */
+@media (min-width: 768px) {
+    .navList {
+        display: flex;
+    }
+
+    .navItem {
+        padding: 1rem 2rem;
+    }
+}
+
+/* Hover effects and more styling */
+.navItem:hover {
+    border-bottom: 2px solid #f5ba13;
+    transition: border-bottom 0.3s ease-in-out;
+}
