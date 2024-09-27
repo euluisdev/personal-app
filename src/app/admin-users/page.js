@@ -1,7 +1,6 @@
 'use client';
 
 import AdminNavBar from '@/components/AdminNavBar';
-import { useEffect, useState } from 'react';
 
 const page = () => {
   return (
