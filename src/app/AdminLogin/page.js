@@ -44,10 +44,22 @@ export default function AdminLogin() {
     };
   };
 
+  const handleToggleLogin  = () => {
+    router.push('/');
+  };  
+
   return (
     <div className={styles['modal-overlay']} >
       <div className={styles['modal-container']}>
+      <div className={styles['login-header']}>
       <h1 className={styles['modal-title']}>Login Administrador</h1>
+        <button 
+          onClick={handleToggleLogin}
+          className={styles['toggle-button']}
+        >
+          Se não é admin clique aqui!
+        </button>
+      </div>
       <form onSubmit={handleSubmit}>
         <div>
           <label>Email:</label>
