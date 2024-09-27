@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-
-import './AdminNavBar.css'; 
+import './AdminNavBar.css';
 
 const AdminNavBar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -14,7 +13,7 @@ const AdminNavBar = () => {
             <div className='brand'>
                 <p>BestFit</p>
             </div>
-            <div className='hamburger' onClick={toggleMenu}>
+            <div className={`hamburger ${isOpen ? 'open' : ''}`} onClick={toggleMenu}>
                 <span className='bar'></span>
                 <span className='bar'></span>
                 <span className='bar'></span>

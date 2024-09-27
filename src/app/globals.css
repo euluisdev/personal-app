@@ -1,4 +1,14 @@
 * {
   margin: 0rem;
   padding: 0rem;
-} 
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden;
+}
+
+body {
+  margin-top: 6rem;
+}
+
