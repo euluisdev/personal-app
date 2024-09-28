@@ -147,15 +147,25 @@ export default function AdminDashboard() {
             </div>
           </div>
 
+
           <div className={styles.card}>
             <h2 className={styles.cardTitle}>Análise de Desempenho</h2>
             <div className={styles.cardContent}>
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={chartData}>
-                  <XAxis dataKey="month" stroke="#FFD700" />
-                  <YAxis stroke="#FFD700" />
-                  <Tooltip
-                    contentStyle={{ backgroundColor: '#333', border: '1px solid #FFD700' }}
+                  <XAxis 
+                    dataKey="month" 
+                    stroke="#FFD700"
+                    tick={{ fill: '#FFD700' }}
+                    axisLine={{ stroke: '#FFD700' }}
+                  />
+                  <YAxis 
+                    stroke="#FFD700"
+                    tick={{ fill: '#FFD700' }}
+                    axisLine={{ stroke: '#FFD700' }}
+                  />
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: '#333', border: '1px solid #FFD700', color: '#FFD700' }}
                     labelStyle={{ color: '#FFD700' }}
                   />
                   <Bar dataKey="value" fill="#FFD700" />
@@ -163,6 +173,7 @@ export default function AdminDashboard() {
               </ResponsiveContainer>
             </div>
           </div>
+
 
           <div className={styles.card}>
             <h2 className={styles.cardTitle}>Comunicação com Alunos</h2>
