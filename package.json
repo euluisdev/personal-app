@@ -16,7 +16,8 @@
     "mongodb": "^6.8.1",
     "next": "^14.2.13",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "recharts": "^2.12.7"
   },
   "devDependencies": {
     "eslint": "^8",
