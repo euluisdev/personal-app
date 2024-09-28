@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { Bell, MessageSquare } from 'lucide-react';
 import AdminNavBar from '@/components/AdminNavBar';
 
 import styles from '../../styles/admin-dashboard/page.module.css'
