@@ -15,9 +15,9 @@ export async function GET() {
       const collection = db.collection('users');
 
       const countUsers = await collection.countDocuments({ status: 'aprovado' });
-      return new Response(JSON.stringfy({ cont: countUsers }), { status: 200 });
+      return new Response(JSON.stringify({ cont: countUsers }), { status: 200 });
         
     } catch (error) {
-        return new Response(JSON.stringfy({ error: 'Erro ao contar usuários' }, { status: 500 }));  
+        return new Response(JSON.stringify({ error: 'Erro ao contar usuários' }, { status: 500 }));  
     };
 };

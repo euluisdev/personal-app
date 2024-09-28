@@ -10,6 +10,7 @@ import styles from '../../styles/admin-dashboard/page.module.css'
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [message, setMessage] = useState('');
+  const [countUsers, setCountUsers] = useState(0)
   const router = useRouter();
 
   useEffect(() => {
@@ -33,6 +34,20 @@ export default function AdminDashboard() {
       };
     };
 
+    const fetchCountUsers = async () => {
+      try {
+        const response = await fetch('/api/count-users');
+        if (response.ok) {
+          const data = await response.json();
+          setCountUsers(data.cont);
+        };
+
+      } catch (error) {
+        return new Response(JSON.stringify({ error: 'Erro ao contar usuários' }), { status: 500 });
+      }
+    };
+
+    fetchCountUsers(); 
     fetchUsers();
   }, [router]);
 
@@ -46,6 +61,7 @@ export default function AdminDashboard() {
 
       router.push('/AdminLogin');
     } catch (error) {
+
       console.error('Erro ao fazer logout:', error);
       setMessage('Erro ao realizar logout.');
     }
@@ -74,11 +90,10 @@ export default function AdminDashboard() {
             <p>Não há usuários pendentes.</p>
           )}
         </ul>
+        <h2>Você possui {countUsers} alunos ativos!</h2>
       </div>
     </div>
   );
-}
+};  
 
-
-
-
+   
