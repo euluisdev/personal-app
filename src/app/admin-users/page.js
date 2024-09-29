@@ -2,10 +2,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import AdminNavBar from '@/components/AdminNavBar'; 
-import { User, Calendar, Target } from 'lucide-react'; 
+import AdminNavBar from '@/components/AdminNavBar';
+import { User, Calendar, Target } from 'lucide-react';
 
 import styles from '../../styles/admin-users/page.module.css';
+
+/* const exerciseDbKey = process.env.NEXT_PUBLIC_EXERCISEDB_API_KEY; */
 
 const Page = () => {
   const [approvedUsers, setApprovedUsers] = useState([]);
@@ -21,10 +23,12 @@ const Page = () => {
     observations: ''
   });
   const [generatedWorkout, setGeneratedWorkout] = useState(null);
+  const [previewWorkout, setPreviewWorkout] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const daysOfWeek = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
-  const muscleGroups = ['Peito', 'Costas', 'Pernas', 'Ombros', 'Bíceps', 'Tríceps', 'Abdômen'];
+  const muscleGroups = [ 'back', 'cardio', 'chest', 'lower arms', 'Ombros', 'Bíceps', 'Tríceps', 'Abdômen'];
   const equipmentList = ['Halteres', 'Barras', 'Máquinas', 'Peso Corporal', 'Elásticos'];
   const levels = ['Iniciante', 'Intermediário', 'Avançado'];
 
@@ -69,18 +73,81 @@ const Page = () => {
     }
   };
 
+
+  //consumindo API exercisedb
+  const fetchExerciseData = async (muscleGroup) => {
+    try {
+      const response = await fetch(`https://exercisedb.p.rapidapi.com/exercises`, {
+        method: 'GET',
+        headers: {
+          'x-rapidapi-host': 'exercisedb.p.rapidapi.com',
+          'x-rapidapi-key': process.env.NEXT_PUBLIC_EXERCISEDB_API_KEY,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+
+        return data;
+      } else {
+        throw new Error('Erro ao buscar dados da API.');
+      }
+    } catch (error) {
+      console.error('Erro ao buscar exercícios:', error);
+      return [];
+    }
+  };
+
+  const generateWorkoutPreview = async () => {
+    setIsLoading(true);
+    try {
+      const workout = await Promise.all(
+        workoutForm.muscleGroups.map(async (group) => {
+          const exercises = await fetchExerciseData(group.toLowerCase());
+          return {
+            group,
+            exercises: exercises.slice(0, 3).map(exercise => ({
+              name: exercise.name,
+              gifUrl: exercise.gifUrl,
+              sets: 3,
+              reps: '10-12'
+            }))
+          };
+        })
+      );
+
+      setPreviewWorkout(workout);
+    } catch (error) {
+      console.error('Erro ao gerar o treino:', error);
+      setMessage('Erro ao gerar pré-visualização do treino.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
   const generateWorkout = async () => {
-    // Simula a geração de um treino baseado nos dados do formulário
-    // Aqui você integraria com a API ExerciseDB
-    const workout = workoutForm.muscleGroups.map(group => ({
-      group,
-      exercises: [
-        { name: `Exercício 1 para ${group}`, sets: 3, reps: '10-12' },
-        { name: `Exercício 2 para ${group}`, sets: 3, reps: '8-10' },
-        { name: `Exercício 3 para ${group}`, sets: 3, reps: '12-15' },
-      ]
-    }));
-    setGeneratedWorkout(workout);
+    try {
+      const workout = await Promise.all(
+        workoutForm.muscleGroups.map(async (group) => {
+          const exercises = await fetchExerciseData(group.toLowerCase());
+          return {
+            group,
+            exercises: exercises.slice(0, 3).map(exercise => ({
+              name: exercise.name,
+              gifUrl: exercise.gifUrl, //URL img do exercício
+              sets: 3,
+              reps: '10-12'
+            }))
+          };
+        })
+      );
+
+      setGeneratedWorkout(workout);
+    } catch (error) {
+      console.error('Erro ao gerar o treino:', error);
+    }
   };
 
   const handleSubmitWorkout = async (e) => {
@@ -90,7 +157,10 @@ const Page = () => {
       return;
     };
 
-    await generateWorkout();
+    if (!previewWorkout) {
+      setMessage('Gere uma pré-visualização do treino primeiro.');
+      return;
+    }
 
     try {
       const response = await fetch('/api/create-workout', {
@@ -100,11 +170,12 @@ const Page = () => {
         },
         body: JSON.stringify({
           userId: selectedUser._id,
-          workoutData: { ...workoutForm, generatedWorkout }
+          workoutData: { ...workoutForm, generatedWorkout: previewWorkout }
         }),
       });
 
       if (response.ok) {
+
         setMessage('Treino criado com sucesso.');
         setWorkoutForm({
           description: '',
@@ -116,6 +187,7 @@ const Page = () => {
           observations: ''
         });
         setGeneratedWorkout(null);
+
       } else {
         const errorData = await response.json();
         setMessage(errorData.message || 'Erro ao criar treino.');
@@ -132,7 +204,7 @@ const Page = () => {
       <div className={styles.content}>
         <h1 className={styles.title}>Gerenciamento de Usuários</h1>
         {message && <p className={styles.message}>{message}</p>}
-        
+
         <div className={styles.cardGrid}>
           <div className={styles.card}>
             <h2 className={styles.cardTitle}>Usuários Aprovados</h2>
@@ -151,7 +223,7 @@ const Page = () => {
                       <Target className={styles.icon} />
                       <span>{user.objetivoPrincipal || 'Não definido'}</span>
                     </div>
-                    <button 
+                    <button
                       className={styles.selectButton}
                       onClick={() => handleSelectUser(user)}
                     >
@@ -273,22 +345,27 @@ const Page = () => {
                   className={styles.textarea}
                 />
               </div>
-              <button type="submit" className={styles.submitButton}>
-                Gerar e Salvar Treino
+              <button type="button" onClick={generateWorkoutPreview} className={styles.previewButton} disabled={isLoading}>
+                {isLoading ? 'Gerando...' : 'Gerar Pré-visualização'}
+              </button>
+
+              <button type="submit" className={styles.submitButton} disabled={!previewWorkout}>
+                Salvar Treino
               </button>
             </form>
           </div>
 
-          {generatedWorkout && (
+          {previewWorkout && (
             <div className={styles.card}>
-              <h2 className={styles.cardTitle}>Treino Gerado</h2>
+              <h2 className={styles.cardTitle}>Pré-visualização do Treino</h2>
               <div className={styles.generatedWorkout}>
-                {generatedWorkout.map((group, index) => (
+                {previewWorkout.map((group, index) => (
                   <div key={index} className={styles.workoutGroup}>
                     <h3>{group.group}</h3>
                     <ul>
                       {group.exercises.map((exercise, exIndex) => (
                         <li key={exIndex}>
+                          <img src={exercise.gifUrl} alt={exercise.name} width={100} />
                           {exercise.name} - {exercise.sets} séries de {exercise.reps} repetições
                         </li>
                       ))}
@@ -297,7 +374,8 @@ const Page = () => {
                 ))}
               </div>
             </div>
-          )}
+          )};
+
         </div>
       </div>
     </div>
