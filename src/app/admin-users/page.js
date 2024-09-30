@@ -28,7 +28,15 @@ const Page = () => {
   const router = useRouter();
 
   const daysOfWeek = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
-  const muscleGroups = [ 'back', 'cardio', 'chest', 'lower arms', 'Ombros', 'Bíceps', 'Tríceps', 'Abdômen'];
+  const muscleGroups = [
+    'back', 'cardio', 'chest', 'lower arms', 'lower legs',
+    'neck', 'shoulders', 'upper arms', 'upper legs', 'waist'
+  ];
+
+  const bodyPart = [
+    'back', 'cardio', 'chest', 'lower arms', 'lower legs',
+    'neck', 'shoulders', 'upper arms', 'upper legs', 'waist'
+  ];
   const equipmentList = ['Halteres', 'Barras', 'Máquinas', 'Peso Corporal', 'Elásticos'];
   const levels = ['Iniciante', 'Intermediário', 'Avançado'];
 
@@ -50,10 +58,12 @@ const Page = () => {
     fetchApprovedUsers();
   }, [router]);
 
+  //select user
   const handleSelectUser = (user) => {
     setSelectedUser(user);
   };
 
+  //form creating workout
   const handleWorkoutFormChange = (e) => {
     const { name, value, type, checked } = e.target;
     if (type === 'checkbox') {
@@ -75,44 +85,50 @@ const Page = () => {
 
 
   //consumindo API exercisedb
-  const fetchExerciseData = async (muscleGroup) => {
+  const fetchExerciseData = async (bodyPart) => {
     try {
-      const response = await fetch(`https://exercisedb.p.rapidapi.com/exercises`, {
+      const response = await fetch(`https://exercisedb.p.rapidapi.com/exercises/bodyPart/${bodyPart}`, {
         method: 'GET',
         headers: {
           'x-rapidapi-host': 'exercisedb.p.rapidapi.com',
           'x-rapidapi-key': process.env.NEXT_PUBLIC_EXERCISEDB_API_KEY,
         },
       });
-
+  
       if (response.ok) {
         const data = await response.json();
         console.log(data);
-
-        return data;
+        return data
+        
       } else {
         throw new Error('Erro ao buscar dados da API.');
       }
+  
     } catch (error) {
       console.error('Erro ao buscar exercícios:', error);
       return [];
-    }
+    };
   };
 
+  //preview workout
   const generateWorkoutPreview = async () => {
     setIsLoading(true);
     try {
       const workout = await Promise.all(
         workoutForm.muscleGroups.map(async (group) => {
           const exercises = await fetchExerciseData(group.toLowerCase());
-          return {
-            group,
-            exercises: exercises.slice(0, 3).map(exercise => ({
+          const selectedExercises = exercises
+            .sort(() => 0.5 - Math.random()) 
+            .slice(0, 3) 
+            .map(exercise => ({
               name: exercise.name,
               gifUrl: exercise.gifUrl,
               sets: 3,
               reps: '10-12'
-            }))
+            }));
+          return {
+            group,
+            exercises: selectedExercises,
           };
         })
       );
@@ -349,7 +365,7 @@ const Page = () => {
                 {isLoading ? 'Gerando...' : 'Gerar Pré-visualização'}
               </button>
 
-              <button type="submit" className={styles.submitButton} disabled={!previewWorkout}>
+              <button type="submit" className={styles.submitButton} disabled={!previewWorkout} onClick={generateWorkout}>
                 Salvar Treino
               </button>
             </form>
@@ -374,7 +390,7 @@ const Page = () => {
                 ))}
               </div>
             </div>
-          )};
+          )}
 
         </div>
       </div>
