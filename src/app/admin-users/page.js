@@ -7,8 +7,6 @@ import { User, Calendar, Target } from 'lucide-react';
 
 import styles from '../../styles/admin-users/page.module.css';
 
-/* const exerciseDbKey = process.env.NEXT_PUBLIC_EXERCISEDB_API_KEY; */
-
 const Page = () => {
   const [approvedUsers, setApprovedUsers] = useState([]);
   const [message, setMessage] = useState('');
@@ -18,7 +16,7 @@ const Page = () => {
     date: '',
     daysOfWeek: [],
     level: '',
-    muscleGroups: [],
+    bodyPart: [],
     equipment: [],
     observations: ''
   });
@@ -28,17 +26,12 @@ const Page = () => {
   const router = useRouter();
 
   const daysOfWeek = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
-  const muscleGroups = [
-    'back', 'cardio', 'chest', 'lower arms', 'lower legs',
-    'neck', 'shoulders', 'upper arms', 'upper legs', 'waist'
-  ];
-
   const bodyPart = [
     'back', 'cardio', 'chest', 'lower arms', 'lower legs',
     'neck', 'shoulders', 'upper arms', 'upper legs', 'waist'
   ];
   const equipmentList = ['Halteres', 'Barras', 'Máquinas', 'Peso Corporal', 'Elásticos'];
-  const levels = ['Iniciante', 'Intermediário', 'Avançado'];
+  const levels = ['3', '4', '5', '6', '7', '8', '9', '10', '11'];
 
   useEffect(() => {
     const fetchApprovedUsers = async () => {
@@ -66,22 +59,29 @@ const Page = () => {
   //form creating workout
   const handleWorkoutFormChange = (e) => {
     const { name, value, type, checked } = e.target;
-    if (type === 'checkbox') {
-      if (checked) {
-        setWorkoutForm(prev => ({
-          ...prev,
-          [name]: [...prev[name], value]
-        }));
-      } else {
-        setWorkoutForm(prev => ({
-          ...prev,
-          [name]: prev[name].filter(item => item !== value)
-        }));
-      }
+      if (type === 'checkbox') {
+      setWorkoutForm(prev => {
+        const currentValue = prev[name] || []; 
+  
+        if (checked) {
+          return {
+            ...prev,
+            [name]: [...currentValue, value]
+          };
+
+        } else {
+          return {
+            ...prev,
+            [name]: currentValue.filter(item => item !== value)
+          };
+        }
+      });
+
     } else {
       setWorkoutForm(prev => ({ ...prev, [name]: value }));
     }
   };
+  
 
 
   //consumindo API exercisedb
@@ -115,17 +115,22 @@ const Page = () => {
     setIsLoading(true);
     try {
       const workout = await Promise.all(
-        workoutForm.muscleGroups.map(async (group) => {
+        workoutForm.bodyPart.map(async (group) => {
+
           const exercises = await fetchExerciseData(group.toLowerCase());
           const selectedExercises = exercises
             .sort(() => 0.5 - Math.random()) 
-            .slice(0, 3) 
+            .slice(0, 5) 
             .map(exercise => ({
               name: exercise.name,
               gifUrl: exercise.gifUrl,
+              equipment: exercise.equipment, 
+              instructions: exercise.instructions, 
+              secondaryMuscles: exercise.secondaryMuscles, 
               sets: 3,
-              reps: '10-12'
+              reps: '10-12',
             }));
+
           return {
             group,
             exercises: selectedExercises,
@@ -146,7 +151,7 @@ const Page = () => {
   const generateWorkout = async () => {
     try {
       const workout = await Promise.all(
-        workoutForm.muscleGroups.map(async (group) => {
+        workoutForm.bodyPart.map(async (group) => {
           const exercises = await fetchExerciseData(group.toLowerCase());
           return {
             group,
@@ -200,7 +205,6 @@ const Page = () => {
           level: '',
           muscleGroups: [],
           equipment: [],
-          observations: ''
         });
         setGeneratedWorkout(null);
 
@@ -284,7 +288,7 @@ const Page = () => {
                   />
                 </div>
               </div>
-              <div className={styles.formGroup}>
+{/*               <div className={styles.formGroup}>
                 <label>Dias de Treino:</label>
                 <div className={styles.checkboxGroup}>
                   {daysOfWeek.map(day => (
@@ -300,9 +304,9 @@ const Page = () => {
                     </label>
                   ))}
                 </div>
-              </div>
+              </div> */}
               <div className={styles.formGroup}>
-                <label htmlFor="level">Nível do Aluno:</label>
+                <label htmlFor="level">Quantidade de Série:</label>
                 <select
                   id="level"
                   name="level"
@@ -311,22 +315,22 @@ const Page = () => {
                   required
                   className={styles.select}
                 >
-                  <option value="">Selecione o nível</option>
+                  <option value="">Selecione a quantidade</option>
                   {levels.map(level => (
                     <option key={level} value={level}>{level}</option>
-                  ))}
+                  ))};
                 </select>
               </div>
               <div className={styles.formGroup}>
                 <label>Grupos Musculares:</label>
                 <div className={styles.checkboxGroup}>
-                  {muscleGroups.map(group => (
+                  {bodyPart.map(group => (
                     <label key={group} className={styles.checkboxLabel}>
                       <input
                         type="checkbox"
-                        name="muscleGroups"
+                        name="bodyPart"
                         value={group}
-                        checked={workoutForm.muscleGroups.includes(group)}
+                        checked={workoutForm.bodyPart.includes(group)}
                         onChange={handleWorkoutFormChange}
                       />
                       {group}
@@ -342,7 +346,7 @@ const Page = () => {
                       <input
                         type="checkbox"
                         name="equipment"
-                        value={equip}
+                        value={equip}    
                         checked={workoutForm.equipment.includes(equip)}
                         onChange={handleWorkoutFormChange}
                       />
@@ -351,16 +355,7 @@ const Page = () => {
                   ))}
                 </div>
               </div>
-              <div className={styles.formGroup}>
-                <label htmlFor="observations">Observações:</label>
-                <textarea
-                  id="observations"
-                  name="observations"
-                  value={workoutForm.observations}
-                  onChange={handleWorkoutFormChange}
-                  className={styles.textarea}
-                />
-              </div>
+
               <button type="button" onClick={generateWorkoutPreview} className={styles.previewButton} disabled={isLoading}>
                 {isLoading ? 'Gerando...' : 'Gerar Pré-visualização'}
               </button>
@@ -377,12 +372,15 @@ const Page = () => {
               <div className={styles.generatedWorkout}>
                 {previewWorkout.map((group, index) => (
                   <div key={index} className={styles.workoutGroup}>
-                    <h3>{group.group}</h3>
+                    <h3>Músculo Principal: {group.group}</h3>
                     <ul>
                       {group.exercises.map((exercise, exIndex) => (
                         <li key={exIndex}>
                           <img src={exercise.gifUrl} alt={exercise.name} width={100} />
-                          {exercise.name} - {exercise.sets} séries de {exercise.reps} repetições
+                          <p>Nome do Exercício: {exercise.name} - {exercise.sets} séries de {exercise.reps} repetições.</p>
+                          <p>Equipamentos: {exercise.equipment}</p>
+                          <p>Instruções: {exercise.instructions[0]}</p>
+                          <p>Músculos Secundários: {exercise.secondaryMuscles}</p>
                         </li>
                       ))}
                     </ul>
