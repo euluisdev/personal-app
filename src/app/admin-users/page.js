@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import AdminNavBar from '@/components/AdminNavBar';
 import { User, Calendar, Target } from 'lucide-react';
+import axios from 'axios';
 
 import styles from '../../styles/admin-users/page.module.css';
 
@@ -12,37 +13,34 @@ const Page = () => {
   const [message, setMessage] = useState('');
   const [selectedUser, setSelectedUser] = useState(null);
   const [workoutForm, setWorkoutForm] = useState({
+    muscle: '',
+    level: '',
+    category: '',
     description: '',
     date: '',
-    daysOfWeek: [],
-    level: '',
-    bodyPart: [],
-    equipment: [],
-    observations: ''
+    exercises: []
   });
-  const [generatedWorkout, setGeneratedWorkout] = useState(null);
-  const [previewWorkout, setPreviewWorkout] = useState(null);
+  const [generatedWorkouts, setGeneratedWorkouts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [prompt, setPrompt] = useState('');
   const router = useRouter();
 
-  const daysOfWeek = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
-  const bodyPart = [
-    'back', 'cardio', 'chest', 'lower arms', 'lower legs',
-    'neck', 'shoulders', 'upper arms', 'upper legs', 'waist'
-  ];
-  const equipmentList = ['Halteres', 'Barras', 'Máquinas', 'Peso Corporal', 'Elásticos'];
-  const levels = ['3', '4', '5', '6', '7', '8', '9', '10', '11'];
+  const muscles = ['Peito', 'Costas', 'Ombro', 'Posterior de Perna', 'Cárdio', 'Glúteos', 'Pescoço', '10', '11'];
+  const levels = ['Iniciante', 'Intermediário', 'Avançado', 'Bodybuilder']; 
+  const categorys = ['Hipertrofia', 'Barras', 'Máquinas', 'Peso Corporal', 'Elásticos'];
 
   useEffect(() => {
     const fetchApprovedUsers = async () => {
       try {
         const response = await fetch('/api/list-users');
+
         if (response.ok) {
           const data = await response.json();
           setApprovedUsers(data);
         } else {
           console.error('Erro ao buscar usuários aprovados');
-        }
+        };
+        
       } catch (error) {
         console.error('Erro ao buscar usuários aprovados:', error);
       }
@@ -84,91 +82,50 @@ const Page = () => {
   
 
 
-  //consumindo API exercisedb
-  const fetchExerciseData = async (bodyPart) => {
-    try {
-      const response = await fetch(`https://exercisedb.p.rapidapi.com/exercises/bodyPart/${bodyPart}`, {
-        method: 'GET',
-        headers: {
-          'x-rapidapi-host': 'exercisedb.p.rapidapi.com',
-          'x-rapidapi-key': process.env.NEXT_PUBLIC_EXERCISEDB_API_KEY,
-        },
-      });
-  
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-        return data
-        
-      } else {
-        throw new Error('Erro ao buscar dados da API.');
-      }
-  
-    } catch (error) {
-      console.error('Erro ao buscar exercícios:', error);
-      return [];
-    };
-  };
-
   //preview workout
-  const generateWorkoutPreview = async () => {
-    setIsLoading(true);
+  const generateWorkoutPreview  = async () => {
+         setIsLoading(true); 
     try {
-      const workout = await Promise.all(
-        workoutForm.bodyPart.map(async (group) => {
-
-          const exercises = await fetchExerciseData(group.toLowerCase());
-          const selectedExercises = exercises
-            .sort(() => 0.5 - Math.random()) 
-            .slice(0, 5) 
-            .map(exercise => ({
-              name: exercise.name,
-              gifUrl: exercise.gifUrl,
-              equipment: exercise.equipment, 
-              instructions: exercise.instructions, 
-              secondaryMuscles: exercise.secondaryMuscles, 
-              sets: 3,
-              reps: '10-12',
-            }));
-
-          return {
-            group,
-            exercises: selectedExercises,
-          };
-        })
+    
+      const response = await axios.post(
+        'https://api.cohere.ai/v1/generate',
+        {
+          model: 'command-xlarge-nightly',
+          prompt: `Crie um treino de musculação com base nas seguintes informações: ${prompt}. 
+                   Inclua apenas cinco exercícios específicos de cada músculo citado, número
+                   de séries, repetições, e a máquina que é para fazer o exercício. Apenas isso! sem instruções.`,
+          max_tokens: 300,
+          temperature: 0.5,
+          k: 0,
+          stop_sequences: [],
+          return_likelihoods: 'NONE'
+        },
+        {
+          headers: {
+            'Authorization': `BEARER ${process.env.NEXT_PUBLIC_COHERE_API_KEY}`,
+            'Content-Type': 'application/json'
+          }
+        }
       );
+      console.log(response.data);
 
-      setPreviewWorkout(workout);
+      const workoutList = response.data.generations[0].text.split('\n').filter(line => line.trim() !== '');
+      setGeneratedWorkouts(workoutList);
+
     } catch (error) {
-      console.error('Erro ao gerar o treino:', error);
-      setMessage('Erro ao gerar pré-visualização do treino.');
+      console.error('Erro ao gerar treino:', error);
+      setMessage('Erro ao gerar o pré-visualização do treino. Por favor, tente novamente.');
+    
     } finally {
-      setIsLoading(false);
+    setIsLoading(false);
     }
   };
 
-
-  const generateWorkout = async () => {
-    try {
-      const workout = await Promise.all(
-        workoutForm.bodyPart.map(async (group) => {
-          const exercises = await fetchExerciseData(group.toLowerCase());
-          return {
-            group,
-            exercises: exercises.slice(0, 3).map(exercise => ({
-              name: exercise.name,
-              gifUrl: exercise.gifUrl, //URL img do exercício
-              sets: 3,
-              reps: '10-12'
-            }))
-          };
-        })
-      );
-
-      setGeneratedWorkout(workout);
-    } catch (error) {
-      console.error('Erro ao gerar o treino:', error);
-    }
+  const addExerciseToWorkout = (exercise) => {
+    setWorkoutForm(prev => ({
+      ...prev,
+      exercises: [...prev.exercises, exercise]
+    }));
   };
 
   const handleSubmitWorkout = async (e) => {
@@ -176,10 +133,10 @@ const Page = () => {
     if (!selectedUser) {
       setMessage('Selecione um usuário primeiro.');
       return;
-    };
+    }
 
-    if (!previewWorkout) {
-      setMessage('Gere uma pré-visualização do treino primeiro.');
+    if (workoutForm.exercises.length === 0) {
+      setMessage('Adicione pelo menos um exercício ao treino.');
       return;
     }
 
@@ -191,27 +148,27 @@ const Page = () => {
         },
         body: JSON.stringify({
           userId: selectedUser._id,
-          workoutData: { ...workoutForm, generatedWorkout: previewWorkout }
+          workoutData: workoutForm
         }),
       });
 
       if (response.ok) {
-
         setMessage('Treino criado com sucesso.');
         setWorkoutForm({
           description: '',
           date: '',
           daysOfWeek: [],
           level: '',
-          muscleGroups: [],
+          bodyPart: [],
           equipment: [],
+          exercises: []
         });
-        setGeneratedWorkout(null);
-
+        setGeneratedWorkouts([]);
       } else {
         const errorData = await response.json();
         setMessage(errorData.message || 'Erro ao criar treino.');
       }
+
     } catch (error) {
       console.error('Erro ao criar treino:', error);
       setMessage('Erro ao processar a requisição.');
@@ -262,17 +219,79 @@ const Page = () => {
               Criar Treino {selectedUser ? `para ${selectedUser.nome}` : ''}
             </h2>
             <form onSubmit={handleSubmitWorkout} className={styles.workoutForm}>
+
+            <div className={styles.formGroup}>
+                <label htmlFor="muscle">Músculo a ser treinado:</label>
+                <select
+                  id="muscle"
+                  name="muscle"
+                  value={workoutForm.muscle}
+                  onChange={handleWorkoutFormChange}
+                  required
+                  className={styles.select}
+                >
+                  <option value="">Selecione o Músculo:</option>
+                  {muscles.map(muscle => (
+                    <option key={muscle} value={muscle}>{muscle}</option>
+                  ))}
+                </select>
+              </div>  
+
+              <div className={styles.formGroup}>
+                <label htmlFor="level">Nível do treino:</label>
+                <select
+                  id="level"
+                  name="level"
+                  value={workoutForm.level}
+                  onChange={handleWorkoutFormChange}
+                  required
+                  className={styles.select}
+                >
+                  <option value="">Selecione o Nível:</option>
+                  {levels.map(level => (
+                    <option key={level} value={level}>{level}</option>
+                  ))};
+                </select>
+              </div>  
+
+              <div className={styles.formGroup}>
+                <label htmlFor="category">Categoria do treino:</label>
+                <select
+                  id="category"
+                  name="category"
+                  value={workoutForm.category}
+                  onChange={handleWorkoutFormChange}
+                  required
+                  className={styles.select}
+                >
+                  <option value="">Selecione a categoria:</option>
+                  {categorys.map(category => (
+                    <option key={category} value={category}>{category}</option>
+                  ))};
+                </select>
+              </div>
+
               <div className={styles.formGroup}>
                 <label htmlFor="description">Descrição do Treino:</label>
                 <textarea
                   id="description"
                   name="description"
-                  value={workoutForm.description}
-                  onChange={handleWorkoutFormChange}
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                  placeholder="Descreva o treino desejado (ex: treino de peito e tríceps para intermediários)"
                   required
                   className={styles.textarea}
                 />
               </div>
+
+              <button type="button" 
+                onClick={generateWorkoutPreview} 
+                className={styles.submitButton} 
+                disabled={!selectedUser || isLoading}
+              >
+                {isLoading ? 'Gerando...' : 'Gerar Pré-visualização'}
+              </button>
+              
               <div className={styles.formGroup}>
                 <label htmlFor="date">Data do Treino:</label>
                 <div className={styles.dateInputWrapper}>
@@ -288,105 +307,40 @@ const Page = () => {
                   />
                 </div>
               </div>
-{/*               <div className={styles.formGroup}>
-                <label>Dias de Treino:</label>
-                <div className={styles.checkboxGroup}>
-                  {daysOfWeek.map(day => (
-                    <label key={day} className={styles.checkboxLabel}>
-                      <input
-                        type="checkbox"
-                        name="daysOfWeek"
-                        value={day}
-                        checked={workoutForm.daysOfWeek.includes(day)}
-                        onChange={handleWorkoutFormChange}
-                      />
-                      {day}
-                    </label>
-                  ))}
-                </div>
-              </div> */}
-              <div className={styles.formGroup}>
-                <label htmlFor="level">Quantidade de Série:</label>
-                <select
-                  id="level"
-                  name="level"
-                  value={workoutForm.level}
-                  onChange={handleWorkoutFormChange}
-                  required
-                  className={styles.select}
-                >
-                  <option value="">Selecione a quantidade</option>
-                  {levels.map(level => (
-                    <option key={level} value={level}>{level}</option>
-                  ))};
-                </select>
-              </div>
-              <div className={styles.formGroup}>
-                <label>Grupos Musculares:</label>
-                <div className={styles.checkboxGroup}>
-                  {bodyPart.map(group => (
-                    <label key={group} className={styles.checkboxLabel}>
-                      <input
-                        type="checkbox"
-                        name="bodyPart"
-                        value={group}
-                        checked={workoutForm.bodyPart.includes(group)}
-                        onChange={handleWorkoutFormChange}
-                      />
-                      {group}
-                    </label>
-                  ))}
-                </div>
-              </div>
-              <div className={styles.formGroup}>
-                <label>Equipamentos Disponíveis:</label>
-                <div className={styles.checkboxGroup}>
-                  {equipmentList.map(equip => (
-                    <label key={equip} className={styles.checkboxLabel}>
-                      <input
-                        type="checkbox"
-                        name="equipment"
-                        value={equip}    
-                        checked={workoutForm.equipment.includes(equip)}
-                        onChange={handleWorkoutFormChange}
-                      />
-                      {equip}
-                    </label>
-                  ))}
-                </div>
-              </div>
 
-              <button type="button" onClick={generateWorkoutPreview} className={styles.previewButton} disabled={isLoading}>
-                {isLoading ? 'Gerando...' : 'Gerar Pré-visualização'}
-              </button>
-
-              <button type="submit" className={styles.submitButton} disabled={!previewWorkout} onClick={generateWorkout}>
+              <button type="submit" className={styles.submitButton} disabled={workoutForm.exercises.length === 0}>
                 Salvar Treino
               </button>
             </form>
           </div>
 
-          {previewWorkout && (
+          {generatedWorkouts.length > 0 && (
             <div className={styles.card}>
               <h2 className={styles.cardTitle}>Pré-visualização do Treino</h2>
               <div className={styles.generatedWorkout}>
-                {previewWorkout.map((group, index) => (
-                  <div key={index} className={styles.workoutGroup}>
-                    <h3>Músculo Principal: {group.group}</h3>
-                    <ul>
-                      {group.exercises.map((exercise, exIndex) => (
-                        <li key={exIndex}>
-                          <img src={exercise.gifUrl} alt={exercise.name} width={100} />
-                          <p>Nome do Exercício: {exercise.name} - {exercise.sets} séries de {exercise.reps} repetições.</p>
-                          <p>Equipamentos: {exercise.equipment}</p>
-                          <p>Instruções: {exercise.instructions[0]}</p>
-                          <p>Músculos Secundários: {exercise.secondaryMuscles}</p>
-                        </li>
-                      ))}
-                    </ul>
+                {generatedWorkouts.map((workout, index) => (
+                  <div key={index} className={styles.workoutCard}>
+                    <p>{workout}</p>
+                    <button 
+                      onClick={() => addExerciseToWorkout(workout)}
+                      className={styles.addButton}
+                    >
+                      Adicionar ao Treino
+                    </button>
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {workoutForm.exercises.length > 0 && (
+            <div className={styles.card}>
+              <h2 className={styles.cardTitle}>Exercícios Selecionados</h2>
+              <ul className={styles.selectedExercises}>
+                {workoutForm.exercises.map((exercise, index) => (
+                  <li key={index}>{exercise}</li>
+                ))}
+              </ul>
             </div>
           )}
 
