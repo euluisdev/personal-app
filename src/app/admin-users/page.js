@@ -25,7 +25,7 @@ const Page = () => {
   const [prompt, setPrompt] = useState('');
   const router = useRouter();
 
-  const muscles = ['Peito', 'Costas', 'Ombro', 'Posterior de Perna', 'Cárdio', 'Glúteos', 'Pescoço', '10', '11'];
+  const muscles = ['Peitoral', 'Deltoides', 'Trapézio', 'Costas', 'Bíceps ', 'Tríceps', 'Abdômen', 'Quadríceps', 'Isquiotibiais', 'Adutores', 'Gastrocnêmio ', 'Abdutores', 'Glúteos', 'Antebraços'];
   const levels = ['Iniciante', 'Intermediário', 'Avançado', 'Bodybuilder']; 
   const categorys = ['Hipertrofia', 'Barras', 'Máquinas', 'Peso Corporal', 'Elásticos'];
 
