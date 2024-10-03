@@ -11,7 +11,7 @@ import styles from '../../styles/admin-users/page.module.css';
 const Page = () => {
   const [approvedUsers, setApprovedUsers] = useState([]);
   const [message, setMessage] = useState('');
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUsers, setSelectedUsers] = useState([]);
   const [workoutForm, setWorkoutForm] = useState({
     muscle: '',
     level: '',
@@ -51,7 +51,13 @@ const Page = () => {
 
   //select user
   const handleSelectUser = (user) => {
-    setSelectedUser(user);
+    const alreadySelected = selectedUsers.find(selected => selected.email === user.email);
+    
+    if (alreadySelected) {
+      setSelectedUsers(selectedUsers.filter(selected => selected.email !== user.email));
+    } else {
+      setSelectedUsers([...selectedUsers, user]);
+    }
   };
 
   //form creating workout
@@ -130,7 +136,7 @@ const Page = () => {
 
   const handleSubmitWorkout = async (e) => {
     e.preventDefault();
-    if (!selectedUser) {
+    if (!selectedUsers) {
       setMessage('Selecione um usuário primeiro.');
       return;
     }
@@ -147,7 +153,7 @@ const Page = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId: selectedUser._id,
+          userId: selectedUsers._id,
           workoutData: workoutForm
         }),
       });
@@ -204,7 +210,7 @@ const Page = () => {
                       className={styles.selectButton}
                       onClick={() => handleSelectUser(user)}
                     >
-                      Selecionar
+                      {selectedUsers.some(selected => selected.email === user.email) ? 'Selecionado' : 'Selecionar'} 
                     </button>
                   </li>
                 ))
@@ -216,8 +222,9 @@ const Page = () => {
 
           <div className={styles.card}>
             <h2 className={styles.cardTitle}>
-              Criar Treino {selectedUser ? `para ${selectedUser.nome}` : ''}
+              Criar Treino {selectedUsers.length > 0 ? `para ${selectedUsers.map(user => user.nome).join(', ')}` : ''}
             </h2>
+            
             <form onSubmit={handleSubmitWorkout} className={styles.workoutForm}>
 
             <div className={styles.formGroup}>
@@ -287,7 +294,7 @@ const Page = () => {
               <button type="button" 
                 onClick={generateWorkoutPreview} 
                 className={styles.submitButton} 
-                disabled={!selectedUser || isLoading}
+                disabled={!selectedUsers || isLoading}
               >
                 {isLoading ? 'Gerando...' : 'Gerar Pré-visualização'}
               </button>
