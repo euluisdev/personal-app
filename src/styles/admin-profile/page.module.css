@@ -1,4 +1,76 @@
-
-.profile-container {
+.container {
     margin-top: 6rem;
-}
+    background-color: #000;
+    min-height: 100vh;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .profileContainer {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  .title {
+    color: #ffd700;
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .name {
+    font-size: 2rem;
+    color: #ffd700;
+    margin-bottom: 0.5rem;
+  }
+  
+  .role {
+    font-size: 1.2rem;
+    color: #fff;
+    margin-bottom: 1rem;
+  }
+  
+  .email {
+    font-size: 1rem;
+    color: #ffd700;
+    margin-bottom: 1rem;
+  }
+  
+  .bio {
+    font-size: 1rem;
+    color: #fff;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+  
+  .input, .textarea {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    background-color: #111;
+    border: 1px solid #ffd700;
+    color: #fff;
+  }
+  
+  .textarea {
+    min-height: 100px;
+  }
+  
+  .editButton, .saveButton {
+    background-color: #ffd700;
+    color: #000;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .editButton:hover, .saveButton:hover {
+    background-color: #ffea00;
+  }
+  
+  .saveButton {
+    margin-top: 1rem;
+  }

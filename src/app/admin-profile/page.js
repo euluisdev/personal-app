@@ -1,38 +1,37 @@
 'use client';
 
-import AdminNavBar from '@/components/AdminNavBar';
 import { useState, useEffect } from 'react';
-
-import styles from '../../styles/admin-profile/page.module.css'
+import AdminNavBar from '@/components/AdminNavBar';
+import styles from '../../styles/admin-profile/page.module.css';
 
 const AdminProfile = () => {
-  const [profileData, setProfileData] = useState(null); 
+  const [profileData, setProfileData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    name: '', 
-    email: '', 
+    photoUrl: '',
+    nome: '', 
+    email: '',
     bio: '',
   });
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await fetch('/api/admin-profile'); 
+        const response = await fetch('/api/admin-profile');
         const data = await response.json();
-        console.log(data);
-        if (data) {
+        if (response.ok) {
           setProfileData(data);
           setFormData({
-            name: data.name, 
-            email: data.email, 
-            bio: data.bio,
+            photoUrl: data.photoUrl, 
+            nome: data.nome,
+            email: data.email,
+            bio: data.bio, 
           });
         } else {
-          console.error(`Error na resposta da API!`);
+          console.error(`Erro na resposta da API!`, data);
         }
-
       } catch (error) {
-        console.error('Error fetching profile data:', error);
+        console.error('Erro ao buscar dados do perfil:', error);
       }
     };
 
@@ -41,8 +40,8 @@ const AdminProfile = () => {
 
   const handleSaveClick = async () => {
     try {
-      const response = await fetch('/api/profile/update', {
-        method: 'POST',
+      const response = await fetch('/api/admin-profile', {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -51,18 +50,19 @@ const AdminProfile = () => {
 
       if (response.ok) {
         const updatedProfile = await response.json();
-        setProfileData(updatedProfile);
-        setIsEditing(false); 
+        setProfileData(updatedProfile.profile);
+        setIsEditing(false);
+      } else {
+        console.error('Erro ao atualizar perfil:', await response.json());
       }
-
     } catch (error) {
-      console.error('Error updating profile:', error);
-    };
+      console.error('Erro ao atualizar perfilll:', error);
+    }
   };
 
-  const handleEditClick = () =>{
+  const handleEditClick = () => {
     setIsEditing(true);
-  };  
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -73,27 +73,27 @@ const AdminProfile = () => {
   };
 
   if (!profileData) {
-    return <div>Loading...</div>;
+    return <div>Carregando...</div>;
   }
 
   return (
-    <div className={styles['profile-container']}>
-      <div><AdminNavBar /></div>
-      <h1>Profile</h1>
-
-      <div className={styles.profileCard}>
-        <img
-          src={profileData.photoUrl}
-          alt="Profile"
-          className={styles.profileImage}
-        />
-
+    <div className={styles.container}>
+      <AdminNavBar />
+      <div className={styles.profileContainer}>
+        <h1 className={styles.title}>Perfil</h1>
         {isEditing ? (
           <div>
             <input
+              name="photoUrl"
+              value={formData.photoUrl}
+              onChange={handleChange}
+              placeholder="URL da Foto"
+              className={styles.input}
+            />
+            <input
               type="text"
-              name="name"
-              value={formData.name}
+              name="nome"
+              value={formData.nome} 
               onChange={handleChange}
               className={styles.input}
             />
@@ -116,7 +116,8 @@ const AdminProfile = () => {
           </div>
         ) : (
           <div>
-            <h1 className={styles.name}>{profileData.name}</h1>
+            <h2 className={styles.photoUrl}>{profileData.photoUrl}</h2> 
+            <h2 className={styles.name}>{profileData.nome}</h2> 
             <p className={styles.role}>Personal Trainer</p>
             <p className={styles.email}>{profileData.email}</p>
             <p className={styles.bio}>{profileData.bio}</p>
