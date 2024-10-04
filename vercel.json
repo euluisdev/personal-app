@@ -1,0 +1,15 @@
+
+{
+    "rewrites": [
+      { "source": "/api/admin-profile", "destination": "/api/admin-profile" }
+    ],
+    "headers": [
+      {
+        "source": "/api/(.*)",
+        "headers": [
+          { "key": "Access-Control-Allow-Methods", "value": "GET, POST, PUT, DELETE, OPTIONS" }
+        ]
+      }
+    ]
+  }
+  

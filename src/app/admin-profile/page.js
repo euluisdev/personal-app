@@ -8,10 +8,10 @@ const AdminProfile = () => {
   const [profileData, setProfileData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    photoUrl: '',
     nome: '', 
     email: '',
-    bio: '',
+    bio: '', 
+    photoUrl: '',
   });
 
   useEffect(() => {
@@ -22,10 +22,10 @@ const AdminProfile = () => {
         if (response.ok) {
           setProfileData(data);
           setFormData({
-            photoUrl: data.photoUrl, 
             nome: data.nome,
             email: data.email,
             bio: data.bio, 
+            photoUrl: data.photoUrl, 
           });
         } else {
           console.error(`Erro na resposta da API!`, data);
@@ -52,9 +52,11 @@ const AdminProfile = () => {
         const updatedProfile = await response.json();
         setProfileData(updatedProfile.profile);
         setIsEditing(false);
+
       } else {
         console.error('Erro ao atualizar perfil:', await response.json());
       }
+
     } catch (error) {
       console.error('Erro ao atualizar perfilll:', error);
     }

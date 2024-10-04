@@ -47,11 +47,11 @@ export async function PUT(req) {
         const db = await connectToDatabase();
         const collection = db.collection('users');
 
-        const { photoUrl, nome, email, bio } = await req.json();
+        const { nome, email, bio, photoUrl } = await req.json();
 
         const updatedProfile = await collection.findOneAndUpdate(
             { role: 'admin' },
-            { $set: { photoUrl, nome, email, bio } },
+            { $set: { nome, email, bio, photoUrl } },
             { returnDocument: 'after' }
         );
 
