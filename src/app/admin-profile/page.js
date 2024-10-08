@@ -13,6 +13,7 @@ const AdminProfile = () => {
     bio: '', 
     photoUrl: '',
   });
+  const [file, setFile] = useState(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -39,13 +40,19 @@ const AdminProfile = () => {
   }, []);
 
   const handleSaveClick = async () => {
-    try {
+    try { 
+      const formData = new FormData();
+      formData.append('nome', formData.nome);
+      formData.append('email', formData.email);
+      formData.append('bio', formData.bio);
+  
+      if (file) {
+        formData.append('photoUrl', file); 
+      };
+
       const response = await fetch('/api/admin-profile', {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+        body: formData,
       });
 
       if (response.ok) {
@@ -74,6 +81,13 @@ const AdminProfile = () => {
     }));
   };
 
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (!selectedFile) return; 
+
+    setFile(selectedFile);
+  };
+
   if (!profileData) {
     return <div>Carregando...</div>;
   }
@@ -82,14 +96,23 @@ const AdminProfile = () => {
     <div className={styles.container}>
       <AdminNavBar />
       <div className={styles.profileContainer}>
-        <h1 className={styles.title}>Perfil</h1>
+        <h1 className={styles.title}>Perfil</h1> 
+        
+        {profileData.photoUrl && (
+          <img 
+            src={profileData.photoUrl} 
+            alt="Foto do Perfil" 
+            className={styles.profileImage} 
+          />
+        )}
+
         {isEditing ? (
           <div>
             <input
-              name="photoUrl"
+              type='file'
+              accept='image/*'
               value={formData.photoUrl}
-              onChange={handleChange}
-              placeholder="URL da Foto"
+              onChange={handleFileChange}
               className={styles.input}
             />
             <input
@@ -118,7 +141,7 @@ const AdminProfile = () => {
           </div>
         ) : (
           <div>
-            <h2 className={styles.photoUrl}>{profileData.photoUrl}</h2> 
+            <h2 className={styles.profileImage}>{profileData.photoUrl}</h2> 
             <h2 className={styles.name}>{profileData.nome}</h2> 
             <p className={styles.role}>Personal Trainer</p>
             <p className={styles.email}>{profileData.email}</p>
