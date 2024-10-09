@@ -14,12 +14,12 @@ const client = new MongoClient(uri);
 async function connectToDatabase() {
     await client.connect();
     return client.db('BestFitData');
-}
+};
 
 function validateFileType(file) {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
     return allowedTypes.includes(file.type);
-}
+};
 
 export async function GET() {
     try {
@@ -32,11 +32,12 @@ export async function GET() {
         }
 
         return NextResponse.json(profile);
+
     } catch (error) {
         console.error('Erro no servidor:', error);
         return NextResponse.json({ error: 'Erro no servidor' }, { status: 500 });
     }
-}
+}; 
 
 export async function PUT(req) {
     try {
@@ -49,11 +50,10 @@ export async function PUT(req) {
         if (formData.has('bio')) updateData.bio = formData.get('bio');
 
         const file = formData.get('photoUrl');
-        console.log(`Eu sou ${file}`);
         if (file && file instanceof File) {
             if (!validateFileType(file)) {
                 return NextResponse.json({ error: 'Tipo de arquivo inválido' }, { status: 400 });
-            }
+            };
 
             const fileName = `${Date.now()}-${file.name}`;
             const filePath = path.join(process.cwd(), 'public/uploads', fileName);
