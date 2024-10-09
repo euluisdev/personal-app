@@ -120,7 +120,7 @@ const AdminProfile = () => {
               name='photoUrl'
               accept='image/*'
               onChange={handleFileChange}
-              className={styles.input}
+              className={styles.input} 
             />
             <input
               type="text"
@@ -143,10 +143,10 @@ const AdminProfile = () => {
               className={styles.textarea}
             />
 
-            <button onClick={handleCancelClick} className={styles.saveButton}>
+            <button onClick={handleCancelClick} className={styles.cancelButton}>
               Cancelar
             </button>
-
+            
             <button onClick={handleSaveClick} className={styles.saveButton}>
               Salvar
             </button>
@@ -167,4 +167,6 @@ const AdminProfile = () => {
   );
 };
 
-export default AdminProfile;
+export default AdminProfile; 
+
+
