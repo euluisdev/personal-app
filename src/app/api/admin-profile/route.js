@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { MongoClient } from 'mongodb';
 import fs from 'fs/promises';
 import path from 'path';
+import { Buffer } from 'buffer';
 
 const uri = process.env.MONGODB_URI;
 if (!uri) {
@@ -42,6 +43,7 @@ export async function PUT(req) {
         const db = await connectToDatabase();
         
         const formData = await req.formData();
+        console.log([...formData.entries()]);
         
         const updateData = {};
         if (formData.has('nome')) updateData.nome = formData.get('nome');
@@ -49,6 +51,7 @@ export async function PUT(req) {
         if (formData.has('bio')) updateData.bio = formData.get('bio');
 
         const file = formData.get('photoUrl');
+        console.log(`Eu sou ${file}`);
         if (file && file instanceof File) {
             if (!validateFileType(file)) {
                 return NextResponse.json({ error: 'Tipo de arquivo inválido' }, { status: 400 });
@@ -57,10 +60,11 @@ export async function PUT(req) {
             const fileName = `${Date.now()}-${file.name}`;
             const filePath = path.join(process.cwd(), 'public/uploads', fileName);
 
-            const buffer = await file.arrayBuffer();
-            await fs.writeFile(filePath, Buffer.from(buffer));
+            const buffer = Buffer.from(await file.arrayBuffer());
+            await fs.writeFile(filePath, buffer);
 
             updateData.photoUrl = `/uploads/${fileName}`;
+            /* console.log(updateData.photoUrl); */
         }
 
         const result = await db.collection('users').updateOne(

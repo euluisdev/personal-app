@@ -82,7 +82,7 @@ const AdminProfile = () => {
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
-    if (selectedFile) return; 
+    if (selectedFile); 
       setFileData(selectedFile);
   };
 
@@ -108,6 +108,7 @@ const AdminProfile = () => {
           <div>
             <input
               type='file'
+              name='photoUrl'
               accept='image/*'
               onChange={handleFileChange}
               className={styles.input}
@@ -138,7 +139,6 @@ const AdminProfile = () => {
           </div>
         ) : (
           <div>
-            <h2 className={styles.profileImage}>{profileData.photoUrl}</h2> 
             <h2 className={styles.name}>{profileData.nome}</h2> 
             <p className={styles.role}>Personal Trainer</p>
             <p className={styles.email}>{profileData.email}</p>
