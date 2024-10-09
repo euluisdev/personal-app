@@ -13,13 +13,14 @@ const AdminProfile = () => {
     bio: '', 
     photoUrl: '',
   });
-  const [file, setFile] = useState(null);
+  const [fileData, setFileData] = useState('');
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const response = await fetch('/api/admin-profile');
         const data = await response.json();
+
         if (response.ok) {
           setProfileData(data);
           setFormData({
@@ -40,32 +41,30 @@ const AdminProfile = () => {
   }, []);
 
   const handleSaveClick = async () => {
-    try { 
-      const formData = new FormData();
-      formData.append('nome', formData.nome);
-      formData.append('email', formData.email);
-      formData.append('bio', formData.bio);
+    try {
+      const updatedFormData = new FormData();
+      updatedFormData.append('nome', formData.nome);
+      updatedFormData.append('email', formData.email);
+      updatedFormData.append('bio', formData.bio);
+    
+      if (fileData) { 
+        updatedFormData.append('photoUrl', fileData);
+      }
   
-      if (file) {
-        formData.append('photoUrl', file); 
-      };
-
       const response = await fetch('/api/admin-profile', {
         method: 'PUT',
-        body: formData,
+        body: updatedFormData
       });
-
+  
       if (response.ok) {
-        const updatedProfile = await response.json();
-        setProfileData(updatedProfile.profile);
+        const { profile } = await response.json();
+        setProfileData(profile);
         setIsEditing(false);
-
       } else {
         console.error('Erro ao atualizar perfil:', await response.json());
       }
-
     } catch (error) {
-      console.error('Erro ao atualizar perfilll:', error);
+      console.error('Erro ao atualizar perfil:', error);
     }
   };
 
@@ -83,9 +82,8 @@ const AdminProfile = () => {
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
-    if (!selectedFile) return; 
-
-    setFile(selectedFile);
+    if (selectedFile) return; 
+      setFileData(selectedFile);
   };
 
   if (!profileData) {
@@ -111,7 +109,6 @@ const AdminProfile = () => {
             <input
               type='file'
               accept='image/*'
-              value={formData.photoUrl}
               onChange={handleFileChange}
               className={styles.input}
             />
