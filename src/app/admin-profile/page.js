@@ -73,6 +73,12 @@ const AdminProfile = () => {
     setIsEditing(true);
   };
 
+  const handleCancelClick = () => {
+    setIsEditing(false);
+    setFormData({ ...profileData });
+    setFileData(null);
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
@@ -136,6 +142,11 @@ const AdminProfile = () => {
               onChange={handleChange}
               className={styles.textarea}
             />
+
+            <button onClick={handleCancelClick} className={styles.saveButton}>
+              Cancelar
+            </button>
+
             <button onClick={handleSaveClick} className={styles.saveButton}>
               Salvar
             </button>
