@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { MongoClient } from 'mongodb';
+import { Buffer } from 'buffer';
 
 import { v2 as cloudinary } from 'cloudinary';
 
@@ -60,13 +61,24 @@ export async function PUT(req) {
                 return NextResponse.json({ error: 'Tipo de arquivo inválido' }, { status: 400 });
             };
 
-            const uploadResult = await cloudinary.uploader.upload(file.stream(), {
-                public_id: `user_profile_${Date.now()}`, 
-                resource_type: 'image' 
+            const arrayBuffer = await file.arrayBuffer();
+            const buffer = Buffer.from(arrayBuffer);
+
+            const uploadResult = await new Promise((resolve, reject) => {
+                cloudinary.uploader.upload_stream(
+                    {
+                        resource_type: 'image',
+                        public_id: `user_profile_${Date.now()}`
+                    },
+                    (error, result) => {
+                        if (error) reject(error);
+                        else resolve(result);
+                    }
+                ).end(buffer);
             });
 
             updateData.photoUrl = uploadResult.secure_url;
-        };
+        }
 
         const result = await db.collection('users').updateOne(
             { role: 'admin' },

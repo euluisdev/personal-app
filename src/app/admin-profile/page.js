@@ -13,7 +13,7 @@ const AdminProfile = () => {
     bio: '', 
     photoUrl: '',
   });
-  const [fileData, setFileData] = useState('');
+  const [fileData, setFileData] = useState(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -58,7 +58,8 @@ const AdminProfile = () => {
   
       if (response.ok) {
         const { profile } = await response.json();
-        setProfileData(profile);
+        setProfileData(profile); 
+        setFormData((prev) => ({ ...prev, photoUrl: profile.photoUrl }))
         setIsEditing(false);
       } else {
         console.error('Erro ao atualizar perfil:', await response.json());
@@ -82,8 +83,10 @@ const AdminProfile = () => {
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
-    if (selectedFile); 
+
+    if (selectedFile) {
       setFileData(selectedFile);
+    }
   };
 
   if (!profileData) {
