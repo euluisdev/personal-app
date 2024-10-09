@@ -4,54 +4,52 @@
   min-height: 100vh;
   color: #fff;
   font-family: 'Arial', sans-serif;
+  text-align: center;
 }
 
 .profileContainer {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
+  max-width: 100%;
+  padding: 1rem;
 }
 
 .title {
   color: #ffd700;
-  font-size: 2.5rem;
-  text-align: center;
-  margin-bottom: 2rem;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .profileImage {
-  width: 150px;  
-  height: 150px;        
+  width: 100px;  
+  height: 100px;        
   border-radius: 50%;  
   object-fit: cover;   
   border: 2px solid #ffd700; 
   margin-bottom: 1rem;
 }
 
-
 .name {
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: #ffd700;
   margin-bottom: 0.5rem;
 }
 
 .role {
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: #fff;
   margin-bottom: 1rem;
 }
 
 .email {
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: #ffd700;
   margin-bottom: 1rem;
 }
 
 .bio {
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: #fff;
-  line-height: 1.6;
-  margin-bottom: 2rem;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
 }
 
 .input,
@@ -65,7 +63,7 @@
 }
 
 .textarea {
-  min-height: 100px;
+  min-height: 80px;
 }
 
 .editButton,
@@ -73,8 +71,8 @@
   background-color: #ffd700;
   color: #000;
   border: none;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
+  padding: 0.4rem 1rem;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
@@ -86,5 +84,58 @@
 
 .saveButton {
   margin-top: 1rem;
-}   
+}
+
+/* media query min width 768px */
+@media (min-width: 768px) {
+
+  .container {
+    margin-top: 6rem;
+    min-height: 100vh;
+    text-align: center;
+  }
+  
+  .profileContainer {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .title {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .profileImage {
+    width: 150px;  
+    height: 150px; 
+  }
+
+  .name {
+    font-size: 2rem;
+  }
+
+  .role {
+    font-size: 1.2rem;
+  }
+
+  .email,
+  .bio {
+    font-size: 1rem;
+  }
+
+  .editButton,
+  .saveButton {
+    padding: 0.5rem 1.2rem;
+    font-size: 1rem;
+  }
+}
+
+/* media query min width 1024px */
+@media (min-width: 1024px) {
+  .profileContainer {
+    max-width: 800px;
+  }
+}  
+
 
