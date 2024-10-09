@@ -41,9 +41,7 @@ export async function GET() {
 export async function PUT(req) {
     try {
         const db = await connectToDatabase();
-        
         const formData = await req.formData();
-        console.log([...formData.entries()]);
         
         const updateData = {};
         if (formData.has('nome')) updateData.nome = formData.get('nome');
@@ -64,8 +62,7 @@ export async function PUT(req) {
             await fs.writeFile(filePath, buffer);
 
             updateData.photoUrl = `/uploads/${fileName}`;
-            /* console.log(updateData.photoUrl); */
-        }
+        };
 
         const result = await db.collection('users').updateOne(
             { role: 'admin' },
@@ -83,5 +80,5 @@ export async function PUT(req) {
         console.error('Erro ao atualizar perfil:', error);
         return NextResponse.json({ error: 'Erro no servidor' }, { status: 500 });
     }
-}
+};  
 
