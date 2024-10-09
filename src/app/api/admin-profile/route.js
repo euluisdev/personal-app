@@ -1,13 +1,18 @@
 import { NextResponse } from 'next/server';
 import { MongoClient } from 'mongodb';
-import fs from 'fs/promises';
-import path from 'path';
-import { Buffer } from 'buffer';
+
+import { v2 as cloudinary } from 'cloudinary';
 
 const uri = process.env.MONGODB_URI;
 if (!uri) {
     throw new Error('MongoDB URI não está definida.');
-}
+};
+
+cloudinary.config({ 
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
+    api_key: process.env.CLOUDINARY_API_KEY, 
+    api_secret: process.env.CLOUDINARY_API_SECRET  
+});
 
 const client = new MongoClient(uri);
 
@@ -55,13 +60,12 @@ export async function PUT(req) {
                 return NextResponse.json({ error: 'Tipo de arquivo inválido' }, { status: 400 });
             };
 
-            const fileName = `${Date.now()}-${file.name}`;
-            const filePath = path.join(process.cwd(), 'public/uploads', fileName);
+            const uploadResult = await cloudinary.uploader.upload(file.stream(), {
+                public_id: `user_profile_${Date.now()}`, 
+                resource_type: 'image' 
+            });
 
-            const buffer = Buffer.from(await file.arrayBuffer());
-            await fs.writeFile(filePath, buffer);
-
-            updateData.photoUrl = `/uploads/${fileName}`;
+            updateData.photoUrl = uploadResult.secure_url;
         };
 
         const result = await db.collection('users').updateOne(
