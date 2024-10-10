@@ -1,156 +1,175 @@
+/* mobile first */
 .container {
-    margin-top: 6rem;
-    background-color: #000;
-    color: #FFD700;
+    max-width: 100%;
     min-height: 100vh;
-}
-
-.content {
-    padding: 1rem;
+    margin: 5.5rem 0rem 0rem 0rem; 
+    padding: 2rem; 
+    background-color: #000000;
+    color: #ffffff;
 }
 
 .title {
-    font-size: 2rem;
+    text-align: center;
+    font-size: 2rem; 
     font-weight: bold;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.5rem; 
+    color: #ffd700;
 }
 
 .message {
-    background-color: #333;
-    border: 1px solid #FFD700;
-    color: #FFD700;
-    padding: 0.5rem;
+    background-color: #ffd700;
+    color: #000000;
+    padding: 1rem;
     margin-bottom: 1rem;
     border-radius: 0.25rem;
 }
 
-.cardGrid {
+.searchContainer {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.searchInput {
+    width: 100%;
+    padding: 0.5rem 1rem 0.5rem 2.5rem;
+    border: 2px solid #ffd700;
+    background-color: #000000;
+    color: #ffffff;
+    border-radius: 0.25rem;
+}
+
+.searchIcon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ffd700;
+}
+
+.userGrid {
     display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    gap: 1.5rem;
+    grid-template-columns: 1fr; 
+    gap: 1rem; 
 }
 
-@media (min-width: 768px) {
-    .cardGrid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-.card {
-    background-color: #222;
-    border: 1px solid #FFD700;
+.userCard {
+    background-color: #1a1a1a;
+    border: 2px solid #ffd700;
     border-radius: 0.5rem;
-    overflow: hidden;
-}
-
-.cardTitle {
-    background-color: #333;
-    color: #FFD700;
-    font-size: 1.25rem;
-    font-weight: bold;
     padding: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
 }
 
-.userList {
-    list-style-type: none;
-    padding: 0;
-}
-
-.userItem {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    border-bottom: 1px solid #444;
+.userCard:hover {
+    transform: scale(1.05);
 }
 
 .userInfo {
     display: flex;
     align-items: center;
+    margin-bottom: 0.5rem;
 }
 
-.userInfo div {
-    display: flex;
-    flex-direction: column;
-    margin-left: 0.5rem;
+.icon {
+    color: #ffd700;
+    margin-right: 0.5rem;
+}
+
+.userEmail {
+    font-size: 0.875rem;
+    color: #cccccc;
+    margin-bottom: 0.5rem;
 }
 
 .userGoal {
     display: flex;
     align-items: center;
+    font-size: 0.875rem;
 }
 
-.icon {
-    width: 1.5rem;
-    height: 1.5rem;
-    color: #FFD700;
-    margin-right: 0.5rem;
+.card {
+    background-color: #1a1a1a;
+    border: 2px solid #ffd700;
+    border-radius: 0.5rem;
+    padding: 1rem; 
 }
 
-.selectButton {
-    background-color: #FFD700;
-    color: #000;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 0.25rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.selectButton:hover {
-    background-color: #FFC000;
-}
-
-.workoutForm {
-    padding: 1rem;
-}
-
-.formGroup {
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 1rem;
 }
 
-.formGroup label {
-    display: block;
-    margin-bottom: 0.5rem;
+.cardTitle {
+    font-size: 1.25rem; 
+    font-weight: bold;
+    color: #ffd700;
 }
 
-.textarea,
-.dateInput {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #FFD700;
-    background-color: #333;
-    color: #FFD700;
-    border-radius: 0.25rem;
-}
-
-.dateInputWrapper {
-    position: relative;
-}
-
-.dateInputWrapper .icon {
-    position: absolute;
-    top: 50%;
-    left: 0.5rem;
-    transform: translateY(-50%);
-}
-
-.dateInput {
-    padding-left: 2.5rem;
-}
-
-.submitButton {
-    background-color: #FFD700;
-    color: #000;
+.backButton {
+    background: none;
     border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 0.25rem;
+    color: #ffd700;
     cursor: pointer;
-    transition: background-color 0.3s;
 }
 
-.submitButton:hover {
-    background-color: #FFC000;
-}  
+.historyTitle {
+    font-size: 1.25rem; 
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #ffd700;
+}
 
+.workoutList {
+    list-style-type: none;
+    padding: 0;
+}
+
+.workoutItem {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #333333;
+}
+
+.workoutItem:last-child {
+    border-bottom: none;
+}
+
+.completed {
+    color: #4caf50;
+}
+
+.notCompleted {
+    color: #f44336;
+}
+
+/* media query min width 600px */
+@media (min-width: 600px) {
+    .container {
+        margin-top: 5rem;
+        padding: 4rem;
+    }
+
+    .title {
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .userGrid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .card {
+        padding: 1.5rem;
+    }
+
+    .cardTitle,
+    .historyTitle {
+        font-size: 1.5rem;
+    }
+}
 

@@ -1,111 +1,128 @@
 'use client';
 
-import React, { useState } from 'react'; 
-import axios from 'axios'; 
+import React, { useState, useEffect } from 'react';
+import { User, Calendar, Target, Search, X } from 'lucide-react';
 
 import AdminNavBar from '@/components/AdminNavBar';
 
 import styles from '../../styles/admin-workout/page.module.css';
 
-const WorkoutGenerator = () => {
-  const [prompt, setPrompt] = useState(''); 
-  const [generatedWorkout, setGeneratedWorkout] = useState('');
-  const [isLoading, setIsLoading] = useState(false); 
-  
+const WorkoutHistory = () => {
+  const [approvedUsers, setApprovedUsers] = useState([]); 
+  const [message, setMessage] = useState('');
+  const [selectedUser, setSelectedUser] = useState(null); 
+  const [searchTerm, setSearchTerm] = useState(''); 
 
-  const generateWorkout = async () => {
-     setIsLoading(true); 
+  useEffect(() => {
+    const fetchApprovedUsers = async () => {
+      try {
+        const response = await fetch('/api/list-users');
 
-    try {
-    
-      const response = await axios.post(
-        'https://api.cohere.ai/v1/generate',
-        {
-          model: 'command-xlarge-nightly',
-          prompt: `Crie um treino de musculação com base nas seguintes informações: ${prompt}. 
-                   Inclua apenas cinco exercícios específicos de cada músculo citado, número
-                   de séries, repetições, e a máquina que é para fazer o exercício. Apenas isso! sem instruções.`,
-          max_tokens: 300,
-          temperature: 0.5,
-          k: 0,
-          stop_sequences: [],
-          return_likelihoods: 'NONE'
-        },
-        {
-          headers: {
-            'Authorization': `BEARER ${process.env.NEXT_PUBLIC_COHERE_API_KEY}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-      console.log(response.data);
+        if (response.ok) {
+          const data = await response.json();
+          setApprovedUsers(data);
+        } else {
+          console.error('Erro ao buscar usuários aprovados');
+        };
 
-      const workoutList = response.data.generations[0].text.split('\n').filter(line => line.trim() !== '');
-      setGeneratedWorkout(workoutList);
+      } catch (error) {
+        console.error('Erro ao buscar usuários aprovados:', error);
+      }
+    };
 
-    } catch (error) {
-      console.error('Erro ao gerar treino:', error);
-      setGeneratedWorkout('Erro ao gerar o treino. Por favor, tente novamente.');
-    } finally {
-    setIsLoading(false);
-  }
+    fetchApprovedUsers();
+  }, []);
+
+  const handleSelectUser = (user) => {
+    setSelectedUser(user);
   }; 
 
-  const handleEdit = (index, field, value) => {
-    const updatedWorkout = [...generatedWorkout];
-    updatedWorkout[index] = { ...updatedWorkout[index], [field]: value };
-    setGeneratedWorkout(updatedWorkout);
+  const handleBackToList = () => {
+    setSelectedUser(null);
+  }; 
+
+  const filteredUsers = approvedUsers.filter((user) => 
+    user.nome.toLowerCase().includes(searchTerm.toLowerCase())
+  ); 
+
+  const fetchWorkoutHistory = async (userId) => {
+    try {
+      const response = await fetch(`/api/workout-history/${userId}`);
+      if (response.ok) {
+        const data = await response.json(); 
+        return data;
+      } else {
+        console.error('Erro ao buscar histórico de treinos.'); 
+        return [];
+      }
+
+    } catch (error) {
+      console.error('Erro ao buscar histórico de treinos:', error); 
+      return [];
+    }
   };
 
   return (
-    <div className={styles['container']}>
-      <div><AdminNavBar /></div>
-      <h1>Gerador de Treino</h1>
-      
-      <textarea
-        value={prompt}
-        onChange={(e) => setPrompt(e.target.value)}
-        placeholder="Descreva o treino desejado (ex: treino de peito e tríceps para intermediários)"
-      />
-      <button onClick={generateWorkout} disabled={isLoading}>
-        {isLoading ? 'Gerando...' : 'Gerar Treino'}
-      </button> 
+    <>
+    <div><AdminNavBar /></div>
+    <div className={styles.container}>
+      <h1 className={styles.title}>Histórico de Treino</h1>
 
-      {generatedWorkout.length > 0 && (
-        <div>
-          <h3>Treino Gerado:</h3>
-          <table className={styles['workout-table']}>
-            <thead>
-              <tr>
-                <th>Selecionar</th>
-                <th>Exercício</th>
-                <th>Séries</th>
-                <th>Repetições</th>
-                <th>Máquina</th>
-              </tr>
-            </thead>
-            <tbody>
-              {generatedWorkout.map((workout, index) => {
-                const [exercise, sets, reps, machine] = workout.split(','); // Assume que cada linha tem exercício, séries, repetições e máquina
-                return (
-                  <tr key={index}>
-                    <td>
-                      <input type="checkbox" />
-                    </td>
-                    <td contentEditable onInput={(e) => handleEdit(index, 'exercise', e.target.innerText)}>{exercise}</td>
-                    <td contentEditable onInput={(e) => handleEdit(index, 'sets', e.target.innerText)}>{sets}</td>
-                    <td contentEditable onInput={(e) => handleEdit(index, 'reps', e.target.innerText)}>{reps}</td>
-                    <td contentEditable onInput={(e) => handleEdit(index, 'machine', e.target.innerText)}>{machine}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+      {message && <p className={styles.message}>{message}</p>}
+
+      <div className={styles.searchContainer}>
+        <input
+          type="text"
+          placeholder="Buscar aluno por nome..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className={styles.searchInput}
+        />
+        <Search className={styles.searchIcon} />
+      </div>
+
+      {selectedUser ? (
+        <div className={styles.card}>
+          <div className={styles.cardHeader}>
+            <h2 className={styles.cardTitle}>{selectedUser.nome}</h2>
+            <button className={styles.backButton} onClick={handleBackToList}>
+              <X />
+            </button>
+          </div>
+          <div className={styles.cardContent}>
+            <h3 className={styles.historyTitle}>Histórico Semanal de Treinos</h3>
+            <ul className={styles.workoutList}>
+              {selectedUser.workoutHistory.map((day, index) => (
+                <li key={index} className={styles.workoutItem}>
+                  <span>{day.day}</span>
+                  <span className={day.workout === 'Concluído' ? styles.completed : styles.notCompleted}>
+                    {day.workout}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      ) : (
+        <div className={styles.userGrid}>
+          {filteredUsers.map((user) => (
+            <div key={user.email} className={styles.userCard} onClick={() => handleSelectUser(user)}>
+              <div className={styles.userInfo}>
+                <User className={styles.icon} />
+                <h3>{user.nome}</h3>
+              </div>
+              <p className={styles.userEmail}>{user.email}</p>
+              <div className={styles.userGoal}>
+                <Target className={styles.icon} />
+                <span>{user.objetivoPrincipal || 'Objetivo não definido'}</span>
+              </div>
+            </div>
+          ))}
         </div>
       )}
-
     </div>
+    </>
   );
-};  
+};
 
-export default WorkoutGenerator;
+export default WorkoutHistory;
