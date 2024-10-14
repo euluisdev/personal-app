@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import AdminNavBar from '@/components/AdminNavBar';
+import Footer from '@/components/footer';
+
 import styles from '../../styles/admin-profile/page.module.css';
 
 const AdminProfile = () => {
@@ -163,6 +165,7 @@ const AdminProfile = () => {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 };

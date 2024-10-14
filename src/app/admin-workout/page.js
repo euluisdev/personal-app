@@ -2,7 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { User, Target, Search, X } from 'lucide-react';
+
 import AdminNavBar from '@/components/AdminNavBar';
+import Footer from '@/components/footer';
+
 import styles from '../../styles/admin-workout/page.module.css';
 
 const WorkoutHistory = () => {
@@ -122,6 +125,7 @@ const WorkoutHistory = () => {
             ))}
           </div>
         )}
+        <Footer />
       </div>
     </>
   );

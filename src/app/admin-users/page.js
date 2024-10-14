@@ -2,9 +2,11 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import AdminNavBar from '@/components/AdminNavBar';
 import { User, Calendar, Target } from 'lucide-react';
 import axios from 'axios';
+
+import AdminNavBar from '@/components/AdminNavBar';
+import Footer from '@/components/footer';
 
 import styles from '../../styles/admin-users/page.module.css';
 
@@ -353,6 +355,7 @@ const Page = () => {
 
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
