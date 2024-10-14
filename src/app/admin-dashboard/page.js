@@ -7,6 +7,8 @@ import { Bell, MessageSquare } from 'lucide-react';
 import AdminNavBar from '@/components/AdminNavBar';
 import styles from '../../styles/admin-dashboard/page.module.css';
 
+import Footer from '@/components/footer';
+
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [message, setMessage] = useState('');
@@ -184,6 +186,7 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }; 
