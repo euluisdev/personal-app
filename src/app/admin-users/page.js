@@ -29,7 +29,7 @@ const Page = () => {
 
   const muscles = ['Peitoral', 'Deltoides', 'Trapézio', 'Costas', 'Bíceps ', 'Tríceps', 'Abdômen', 'Quadríceps', 'Isquiotibiais', 'Adutores', 'Gastrocnêmio ', 'Abdutores', 'Glúteos', 'Antebraços'];
   const levels = ['Iniciante', 'Intermediário', 'Avançado', 'Bodybuilder']; 
-  const categorys = ['Hipertrofia', 'Barras', 'Máquinas', 'Peso Corporal', 'Elásticos'];
+  const categorys = ['Hipertrofia', 'Cardio', 'Máquinas', 'Peso Corporal', 'Elásticos'];
 
   useEffect(() => {
     const fetchApprovedUsers = async () => {
@@ -61,6 +61,14 @@ const Page = () => {
       setSelectedUsers([...selectedUsers, user]);
     }
   };
+
+  //dropdown select prompt
+  useEffect(() => {
+    setPrompt(
+      `Treino de ${workoutForm.muscle} ${workoutForm.level} ${workoutForm.category}`
+    )
+  }, [ workoutForm.muscle, workoutForm.level, workoutForm.category ]);
+
 
   //form creating workout
   const handleWorkoutFormChange = (e) => {
