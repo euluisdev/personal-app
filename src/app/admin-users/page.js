@@ -29,7 +29,11 @@ const Page = () => {
 
   const muscles = ['Peitoral', 'Deltoides', 'Trapézio', 'Costas', 'Bíceps ', 'Tríceps', 'Abdômen', 'Quadríceps', 'Isquiotibiais', 'Adutores', 'Gastrocnêmio ', 'Abdutores', 'Glúteos', 'Antebraços'];
   const levels = ['Iniciante', 'Intermediário', 'Avançado', 'Bodybuilder']; 
-  const categorys = ['Hipertrofia', 'Cardio', 'Máquinas', 'Peso Corporal', 'Elásticos'];
+  const categorys = ['Hipertrofia', 'Cardio', 'Máquinas', 'Peso Corporal', 'Elásticos'];  
+  const canGeneratePreview  = selectedUsers.length > 0 && 
+    workoutForm.muscle && 
+    workoutForm.level && 
+    workoutForm.category;
 
   useEffect(() => {
     const fetchApprovedUsers = async () => {
@@ -281,7 +285,7 @@ const Page = () => {
                   required
                   className={styles.select}
                 >
-                  <option value="">Selecione a categoria:</option>
+                  <option value="">Selecione a Categoria:</option>
                   {categorys.map(category => (
                     <option key={category} value={category}>{category}</option>
                   ))};
@@ -295,8 +299,8 @@ const Page = () => {
 
               <button type="button" 
                 onClick={generateWorkoutPreview} 
-                className={styles.submitButton} 
-                disabled={!selectedUsers || isLoading}
+                className={`${styles.submitButton} ${!canGeneratePreview ? styles.disabled : ''}`}  
+                disabled={!canGeneratePreview}
               >
                 {isLoading ? 'Gerando...' : 'Gerar Pré-visualização'}
               </button>
