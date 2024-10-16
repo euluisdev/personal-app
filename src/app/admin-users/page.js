@@ -254,7 +254,6 @@ const Page = () => {
                 <p>Não há usuários aprovados.</p>
               )}
             </ul>
-
           </div>
 
           <div className={styles.card}>
@@ -263,7 +262,6 @@ const Page = () => {
             </h2>
 
             <form onSubmit={handleSubmitWorkout} className={styles.workoutForm}>
-
               <div className={styles.formGroup}>
                 <label htmlFor="muscle">Músculo a ser treinado:</label>
                 <select
@@ -294,7 +292,7 @@ const Page = () => {
                   <option value="">Selecione o Nível:</option>
                   {levels.map(level => (
                     <option key={level} value={level}>{level}</option>
-                  ))};
+                  ))}
                 </select>
               </div>
 
@@ -311,7 +309,7 @@ const Page = () => {
                   <option value="">Selecione a Categoria:</option>
                   {categorys.map(category => (
                     <option key={category} value={category}>{category}</option>
-                  ))};
+                  ))}
                 </select>
               </div>
 
@@ -320,7 +318,8 @@ const Page = () => {
                 <p>{prompt}</p>
               </div>
 
-              <button type="button"
+              <button 
+                type="button"
                 onClick={generateWorkoutPreview}
                 className={`${styles.submitButton} ${!canGeneratePreview ? styles.disabled : ''}`}
                 disabled={!canGeneratePreview}
@@ -328,46 +327,26 @@ const Page = () => {
                 {isLoading ? 'Gerando...' : 'Gerar Pré-visualização'}
               </button>
 
-              <div className={styles.formGroup}>
-                <label htmlFor="date">Data do Treino:</label>
-                <div className={styles.dateInputWrapper}>
-                  <Calendar className={styles.icon} />
-                  <input
-                    type="date"
-                    id="date"
-                    name="date"
-                    value={workoutForm.date}
-                    onChange={handleWorkoutFormChange}
-                    required
-                    className={styles.dateInput}
-                  />
+              {generatedWorkouts.length > 0 && (
+                <div className={styles.previewSection}>
+                  <h3 className={styles.previewTitle}>Exercícios Gerados</h3>
+                  <div className={styles.generatedWorkouts}>
+                    {generatedWorkouts.map((workout, index) => (
+                      <div key={index} className={styles.workoutCard}>
+                        <p>{workout}</p>
+                        <button
+                          onClick={() => addExerciseToWorkout(workout)}
+                          className={styles.addButton}
+                        >
+                          Adicionar ao Treino
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-
-              <button type="submit" className={styles.submitButton} disabled={workoutForm.exercises.length === 0}>
-                Salvar Treino
-              </button>
+              )}
             </form>
           </div>
-
-          {generatedWorkouts.length > 0 && (
-            <div className={styles.card}>
-              <h2 className={styles.cardTitle}>Pré-visualização do Treino</h2>
-              <div className={styles.generatedWorkout}>
-                {generatedWorkouts.map((workout, index) => (
-                  <div key={index} className={styles.workoutCard}>
-                    <p>{workout}</p>
-                    <button
-                      onClick={() => addExerciseToWorkout(workout)}
-                      className={styles.addButton}
-                    >
-                      Adicionar ao Treino
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
 
           {workoutForm.exercises.length > 0 && (
             <div className={styles.card}>
@@ -377,12 +356,37 @@ const Page = () => {
                   <li key={index}>{exercise}</li>
                 ))}
               </ul>
+              
+              <div className={styles.finalizeWorkout}>
+                <div className={styles.formGroup}>
+                  <label htmlFor="date">Data do Treino:</label>
+                  <div className={styles.dateInputWrapper}>
+                    <Calendar className={styles.icon} />
+                    <input
+                      type="date"
+                      id="date"
+                      name="date"
+                      value={workoutForm.date}
+                      onChange={handleWorkoutFormChange}
+                      required
+                      className={styles.dateInput}
+                    />
+                  </div>
+                </div>
+
+                <button 
+                  type="submit" 
+                  className={styles.submitButton}
+                  onClick={handleSubmitWorkout}
+                >
+                  Salvar Treino
+                </button>
+              </div>
             </div>
           )}
-
         </div>
       </div>
-      <Footer />
+      <div className={styles.footer}><Footer /></div>
     </div>
   );
 };

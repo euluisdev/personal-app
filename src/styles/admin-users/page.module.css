@@ -1,34 +1,58 @@
 .container {
-    margin: 6rem 0rem;
+    margin: 6rem 0rem 0rem 0rem;
     background-color: #000;
     color: #FFD700;
     min-height: 100vh;
 }
 
 .content {
-    padding: 1rem;
+    padding: 0.75rem;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+@media (min-width: 640px) {
+    .content {
+        padding: 1rem;
+    }
 }
 
 .title {
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: bold;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     text-align: center;
+}
+
+@media (min-width: 640px) {
+    .title {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
 }
 
 .message {
     background-color: #333;
     border: 1px solid #FFD700;
     color: #FFD700;
-    padding: 0.5rem;
+    padding: 0.75rem;
     margin-bottom: 1rem;
     border-radius: 0.25rem;
+    font-size: 0.875rem;
 }
 
 .cardGrid {
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    gap: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .cardGrid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
 }
 
 .searchContainer {
@@ -38,11 +62,12 @@
 
 .searchInput {
     width: 100%;
-    padding: 0.5rem 1rem 0.5rem 2.5rem;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
     border: 2px solid #ffd700;
     background-color: #000000;
     color: #ffffff;
     border-radius: 0.25rem;
+    font-size: 1rem;
 }
 
 .searchIcon {
@@ -51,53 +76,69 @@
     top: 50%;
     transform: translateY(-50%);
     color: #ffd700;
-}
-
-@media (min-width: 768px) {
-    .cardGrid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+    width: 1.25rem;
+    height: 1.25rem;
 }
 
 .cardUsers {
     background-color: #222;
     border: 1px solid #FFF;
     border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    overflow: hidden;
 }
 
 .card {
     background-color: #222;
     border: 1px solid #FFF;
     border-radius: 0.5rem;
+    margin-bottom: 1rem;
     overflow: hidden;
 }
 
 .cardTitle {
     background-color: #333;
     color: #FFD700;
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     font-weight: bold;
-    padding: 1rem;
+    padding: 0.875rem;
+}
+
+@media (min-width: 640px) {
+    .cardTitle {
+        font-size: 1.25rem;
+        padding: 1rem;
+    }
 }
 
 .userList {
     list-style-type: none;
     padding: 0;
-    overflow-x: hidden;
-    max-height: 30rem;
+    overflow-y: auto;
+    max-height: 60vh;
 }
 
 .userItem {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.875rem;
     border-bottom: 1px solid #444;
+}
+
+@media (min-width: 640px) {
+    .userItem {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem;
+    }
 }
 
 .userInfo {
     display: flex;
     align-items: center;
+    flex: 1;
 }
 
 .userInfo div {
@@ -106,26 +147,47 @@
     margin-left: 0.5rem;
 }
 
+.userInfo strong {
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+}
+
+.userInfo span {
+    font-size: 0.875rem;
+    color: #ccc;
+}
+
 .userGoal {
     display: flex;
     align-items: center;
+    font-size: 0.875rem;
+    color: #ccc;
 }
 
 .icon {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 1.25rem;
+    height: 1.25rem;
     color: #FFD700;
     margin-right: 0.5rem;
 }
 
 .selectButton {
+    width: 100%;
     background-color: #FFD700;
     color: #000;
     border: none;
-    padding: 0.5rem 1rem;
+    padding: 0.75rem;
     border-radius: 0.25rem;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+@media (min-width: 640px) {
+    .selectButton {
+        width: auto;
+        padding: 0.5rem 1rem;
+    }
 }
 
 .selectButton:hover {
@@ -134,7 +196,13 @@
 }
 
 .workoutForm {
-    padding: 1rem;
+    padding: 0.875rem;
+}
+
+@media (min-width: 640px) {
+    .workoutForm {
+        padding: 1rem;
+    }
 }
 
 .formGroup {
@@ -144,15 +212,29 @@
 .formGroup label {
     display: block;
     margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    color: #ccc;
+}
+
+.select {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #333;
+    color: #FFD700;
+    border: 1px solid #FFD700;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+    appearance: none;
 }
 
 .dateInput {
     width: 100%;
-    padding: 0.5rem;
+    padding: 0.75rem 0.75rem 0.75rem 2.5rem;
     border: 1px solid #FFD700;
     background-color: #333;
     color: #FFD700;
     border-radius: 0.25rem;
+    font-size: 1rem;
 }
 
 .dateInputWrapper {
@@ -162,41 +244,171 @@
 .dateInputWrapper .icon {
     position: absolute;
     top: 50%;
-    left: 0.5rem;
+    left: 0.75rem;
     transform: translateY(-50%);
 }
 
-.dateInput {
-    padding-left: 2.5rem;
-}
-
 .submitButton {
+    width: 100%;
     background-color: #FFD700;
     color: #000;
     border: none;
-    padding: 0.5rem 1rem;
+    padding: 0.875rem;
     border-radius: 0.25rem;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 1rem;
+    margin-top: 1rem;
 }
 
-.submitButton:hover {
+.submitButton:hover:not(.disabled) {
     background-color: #333;
-    color: #FFC700;
-}  
+    color: #FFD700;
+}
 
 .disabled {
-    background-color: #ccc; 
+    background-color: #ccc;
     cursor: not-allowed;
-    opacity: 0.6; 
-}  
-
-.disabled:hover {
-    background-color: #ccc; 
-    color: #000;
-    cursor: not-allowed;
-    opacity: 0.6; 
+    opacity: 0.6;
 }
 
+.previewSection {
+    margin-top: 1.5rem;
+    border-top: 1px solid #444;
+    padding-top: 1.5rem;
+}
+
+.previewTitle {
+    font-size: 1rem;
+    color: #FFD700;
+    margin-bottom: 1rem;
+}
+
+@media (min-width: 640px) {
+    .previewTitle {
+        font-size: 1.125rem;
+    }
+}
+
+.generatedWorkouts {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+}
+
+.workoutCard {
+    background-color: #333;
+    padding: 0.875rem;
+    border-radius: 0.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+    .workoutCard {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem;
+    }
+}
+
+.workoutCard p {
+    flex: 1;
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+.addButton {
+    width: 100%;
+    background-color: #FFD700;
+    color: #000;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    text-align: center;
+}
+
+@media (min-width: 640px) {
+    .addButton {
+        width: auto;
+        padding: 0.5rem 1rem;
+        white-space: nowrap;
+    }
+}
+
+.addButton:hover {
+    background-color: #333;
+    color: #FFD700;
+}
+
+.finalizeWorkout {
+    padding: 0.875rem;
+    border-top: 1px solid #444;
+    margin-top: 1rem;
+}
+
+@media (min-width: 640px) {
+    .finalizeWorkout {
+        padding: 1rem;
+    }
+}
+
+.selectedExercises {
+    list-style-type: none;
+    padding: 0.875rem;
+}
+
+@media (min-width: 640px) {
+    .selectedExercises {
+        padding: 1rem;
+    }
+}
+
+.selectedExercises li {
+    padding: 0.75rem;
+    background-color: #333;
+    margin-bottom: 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.userList::-webkit-scrollbar {
+    width: 6px;
+}
+
+.userList::-webkit-scrollbar-track {
+    background: #222;
+}
+
+.userList::-webkit-scrollbar-thumb {
+    background-color: #FFD700;
+    border-radius: 3px;
+}
+
+.searchInput:focus,
+.select:focus,
+.dateInput:focus {
+    outline: none;
+    border-color: #FFD700;
+    box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
+}
+
+.selectButton:active,
+.addButton:active,
+.submitButton:active {
+    transform: scale(0.98);
+}  
+
+
+.footer {
+    position: relative;
+    margin-top: 9rem;
+} 
 
   
