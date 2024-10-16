@@ -290,15 +290,7 @@ const Page = () => {
 
               <div className={styles.formGroup}>
                 <label htmlFor="description">Descrição do Treino:</label>
-                <textarea
-                  id="description"
-                  name="description"
-                  value={prompt}
-                  onChange={(e) => setPrompt(e.target.value)}
-                  placeholder="Descreva o treino desejado (ex: treino de peito e tríceps para intermediários)"
-                  required
-                  className={styles.textarea}
-                />
+                <p>{prompt}</p>
               </div>
 
               <button type="button" 
