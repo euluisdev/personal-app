@@ -50,8 +50,8 @@ const WorkoutHistory = () => {
       console.log(response);
       if (response.ok) {
         const data = await response.json();
-        console.log(data)
-;        setSelectedUser({ ...user, workoutHistory: data.workoutHistory || [] }); 
+        console.log(data);
+        setSelectedUser({ ...user, workoutHistory: data.workoutHistory || [] }); 
 
       } else {
         console.error('Erro ao buscar histórico de treinos.');

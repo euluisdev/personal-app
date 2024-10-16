@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { User, Calendar, Target } from 'lucide-react';
+import { User, Calendar, Target, Search } from 'lucide-react';
 import axios from 'axios';
 
 import AdminNavBar from '@/components/AdminNavBar';
@@ -13,6 +13,7 @@ import styles from '../../styles/admin-users/page.module.css';
 const Page = () => {
   const [approvedUsers, setApprovedUsers] = useState([]);
   const [message, setMessage] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [workoutForm, setWorkoutForm] = useState({
     muscle: '',
@@ -28,11 +29,11 @@ const Page = () => {
   const router = useRouter();
 
   const muscles = ['Peitoral', 'Deltoides', 'Trapézio', 'Costas', 'Bíceps ', 'Tríceps', 'Abdômen', 'Quadríceps', 'Isquiotibiais', 'Adutores', 'Gastrocnêmio ', 'Abdutores', 'Glúteos', 'Antebraços'];
-  const levels = ['Iniciante', 'Intermediário', 'Avançado', 'Bodybuilder']; 
-  const categorys = ['Hipertrofia', 'Cardio', 'Máquinas', 'Peso Corporal', 'Elásticos'];  
-  const canGeneratePreview  = selectedUsers.length > 0 && 
-    workoutForm.muscle && 
-    workoutForm.level && 
+  const levels = ['Iniciante', 'Intermediário', 'Avançado', 'Bodybuilder'];
+  const categorys = ['Hipertrofia', 'Cardio', 'Máquinas', 'Peso Corporal', 'Elásticos'];
+  const canGeneratePreview = selectedUsers.length > 0 &&
+    workoutForm.muscle &&
+    workoutForm.level &&
     workoutForm.category;
 
   useEffect(() => {
@@ -46,7 +47,7 @@ const Page = () => {
         } else {
           console.error('Erro ao buscar usuários aprovados');
         };
-        
+
       } catch (error) {
         console.error('Erro ao buscar usuários aprovados:', error);
       }
@@ -55,10 +56,19 @@ const Page = () => {
     fetchApprovedUsers();
   }, [router]);
 
+  //search for users
+  const filteredUsers = approvedUsers.filter((user) =>
+    user.nome.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const usersToDisplay = searchTerm
+    ? [...filteredUsers, ...approvedUsers.filter(user => !filteredUsers.includes(user))]
+    : approvedUsers;
+
   //select user
   const handleSelectUser = (user) => {
     const alreadySelected = selectedUsers.find(selected => selected.email === user.email);
-    
+
     if (alreadySelected) {
       setSelectedUsers(selectedUsers.filter(selected => selected.email !== user.email));
     } else {
@@ -71,16 +81,16 @@ const Page = () => {
     setPrompt(
       `Treino de ${workoutForm.muscle} ${workoutForm.level} ${workoutForm.category}`
     )
-  }, [ workoutForm.muscle, workoutForm.level, workoutForm.category ]);
+  }, [workoutForm.muscle, workoutForm.level, workoutForm.category]);
 
 
   //form creating workout
   const handleWorkoutFormChange = (e) => {
     const { name, value, type, checked } = e.target;
-      if (type === 'checkbox') {
+    if (type === 'checkbox') {
       setWorkoutForm(prev => {
-        const currentValue = prev[name] || []; 
-  
+        const currentValue = prev[name] || [];
+
         if (checked) {
           return {
             ...prev,
@@ -99,14 +109,14 @@ const Page = () => {
       setWorkoutForm(prev => ({ ...prev, [name]: value }));
     }
   };
-  
+
 
 
   //preview workout
-  const generateWorkoutPreview  = async () => {
-         setIsLoading(true); 
+  const generateWorkoutPreview = async () => {
+    setIsLoading(true);
     try {
-    
+
       const response = await axios.post(
         'https://api.cohere.ai/v1/generate',
         {
@@ -135,9 +145,9 @@ const Page = () => {
     } catch (error) {
       console.error('Erro ao gerar treino:', error);
       setMessage('Erro ao gerar o pré-visualização do treino. Por favor, tente novamente.');
-    
+
     } finally {
-    setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -200,14 +210,26 @@ const Page = () => {
       <AdminNavBar />
       <div className={styles.content}>
         <h1 className={styles.title}>Gerenciamento de Usuários</h1>
+
+        <div className={styles.searchContainer}>
+          <input
+            type="text"
+            placeholder="Buscar aluno por nome..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className={styles.searchInput}
+          />
+          <Search className={styles.searchIcon} />
+        </div>
+
         {message && <p className={styles.message}>{message}</p>}
 
         <div className={styles.cardGrid}>
-          <div className={styles.card}>
-            <h2 className={styles.cardTitle}>Usuários Aprovados</h2>
+          <div className={styles.cardUsers}>
+            <h2 className={styles.cardTitle}>Selecione o Aluno para criar o treino</h2>
             <ul className={styles.userList}>
-              {approvedUsers.length > 0 ? (
-                approvedUsers.map(user => (
+              {usersToDisplay.length > 0 ? (
+                usersToDisplay.map((user) => (
                   <li key={user.email} className={styles.userItem}>
                     <div className={styles.userInfo}>
                       <User className={styles.icon} />
@@ -224,7 +246,7 @@ const Page = () => {
                       className={styles.selectButton}
                       onClick={() => handleSelectUser(user)}
                     >
-                      {selectedUsers.some(selected => selected.email === user.email) ? 'Selecionado' : 'Selecionar'} 
+                      {selectedUsers.some((selected) => selected.email === user.email) ? 'Selecionado' : 'Selecionar'}
                     </button>
                   </li>
                 ))
@@ -232,16 +254,17 @@ const Page = () => {
                 <p>Não há usuários aprovados.</p>
               )}
             </ul>
+
           </div>
 
           <div className={styles.card}>
             <h2 className={styles.cardTitle}>
               Criar Treino {selectedUsers.length > 0 ? `para ${selectedUsers.map(user => user.nome).join(', ')}` : ''}
             </h2>
-            
+
             <form onSubmit={handleSubmitWorkout} className={styles.workoutForm}>
 
-            <div className={styles.formGroup}>
+              <div className={styles.formGroup}>
                 <label htmlFor="muscle">Músculo a ser treinado:</label>
                 <select
                   id="muscle"
@@ -256,7 +279,7 @@ const Page = () => {
                     <option key={muscle} value={muscle}>{muscle}</option>
                   ))}
                 </select>
-              </div>  
+              </div>
 
               <div className={styles.formGroup}>
                 <label htmlFor="level">Nível do treino:</label>
@@ -273,7 +296,7 @@ const Page = () => {
                     <option key={level} value={level}>{level}</option>
                   ))};
                 </select>
-              </div>  
+              </div>
 
               <div className={styles.formGroup}>
                 <label htmlFor="category">Categoria do treino:</label>
@@ -297,14 +320,14 @@ const Page = () => {
                 <p>{prompt}</p>
               </div>
 
-              <button type="button" 
-                onClick={generateWorkoutPreview} 
-                className={`${styles.submitButton} ${!canGeneratePreview ? styles.disabled : ''}`}  
+              <button type="button"
+                onClick={generateWorkoutPreview}
+                className={`${styles.submitButton} ${!canGeneratePreview ? styles.disabled : ''}`}
                 disabled={!canGeneratePreview}
               >
                 {isLoading ? 'Gerando...' : 'Gerar Pré-visualização'}
               </button>
-              
+
               <div className={styles.formGroup}>
                 <label htmlFor="date">Data do Treino:</label>
                 <div className={styles.dateInputWrapper}>
@@ -334,7 +357,7 @@ const Page = () => {
                 {generatedWorkouts.map((workout, index) => (
                   <div key={index} className={styles.workoutCard}>
                     <p>{workout}</p>
-                    <button 
+                    <button
                       onClick={() => addExerciseToWorkout(workout)}
                       className={styles.addButton}
                     >

@@ -1,5 +1,5 @@
 .container {
-    margin-top: 6rem;
+    margin: 6rem 0rem;
     background-color: #000;
     color: #FFD700;
     min-height: 100vh;
@@ -13,6 +13,7 @@
     font-size: 2rem;
     font-weight: bold;
     margin-bottom: 1.5rem;
+    text-align: center;
 }
 
 .message {
@@ -30,15 +31,43 @@
     gap: 1.5rem;
 }
 
+.searchContainer {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.searchInput {
+    width: 100%;
+    padding: 0.5rem 1rem 0.5rem 2.5rem;
+    border: 2px solid #ffd700;
+    background-color: #000000;
+    color: #ffffff;
+    border-radius: 0.25rem;
+}
+
+.searchIcon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ffd700;
+}
+
 @media (min-width: 768px) {
     .cardGrid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
+.cardUsers {
+    background-color: #222;
+    border: 1px solid #FFF;
+    border-radius: 0.5rem;
+}
+
 .card {
     background-color: #222;
-    border: 1px solid #FFD700;
+    border: 1px solid #FFF;
     border-radius: 0.5rem;
     overflow: hidden;
 }
@@ -54,6 +83,8 @@
 .userList {
     list-style-type: none;
     padding: 0;
+    overflow-x: hidden;
+    max-height: 30rem;
 }
 
 .userItem {
@@ -98,7 +129,8 @@
 }
 
 .selectButton:hover {
-    background-color: #FFC000;
+    background-color: #333;
+    color: #FFD700;
 }
 
 .workoutForm {
@@ -114,7 +146,6 @@
     margin-bottom: 0.5rem;
 }
 
-.textarea,
 .dateInput {
     width: 100%;
     padding: 0.5rem;
@@ -150,7 +181,8 @@
 }
 
 .submitButton:hover {
-    background-color: #FFC000;
+    background-color: #333;
+    color: #FFC700;
 }  
 
 .disabled {
@@ -161,6 +193,7 @@
 
 .disabled:hover {
     background-color: #ccc; 
+    color: #000;
     cursor: not-allowed;
     opacity: 0.6; 
 }
