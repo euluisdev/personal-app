@@ -367,10 +367,24 @@ const Page = () => {
 
           {workoutForm.exercises.length > 0 && (
             <div className={styles.card}>
-              <h2 className={styles.cardTitle}>Exercícios Selecionados</h2>
+              <h2 className={styles.cardTitle}>Exercícios Selecionados para {workoutForm.muscle}</h2>
               <ul className={styles.selectedExercises}>
                 {workoutForm.exercises.map((exercise, index) => (
-                  <li key={index}>{exercise}</li>
+                  <li key={index} onDoubleClick={() => handleEdit(index)} >
+                  {isEditing === index ? (
+                  <input
+                    type="text"
+                    value={editValue}
+                    onChange={handleEditChange}
+                    onBlur={handleEditConfirm}
+                    onKeyDown={(e) => e.key === 'Enter' && handleEditConfirm()}
+                    autoFocus
+                    className={styles.editInput}
+                  />
+                ) : (
+                  exercise
+                )}
+                  </li>
                 ))}
               </ul>
               
