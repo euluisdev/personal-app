@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { User, Calendar, Target, Search } from 'lucide-react';
+import { User, Calendar, Target, Search, Check, X } from 'lucide-react';
 import axios from 'axios';
 
 import AdminNavBar from '@/components/AdminNavBar';
@@ -26,11 +26,16 @@ const Page = () => {
   const [generatedWorkouts, setGeneratedWorkouts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [prompt, setPrompt] = useState('');
+  const [isEditing, setIsEditing] = useState(null);
+  const [editValue, setEditValue] = useState('');
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const router = useRouter();
 
   const muscles = ['Peitoral', 'Deltoides', 'Trapézio', 'Costas', 'Bíceps ', 'Tríceps', 'Abdômen', 'Quadríceps', 'Isquiotibiais', 'Adutores', 'Gastrocnêmio ', 'Abdutores', 'Glúteos', 'Antebraços'];
   const levels = ['Iniciante', 'Intermediário', 'Avançado', 'Bodybuilder'];
   const categorys = ['Hipertrofia', 'Cardio', 'Máquinas', 'Peso Corporal', 'Elásticos'];
+
   const canGeneratePreview = selectedUsers.length > 0 &&
     workoutForm.muscle &&
     workoutForm.level &&
@@ -40,14 +45,12 @@ const Page = () => {
     const fetchApprovedUsers = async () => {
       try {
         const response = await fetch('/api/list-users');
-
         if (response.ok) {
           const data = await response.json();
           setApprovedUsers(data);
         } else {
           console.error('Erro ao buscar usuários aprovados');
-        };
-
+        }
       } catch (error) {
         console.error('Erro ao buscar usuários aprovados:', error);
       }
@@ -56,7 +59,6 @@ const Page = () => {
     fetchApprovedUsers();
   }, [router]);
 
-  //search for users
   const filteredUsers = approvedUsers.filter((user) =>
     user.nome.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -65,10 +67,8 @@ const Page = () => {
     ? [...filteredUsers, ...approvedUsers.filter(user => !filteredUsers.includes(user))]
     : approvedUsers;
 
-  //select user
   const handleSelectUser = (user) => {
     const alreadySelected = selectedUsers.find(selected => selected.email === user.email);
-
     if (alreadySelected) {
       setSelectedUsers(selectedUsers.filter(selected => selected.email !== user.email));
     } else {
@@ -76,27 +76,22 @@ const Page = () => {
     }
   };
 
-  //dropdown select prompt
   useEffect(() => {
     setPrompt(
       `Treino de ${workoutForm.muscle} ${workoutForm.level} ${workoutForm.category}`
-    )
+    );
   }, [workoutForm.muscle, workoutForm.level, workoutForm.category]);
 
-
-  //form creating workout
   const handleWorkoutFormChange = (e) => {
     const { name, value, type, checked } = e.target;
     if (type === 'checkbox') {
       setWorkoutForm(prev => {
         const currentValue = prev[name] || [];
-
         if (checked) {
           return {
             ...prev,
             [name]: [...currentValue, value]
           };
-
         } else {
           return {
             ...prev,
@@ -104,19 +99,14 @@ const Page = () => {
           };
         }
       });
-
     } else {
       setWorkoutForm(prev => ({ ...prev, [name]: value }));
     }
   };
 
-
-
-  //preview workout
   const generateWorkoutPreview = async () => {
     setIsLoading(true);
     try {
-
       const response = await axios.post(
         'https://api.cohere.ai/v1/generate',
         {
@@ -137,17 +127,35 @@ const Page = () => {
           }
         }
       );
-      console.log(response.data);
 
       const workoutList = response.data.generations[0].text.split('\n').filter(line => line.trim() !== '');
       setGeneratedWorkouts(workoutList);
-
     } catch (error) {
       console.error('Erro ao gerar treino:', error);
       setMessage('Erro ao gerar o pré-visualização do treino. Por favor, tente novamente.');
-
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleEdit = (index) => {
+    setIsEditing(index);
+    setEditValue(workoutForm.exercises[index]);
+  };
+
+  const handleEditChange = (e) => {
+    setEditValue(e.target.value);
+  };
+
+  const handleEditConfirm = () => {
+    if (isEditing !== null) {
+      const updatedExercises = [...workoutForm.exercises];
+      updatedExercises[isEditing] = editValue;
+      setWorkoutForm(prev => ({
+        ...prev,
+        exercises: updatedExercises
+      }));
+      setIsEditing(null);
     }
   };
 
@@ -158,24 +166,27 @@ const Page = () => {
     }));
   };
 
-  //send for the data base
-  const handleSubmitWorkout = async (e) => {
+  const handleSubmitWorkout = (e) => {
     e.preventDefault();
     if (selectedUsers.length === 0) {
       setMessage('Selecione um usuário primeiro.');
       return;
-    };
+    }
 
     if (workoutForm.exercises.length === 0) {
       setMessage('Adicione um exercício ao treino.');
       return;
-    };
+    }
 
-    if (!workoutForm.date) {
+    if (workoutForm.date === 0) {
       setMessage('Selecione uma data para o treino.');
       return;
-    };
+    }
 
+    setShowConfirmModal(true);
+  };
+
+  const confirmAndSubmitWorkout = async () => {
     try {
       for (const user of selectedUsers) {
         const response = await fetch('/api/create-workout', {
@@ -196,29 +207,35 @@ const Page = () => {
             }
           }),
         });
-  
-        const data = await response.json();
-  
+
         if (!response.ok) {
+          const data = await response.json();
           setMessage(data.message || 'Erro ao criar treino.');
           return;
         }
-      };
-      setMessage('Treino(s) criado(s) com sucesso!');
-      
-      setWorkoutForm({
-        muscle: '',
-        level: '',
-        category: '',
-        description: '',
-        date: '',
-        exercises: []
-      });
-      setGeneratedWorkouts([]);
-      
+      }
+
+      setShowConfirmModal(false);
+      setShowSuccessModal(true);
+
+      setTimeout(() => {
+        setShowSuccessModal(false);
+        setWorkoutForm({
+          muscle: '',
+          level: '',
+          category: '',
+          description: '',
+          date: '',
+          exercises: []
+        });
+        setGeneratedWorkouts([]);
+        setSelectedUsers([]);
+      }, 2000);
+
     } catch (error) {
       console.error('Erro ao criar treino:', error);
       setMessage('Erro ao processar a requisição.');
+      setShowConfirmModal(false);
     }
   };
 
@@ -260,10 +277,17 @@ const Page = () => {
                       <span>{user.objetivoPrincipal || 'Não definido'}</span>
                     </div>
                     <button
-                      className={styles.selectButton}
+                      className={`${styles.selectButton} ${
+                        selectedUsers.some((selected) => selected.email === user.email) 
+                        ? styles.selected 
+                        : ''
+                      }`}
                       onClick={() => handleSelectUser(user)}
                     >
-                      {selectedUsers.some((selected) => selected.email === user.email) ? 'Selecionado' : 'Selecionar'}
+                      {selectedUsers.some((selected) => selected.email === user.email) 
+                        ? 'Selecionado' 
+                        : 'Selecionar'
+                      }
                     </button>
                   </li>
                 ))
@@ -278,7 +302,7 @@ const Page = () => {
               Criar Treino {selectedUsers.length > 0 ? `para ${selectedUsers.map(user => user.nome).join(', ')}` : ''}
             </h2>
 
-            <form onSubmit={handleSubmitWorkout} className={styles.workoutForm}>
+            <form  className={styles.workoutForm}>
               <div className={styles.formGroup}>
                 <label htmlFor="muscle">Músculo a ser treinado:</label>
                 <select
@@ -335,7 +359,7 @@ const Page = () => {
                 <p>{prompt}</p>
               </div>
 
-              <button 
+              <button
                 type="button"
                 onClick={generateWorkoutPreview}
                 className={`${styles.submitButton} ${!canGeneratePreview ? styles.disabled : ''}`}
@@ -343,8 +367,9 @@ const Page = () => {
               >
                 {isLoading ? 'Gerando...' : 'Gerar Pré-visualização'}
               </button>
-
-              {generatedWorkouts.length > 0 && (
+            </form>
+            
+            {generatedWorkouts.length > 0 && (
                 <div className={styles.previewSection}>
                   <h3 className={styles.previewTitle}>Exercícios Gerados</h3>
                   <div className={styles.generatedWorkouts}>
@@ -362,32 +387,37 @@ const Page = () => {
                   </div>
                 </div>
               )}
-            </form>
           </div>
 
           {workoutForm.exercises.length > 0 && (
             <div className={styles.card}>
-              <h2 className={styles.cardTitle}>Exercícios Selecionados para {workoutForm.muscle}</h2>
+              <h2 className={styles.cardTitle}>
+                Exercícios Selecionados para {workoutForm.muscle}
+              </h2>
               <ul className={styles.selectedExercises}>
                 {workoutForm.exercises.map((exercise, index) => (
-                  <li key={index} onDoubleClick={() => handleEdit(index)} >
-                  {isEditing === index ? (
-                  <input
-                    type="text"
-                    value={editValue}
-                    onChange={handleEditChange}
-                    onBlur={handleEditConfirm}
-                    onKeyDown={(e) => e.key === 'Enter' && handleEditConfirm()}
-                    autoFocus
-                    className={styles.editInput}
-                  />
-                ) : (
-                  exercise
-                )}
+                  <li
+                    key={index}
+                    onDoubleClick={() => handleEdit(index)}
+                    className={styles.exerciseItem}
+                  >
+                    {isEditing === index ? (
+                      <input
+                        type="text"
+                        value={editValue}
+                        onChange={handleEditChange}
+                        onBlur={handleEditConfirm}
+                        onKeyDown={(e) => e.key === 'Enter' && handleEditConfirm()}
+                        autoFocus
+                        className={styles.editInput}
+                      />
+                    ) : (
+                      exercise
+                    )}
                   </li>
                 ))}
               </ul>
-              
+
               <div className={styles.finalizeWorkout}>
                 <div className={styles.formGroup}>
                   <label htmlFor="date">Data do Treino:</label>
@@ -399,7 +429,6 @@ const Page = () => {
                       name="date"
                       value={workoutForm.date}
                       onChange={handleWorkoutFormChange}
-                      required
                       className={styles.dateInput}
                     />
                   </div>
@@ -416,6 +445,45 @@ const Page = () => {
             </div>
           )}
         </div>
+
+        {showConfirmModal && (
+          <div className={styles.modalOverlay}>
+            <div className={styles.modal}>
+              <div className={styles.modalContent}>
+                <h2>Confirmar Criação do Treino</h2>
+                <p>Você está prestes a criar um treino para {selectedUsers.length} aluno(s).</p>
+                <p>Tem certeza que deseja prosseguir?</p>
+                <div className={styles.modalButtons}>
+                  <button 
+                    onClick={() => setShowConfirmModal(false)}
+                    className={styles.cancelButton}
+                  >
+                    Cancelar
+                  </button>
+                  <button 
+                    onClick={confirmAndSubmitWorkout}
+                    className={styles.confirmButton}
+                  >
+                    Confirmar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showSuccessModal && (
+          <div className={styles.modalOverlay}>
+            <div className={`${styles.modal} ${styles.successModal}`}>
+              <div className={styles.modalContent}>
+                <h2>Treino Criado com Sucesso! 🎉</h2>
+                <p>O treino foi salvo e atribuído aos alunos selecionados.</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        
       </div>
       <div className={styles.footer}><Footer /></div>
     </div>

@@ -411,4 +411,174 @@
     margin-top: 9rem;
 } 
 
+
+
+
+
+
+.cardUsers {
+    max-height: 500px !important;
+    height: 600px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .userList {
+    flex: 1;
+    overflow-y: auto;
+  }
+  
+  .exerciseItem {
+    position: relative;
+    padding: 0.75rem;
+    background-color: #333;
+    margin-bottom: 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .exerciseItem:hover {
+    background-color: #444;
+  }
+  
+  .editInput {
+    width: 100%;
+    padding: 0.5rem;
+    background-color: #222;
+    border: 1px solid #FFD700;
+    color: #FFD700;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+  }
+  
+  .editInput:focus {
+    outline: none;
+    border-color: #FFD700;
+    box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
+  }
+  
+  /* Modal Styles */
+  .modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease-out;
+  }
+  
+  .modal {
+    background-color: #222;
+    border: 1px solid #FFD700;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    max-width: 90%;
+    width: 400px;
+    animation: slideIn 0.3s ease-out;
+  }
+  
+  .successModal {
+    border-color: #4CAF50;
+    text-align: center;
+  }
+  
+  .modalContent {
+    color: #FFD700;
+  }
+  
+  .modalContent h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  
+  .modalContent p {
+    color: #ccc;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+  }
+  
+  .modalButtons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+  
+  .cancelButton,
+  .confirmButton {
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .cancelButton {
+    background-color: transparent;
+    border: 1px solid #FFD700;
+    color: #FFD700;
+  }
+  
+  .confirmButton {
+    background-color: #FFD700;
+    border: 1px solid #FFD700;
+    color: #000;
+  }
+  
+  .cancelButton:hover {
+    background-color: rgba(255, 215, 0, 0.1);
+  }
+  
+  .confirmButton:hover {
+    background-color: #ccac00;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes slideIn {
+    from {
+      transform: translateY(-20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .cardUsers {
+      max-height: 400px !important;
+      height: 400px;
+    }
+    
+    .modal {
+      padding: 1rem;
+      max-width: 95%;
+      margin: 1rem;
+    }
+    
+    .modalButtons {
+      flex-direction: column-reverse;
+      gap: 0.5rem;
+    }
+    
+    .cancelButton,
+    .confirmButton {
+      width: 100%;
+      padding: 0.75rem;
+    }
+  }
+
   
