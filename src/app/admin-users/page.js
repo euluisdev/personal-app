@@ -158,47 +158,64 @@ const Page = () => {
     }));
   };
 
+  //send for the data base
   const handleSubmitWorkout = async (e) => {
     e.preventDefault();
-    if (!selectedUsers) {
+    if (selectedUsers.length === 0) {
       setMessage('Selecione um usuário primeiro.');
       return;
-    }
+    };
 
     if (workoutForm.exercises.length === 0) {
-      setMessage('Adicione pelo menos um exercício ao treino.');
+      setMessage('Adicione um exercício ao treino.');
       return;
-    }
+    };
+
+    if (!workoutForm.date) {
+      setMessage('Selecione uma data para o treino.');
+      return;
+    };
 
     try {
-      const response = await fetch('/api/create-workout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: selectedUsers._id,
-          workoutData: workoutForm
-        }),
-      });
-
-      if (response.ok) {
-        setMessage('Treino criado com sucesso.');
-        setWorkoutForm({
-          description: '',
-          date: '',
-          daysOfWeek: [],
-          level: '',
-          bodyPart: [],
-          equipment: [],
-          exercises: []
+      for (const user of selectedUsers) {
+        const response = await fetch('/api/create-workout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId: user._id,
+            workoutData: {
+              ...workoutForm,
+              muscle: workoutForm.muscle,
+              level: workoutForm.level,
+              category: workoutForm.category,
+              description: prompt,
+              date: workoutForm.date,
+              exercises: workoutForm.exercises
+            }
+          }),
         });
-        setGeneratedWorkouts([]);
-      } else {
-        const errorData = await response.json();
-        setMessage(errorData.message || 'Erro ao criar treino.');
-      }
-
+  
+        const data = await response.json();
+  
+        if (!response.ok) {
+          setMessage(data.message || 'Erro ao criar treino.');
+          return;
+        }
+      };
+      setMessage('Treino(s) criado(s) com sucesso!');
+      
+      setWorkoutForm({
+        muscle: '',
+        level: '',
+        category: '',
+        description: '',
+        date: '',
+        exercises: []
+      });
+      setGeneratedWorkouts([]);
+      
     } catch (error) {
       console.error('Erro ao criar treino:', error);
       setMessage('Erro ao processar a requisição.');

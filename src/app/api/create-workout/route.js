@@ -24,21 +24,46 @@ export async function POST(req) {
       });
     }; 
 
+    const workoutDate = new Date(workoutData.date);
+    const startOfDay = new Date(workoutDate.setHours(0, 0, 0, 0));
+    const endOfDay = new Date(workoutDate.setHours(23, 59, 59, 999));
+
+    const existingWorkout = await workoutsCollection.findOne({
+      userId: new ObjectId(userId),
+      date: {
+        $gte: startOfDay,
+        $lte: endOfDay
+      }
+    });
+    
+    if (existingWorkout) {
+      return new Response(JSON.stringify({
+        message: 'Já existe um treino cadastrado para este usuário nesta data.'
+      }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
     //checks if user exists
-    const user = await usersCollection.findOne({ _id: new ObjectId(userId), status: 'aprovado' });
+    const user = await usersCollection.findOne({ 
+      _id: new ObjectId(userId), 
+      status: 'aprovado', 
+    });
 
     if (!user) {
       return new Response(JSON.stringify({ error: 'Usuário não encontrado ou não aprovado' }), {
         status: 404,
         headers: { 'Content-Type': 'application/json' }
       });
-    }
+    };
 
     //create workout
     const result = await workoutsCollection.insertOne({
         userId: new ObjectId(userId),
         ...workoutData,
-        createdAt: new Date()
+        createdAt: new Date(), 
+        updatedAt: new Date(), 
       });   
       console.log('Treino criado com sucesso:', result);
 
