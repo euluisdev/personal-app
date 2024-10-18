@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { User, Target, Search, X } from 'lucide-react';
+import { User, Target, Search, X, Clock, Share2, Calendar, Dumbbell, ChevronRight } from 'lucide-react';
 
 import AdminNavBar from '@/components/AdminNavBar';
 import Footer from '@/components/footer';
@@ -14,6 +14,7 @@ const WorkoutHistory = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(false); 
+  const [selectedWorkout, setSelectedWorkout] = useState(null);
 
   useEffect(() => {
     const fetchApprovedUsers = async () => {
@@ -39,6 +40,14 @@ const WorkoutHistory = () => {
   const handleBackToList = () => {
     setSelectedUser(null);
   };
+
+  const handleWorkoutClick = (workout) => {
+    setSelectedWorkout(workout);
+  }; 
+
+  const handleCloseWorkoutDetails = () => {
+    setSelectedWorkout(null);
+  };  
 
   const filteredUsers = approvedUsers.filter((user) =>
     user.nome.toLowerCase().includes(searchTerm.toLowerCase())
@@ -69,7 +78,7 @@ const WorkoutHistory = () => {
         <h1 className={styles.title}>Histórico de Treino</h1>
 
         {errorMessage && <p className={styles.error}>{errorMessage}</p>} 
-        {isLoading && <p className={styles.loading}>Carregando...</p>} 
+        {isLoading && <div className={styles.loadingSpinner} />} 
 
         <div className={styles.searchContainer}>
           <input
@@ -85,28 +94,43 @@ const WorkoutHistory = () => {
         {selectedUser ? (
           <div className={styles.card}>
             <div className={styles.cardHeader}>
-              <h2 className={styles.cardTitle}>{selectedUser.nome}</h2>
+              <div className={styles.userHeaderInfo}>
+                <User className={styles.headerIcon} />
+                <div>
+                  <h2 className={styles.cardTitle}>{selectedUser.nome}</h2> 
+                  <p className={styles.userEmail}></p>
+                </div>
+              </div>
               <button className={styles.backButton} onClick={handleBackToList}>
                 <X />
               </button>
             </div>
             <div className={styles.cardContent}>
               <h3 className={styles.historyTitle}>Histórico Semanal de Treinos</h3>
-              <ul className={styles.workoutList}>
+              <div className={styles.workoutList}>
                 {selectedUser?.workoutHistory?.length > 0 ? (
                   selectedUser.workoutHistory.map((workout, index) => (
-                    <li key={index} className={styles.workoutItem}>
-                      <span className={workout === 'Concluído' ? styles.completed : styles.notCompleted }>
-                        {workout.description}
-                      </span>
-                      <span>{workout.exercises}</span>  
-                      <span>{workout.date}</span>  
-                    </li>
+                    <div
+                      key={index}
+                      className={styles.workoutItem}
+                      onDoubleClick={() => handleWorkoutClick(workout)}
+                    >
+                      <div className={styles.workoutHeader}>
+                        <div className={styles.workoutInfo}>
+                          <Dumbbell className={styles.workoutIcon} />
+                          <div>
+                            <h4 className={styles.workoutTitle}>{workout.description}</h4>
+                            <span className={styles.workoutDate}>{workout.date}</span>
+                          </div>
+                        </div>
+                        <ChevronRight className={styles.chevronIcon} />
+                      </div>
+                    </div>
                   ))
                 ) : (
-                  <li className={styles.workoutItem}>Nenhum treino encontrado.</li>
+                  <div className={styles.noWorkouts}>Nenhum treino encontrado.</div>
                 )}
-              </ul>
+              </div>
             </div>
           </div>
         ) : (
@@ -126,8 +150,49 @@ const WorkoutHistory = () => {
             ))}
           </div>
         )}
-        <Footer />
+
+        {selectedWorkout && (
+          <div className={styles.modal} onClick={handleCloseWorkoutDetails}>
+            <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+              <div className={styles.modalHeader}>
+                <h2 className={styles.modalTitle}>Detalhes do Treino</h2>
+                <button className={styles.closeButton} onClick={handleCloseWorkoutDetails}>
+                  <X />
+                </button>
+              </div>
+              <div className={styles.modalBody}>
+                <div className={styles.workoutMeta}>
+                  <div className={styles.workoutDate}>
+                    <Calendar className={styles.metaIcon} />
+                    <span>{selectedWorkout.date}</span>
+                  </div>
+                  <button className={styles.shareButton}>
+                    <Share2 />
+                  </button>
+                </div>
+                <h3 className={styles.workoutDescription}>
+                  {selectedWorkout.description}
+                </h3>
+                <div className={styles.exercisesList}>
+                  {selectedWorkout.exercises?.map((exercise, index) => (
+                    <div key={index} className={styles.exerciseCard}>
+                      <h4 className={styles.exerciseName}>{exercise.name}</h4>
+                      <div className={styles.exerciseDetails}>
+                        <Clock className={styles.exerciseIcon} />
+                        <span>{exercise.sets}x{exercise.reps}</span>
+                      </div>
+                      {exercise.notes && (
+                        <p className={styles.exerciseNotes}>{exercise.notes}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
+      <div><Footer /></div>
     </>
   );
 };
