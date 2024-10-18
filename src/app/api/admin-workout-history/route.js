@@ -12,7 +12,6 @@ const client = new MongoClient(uri);
 export async function GET(req, res) {
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("userId"); 
-    console.log('userId: ' + userId);
 
     if (!userId) {
         return NextResponse.json({ error: "userId is required" }, { status: 400 });
@@ -23,32 +22,27 @@ export async function GET(req, res) {
       const db = client.db('BestFitData');
       const collection = db.collection('workouts');
 
-      const oneWeekAgo = new Date();
+      const objectId = new ObjectId(userId);
 
-      console.log(oneWeekAgo);
-      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      const workout = await collection.find({
+        userId: objectId 
+      }).sort({ 
+        date: -1 
+      }).limit(7).toArray();
 
-      const workouts = await collection.find({
-        userId: typeof userId === 'string' ? new ObjectId(userId) : userId,
-        date: { $gte: oneWeekAgo }
-      }).sort({ date: 1 }).toArray();
+      console.log(workout);
 
-      console.log(workouts);
-
-      const workoutHistory = [
-        'Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'
-      ].map(day => {
-        const workout = workouts.find(w => new Date(w.date).getDay() === ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'].indexOf(day));
-        return {
-          day,
-          workout: workout ? 'Concluído' : 'Não realizado'
+      const workoutHistory = workout.map(workout => {
+        return { 
+          id: workout._id,
+          description: workout.description,
+          date: workout.date,
+          exercises: workout.exercises,
         };
       });
 
       return NextResponse.json({workoutHistory}, { status: 200 }); 
     } catch (error) {
       return NextResponse.json({ error: 'Erro ao buscar histórico de treinos' }, { status: 500 });
-    } finally {
-      await client.close();
     }      
 };
