@@ -47,7 +47,7 @@ const WorkoutHistory = () => {
   const handleSelectUser = async (user) => {
     try {
       const response = await fetch(`/api/admin-workout-history?userId=${user._id}`);
-      console.log(response);
+
       if (response.ok) {
         const data = await response.json();
         console.log(data);
@@ -93,13 +93,14 @@ const WorkoutHistory = () => {
             <div className={styles.cardContent}>
               <h3 className={styles.historyTitle}>Histórico Semanal de Treinos</h3>
               <ul className={styles.workoutList}>
-                {Array.isArray(selectedUser.workoutHistory) ? (
-                  selectedUser.workoutHistory.map((day, index) => (
+                {selectedUser?.workoutHistory?.length > 0 ? (
+                  selectedUser.workoutHistory.map((workout, index) => (
                     <li key={index} className={styles.workoutItem}>
-                      <span>{day.day}</span>
-                      <span className={day.workout === 'Concluído' ? styles.completed : styles.notCompleted}>
-                        {day.workout}
+                      <span className={workout === 'Concluído' ? styles.completed : styles.notCompleted }>
+                        {workout.description}
                       </span>
+                      <span>{workout.exercises}</span>  
+                      <span>{workout.date}</span>  
                     </li>
                   ))
                 ) : (
