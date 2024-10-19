@@ -160,6 +160,7 @@ const WorkoutHistory = () => {
                   <X />
                 </button>
               </div>
+
               <div className={styles.modalBody}>
                 <div className={styles.workoutMeta}>
                   <div className={styles.workoutDate}>
@@ -170,20 +171,18 @@ const WorkoutHistory = () => {
                     <Share2 />
                   </button>
                 </div>
+
                 <h3 className={styles.workoutDescription}>
                   {selectedWorkout.description}
                 </h3>
+
                 <div className={styles.exercisesList}>
                   {selectedWorkout.exercises?.map((exercise, index) => (
                     <div key={index} className={styles.exerciseCard}>
-                      <h4 className={styles.exerciseName}>{exercise.name}</h4>
+                      <h4 className={styles.exerciseName}>{exercise}</h4>
                       <div className={styles.exerciseDetails}>
                         <Clock className={styles.exerciseIcon} />
-                        <span>{exercise.sets}x{exercise.reps}</span>
                       </div>
-                      {exercise.notes && (
-                        <p className={styles.exerciseNotes}>{exercise.notes}</p>
-                      )}
                     </div>
                   ))}
                 </div>

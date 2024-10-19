@@ -16,31 +16,53 @@
     color: #ffd700;
 }
 
-.message {
-    background-color: #ffd700;
-    color: #000000;
+.error {
+    background-color: rgba(255, 0, 0, 0.1);
+    border: 1px solid #ff0000;
+    color: #ff0000;
     padding: 1rem;
     margin-bottom: 1rem;
-    border-radius: 0.25rem;
+    border-radius: 0.5rem;
+}
+
+.loadingSpinner {
+    width: 2rem;
+    height: 2rem;
+    border: 2px solid #ffd700;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    margin: 2rem auto;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .searchContainer {
     position: relative;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
 }
 
 .searchInput {
     width: 100%;
-    padding: 0.5rem 1rem 0.5rem 2.5rem;
+    padding: 0.75rem 1rem 0.75rem 3rem;
     border: 2px solid #ffd700;
-    background-color: #000000;
+    background-color: rgba(255, 215, 0, 0.1);
     color: #ffffff;
-    border-radius: 0.25rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.searchInput:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.3);
 }
 
 .searchIcon {
     position: absolute;
-    left: 0.75rem;
+    left: 1rem;
     top: 50%;
     transform: translateY(-50%);
     color: #ffd700;
@@ -48,27 +70,29 @@
 
 .userGrid {
     display: grid;
-    grid-template-columns: 1fr; 
-    gap: 1rem; 
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+    gap: 1.5rem; 
 }
 
 .userCard {
-    background-color: #1a1a1a;
+    background-color: rgba(26, 26, 26, 0.95);
     border: 2px solid #ffd700;
-    border-radius: 0.5rem;
-    padding: 1rem;
+    border-radius: 1rem;
+    padding: 1.5rem;
     cursor: pointer;
-    transition: transform 0.2s ease-in-out;
+    transition: all 0.3s ease-in-out;
 }
 
 .userCard:hover {
-    transform: scale(1.05);
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
 }
 
 .userInfo {
     display: flex;
     align-items: center;
-    margin-bottom: 0.5rem;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
 }
 
 .icon {
@@ -79,33 +103,52 @@
 .userEmail {
     font-size: 0.875rem;
     color: #cccccc;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
 }
 
 .userGoal {
     display: flex;
     align-items: center;
     font-size: 0.875rem;
+    color: #a0a0a0;
+    gap: 0.5rem;
 }
 
+
+
 .card {
-    background-color: #1a1a1a;
+    background-color: rgba(26, 26, 26, 0.95);
     border: 2px solid #ffd700;
-    border-radius: 0.5rem;
+    border-radius: 1rem;
     padding: 1rem; 
+    overflow: hidden;
 }
 
 .cardHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.userHeaderInfo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.headerIcon {
+    color: #ffd700;
+    width: 2rem;
+    height: 2rem;
 }
 
 .cardTitle {
-    font-size: 1.25rem; 
+    font-size: 1.5rem; 
     font-weight: bold;
     color: #ffd700;
+    margin-bottom: 0.25rem;
 }
 
 .backButton {
@@ -113,9 +156,156 @@
     border: none;
     color: #ffd700;
     cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
 }
 
-.historyTitle {
+.backButton:hover {
+    background-color: rgba(255, 215, 0, 0.1);
+}
+
+
+
+/* workou list */
+.workoutList {
+    padding: 1.5rem;
+}
+
+.workoutItem {
+    background-color: rgba(40, 40, 40, 0.95);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.workoutItem:hover {
+    background-color: rgba(60, 60, 60, 0.95);
+    transform: translateX(4px);
+}
+
+.workoutHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.workoutInfo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.workoutIcon {
+    color: #ffd700;
+}
+
+.workoutTitle {
+    font-weight: 600;
+    margin-bottom: 0.25rem; 
+}
+
+.workoutDate {
+    font-size: 0.875rem;
+    color: #a0a0a0;
+}
+
+.chevronIcon {
+    color: #ffd700;
+    opacity: 0;
+    transition: opacity 0.3s ease;   
+}
+
+.workoutItem:hover .chevronIcon {
+    opacity: 1; 
+}
+
+
+/* modal style */  
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0,8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;  
+}   
+
+.modalContent {
+    background-color: #1a1a1a;
+    border: 2px solid #ffd700;
+    border-radius: 1rem;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+}  
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.modalTitle {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffd700;
+}
+
+.modalBody {
+    padding: 1.5rem;
+}
+
+
+.workoutMeta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.workoutDescription {
+    font-size: 1.25rem;
+    color: #ffd700;
+    margin-bottom: 1.5rem;
+}
+
+.exercisesList {
+    display: grid;
+    gap: 1rem;
+}
+
+.exerciseCard {
+    background-color: rgba(40, 40, 40, 0.95);
+    border-radius: 0.75rem;
+    padding: 1rem;
+}
+
+.exerciseName {
+    font-weight: 600;
+    color: #ffd700;
+    margin-bottom: 0.5rem;
+}
+
+.exerciseDetails {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #a0a0a0;
+    margin-bottom: 0.5rem;
+}
+
+
+/* .historyTitle {
     font-size: 1.25rem; 
     font-weight: bold;
     margin-bottom: 1rem;
@@ -144,7 +334,7 @@
 
 .notCompleted {
     color: #f44336;
-}
+} */
 
 /* media query min width 600px */
 @media (min-width: 600px) {
