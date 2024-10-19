@@ -164,7 +164,7 @@ const WorkoutHistory = () => {
               <div className={styles.modalBody}>
                 <div className={styles.workoutMeta}>
                   <div className={styles.workoutDate}>
-                    <Calendar className={styles.metaIcon} />
+                    <Calendar className={styles.metaIcon} /> 
                     <span>{selectedWorkout.date}</span>
                   </div>
                   <button className={styles.shareButton}>
@@ -179,7 +179,7 @@ const WorkoutHistory = () => {
                 <div className={styles.exercisesList}>
                   {selectedWorkout.exercises?.map((exercise, index) => (
                     <div key={index} className={styles.exerciseCard}>
-                      <h4 className={styles.exerciseName}>{exercise}</h4>
+                      <h4 className={styles.exerciseName}>{index + 1} - {exercise.replace(/^\d+\./, '')}</h4>
                       <div className={styles.exerciseDetails}>
                         <Clock className={styles.exerciseIcon} />
                       </div>

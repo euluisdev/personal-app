@@ -305,37 +305,6 @@
 }
 
 
-/* .historyTitle {
-    font-size: 1.25rem; 
-    font-weight: bold;
-    margin-bottom: 1rem;
-    color: #ffd700;
-}
-
-.workoutList {
-    list-style-type: none;
-    padding: 0;
-}
-
-.workoutItem {
-    display: flex;
-    justify-content: space-between;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid #333333;
-}
-
-.workoutItem:last-child {
-    border-bottom: none;
-}
-
-.completed {
-    color: #4caf50;
-}
-
-.notCompleted {
-    color: #f44336;
-} */
-
 /* media query min width 600px */
 @media (min-width: 600px) {
     .container {
