@@ -23,6 +23,7 @@ export async function GET(req, res) {
       const collection = db.collection('workouts');
 
       const objectId = new ObjectId(userId);
+      console.log(objectId)
 
       const workout = await collection.find({
         userId: objectId 

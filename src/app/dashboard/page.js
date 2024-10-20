@@ -2,72 +2,123 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import styles from '../../styles/user-workout/page.module.css';
 
-export default function Page() {
-  const [userName, setUserName] = useState('');
-  const [userEmail, setUserEmail] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const Page = () => {
+  const [userData, setUserData] = useState(null);
+  const [workouts, setWorkouts] = useState([]);
+  const [flippedCards, setFlippedCards] = useState({});
   const router = useRouter();
 
   useEffect(() => {
-    async function fetchUserData() {
+    async function fetchData() {
       try {
-        const response = await fetch('/api/user-data', {
+        // Primeira solicitação: buscar dados do usuário da coleção 'users'
+        const userResponse = await fetch('/api/user-data', {
           method: 'GET',
-          credentials: 'include' //isso garante que os cookies sejam enviados com a requisição
+          credentials: 'include'
         });
-        console.log(response)
 
-        if (!response.ok) {
-          if (response.status === 401) {
-            //se não estiver autenticado, redireciona para a página de login
-            router.push('/page');
+        if (!userResponse.ok) {
+          if (userResponse.status === 401) {
+            router.push('/login');
             return;
           }
           throw new Error('Falha ao buscar dados do usuário');
         }
 
-        const userData = await response.json();
+        const userData = await userResponse.json();
+        console.log(userData);
+        setUserData(userData);
 
-        setUserName(userData.name);
-        setUserEmail(userData.email);
+        // Segunda solicitação: buscar dados dos treinos da coleção 'workouts' usando o mesmo userId
+        if (userData._id) {
+          const workoutsResponse = await fetch(`/api/user-workouts?userId=${userData._id}`);
+          
+          if (!workoutsResponse.ok) {
+            throw new Error('Falha ao buscar treinos');
+          }
+          
+          const workoutsData = await workoutsResponse.json();
+          console.log('Workouts recebidos:', workoutsData);
+          setWorkouts(workoutsData);
+        }
       } catch (err) {
-        
-        setError(`Erro: ${err.message}`);
-      } finally {
-        setLoading(false);
+        console.error(`Erro: ${err.message}`);
       }
     }
 
-    fetchUserData();
+    fetchData();
   }, [router]);
 
-  if (loading) return <div>Carregando...</div>;
-  if (error) return <div>Erro: {error}</div>;
-
-  //handle logout
   const handleLogout = async () => {
     try {
       await fetch('/api/logout', {
-        method: 'GET', 
+        method: 'GET',
       });
-
       router.push('/');
     } catch (error) {
       console.error(`Erro ao fazer logout:`, error);
-    };
+    }
   };
 
+  const toggleCard = (workoutId) => {
+    setFlippedCards(prev => ({
+      ...prev,
+      [workoutId]: !prev[workoutId]
+    }));
+  };
+
+  if (!userData) return <div className={styles.loading}>Carregando...</div>;
+
   return (
-    <div>
-      <h1>Bem-vindo, {userName || 'Aluno'}</h1>
-      <p>Ficamos felizes em te ter de volta.</p>
-      {userEmail && <p>Email: {userEmail}</p>}
-      <button onClick={handleLogout}>Logout</button>
+    <div className={styles.container}>
+      <header className={styles.header}>
+        <h1>Bem-vindo, {userData.name || 'Aluno'}</h1>
+        <p>Seus treinos personalizados</p>
+        <div className={styles.userInfo}>
+          <p>Email: {userData.email}</p>
+          <button onClick={handleLogout} className={styles.logoutButton}>
+            Logout
+          </button>
+        </div>
+      </header>
+
+      <main className={styles.workoutGrid}>
+        {workouts.length === 0 ? (
+          <p className={styles.noWorkouts}>Nenhum treino encontrado.</p>
+        ) : (
+          workouts.map((workout) => (
+            <div
+              key={workout._id}
+              className={`${styles.workoutCard} ${flippedCards[workout._id] ? styles.flipped : ''}`}
+              onClick={() => toggleCard(workout._id)}
+            >
+              <div className={styles.cardInner}>
+                <div className={styles.cardFront}>
+                  <span className={styles.muscle}>{workout.muscle}</span>
+                  <h2>{workout.description}</h2>
+                  <p className={styles.date}>{workout.date || 'Data não definida'}</p>
+                  <div className={styles.tags}>
+                    <span className={styles.level}>{workout.level}</span>
+                    <span className={styles.category}>{workout.category}</span>
+                  </div>
+                </div>
+                <div className={styles.cardBack}>
+                  <ul className={styles.exerciseList}>
+                    {workout.exercises && workout.exercises.map((exercise, index) => (
+                      <li key={index}>{exercise}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+      </main>
     </div>
   );
-};  
+}
 
 
-
+export default Page;

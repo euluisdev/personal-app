@@ -49,6 +49,7 @@ export async function GET() {
     }
 
     return new Response(JSON.stringify({
+      _id: user._id || 'id não encontrado',
       name: user.nome || 'Nome não encontrado',
       email: user.email || 'Email não encontrado'
     }), {
