@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+
 import styles from '../../styles/user-workout/page.module.css';
 
 const Page = () => {
@@ -13,7 +14,6 @@ const Page = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        // Primeira solicitação: buscar dados do usuário da coleção 'users'
         const userResponse = await fetch('/api/user-data', {
           method: 'GET',
           credentials: 'include'
@@ -25,28 +25,26 @@ const Page = () => {
             return;
           }
           throw new Error('Falha ao buscar dados do usuário');
-        }
+        };
 
         const userData = await userResponse.json();
-        console.log(userData);
         setUserData(userData);
 
-        // Segunda solicitação: buscar dados dos treinos da coleção 'workouts' usando o mesmo userId
         if (userData._id) {
           const workoutsResponse = await fetch(`/api/user-workouts?userId=${userData._id}`);
           
           if (!workoutsResponse.ok) {
             throw new Error('Falha ao buscar treinos');
-          }
+          };
           
           const workoutsData = await workoutsResponse.json();
-          console.log('Workouts recebidos:', workoutsData);
           setWorkouts(workoutsData);
-        }
+        };
+
       } catch (err) {
         console.error(`Erro: ${err.message}`);
-      }
-    }
+      };
+    };
 
     fetchData();
   }, [router]);
@@ -57,6 +55,7 @@ const Page = () => {
         method: 'GET',
       });
       router.push('/');
+
     } catch (error) {
       console.error(`Erro ao fazer logout:`, error);
     }
@@ -107,7 +106,7 @@ const Page = () => {
                 <div className={styles.cardBack}>
                   <ul className={styles.exerciseList}>
                     {workout.exercises && workout.exercises.map((exercise, index) => (
-                      <li key={index}>{exercise}</li>
+                      <li key={index}>{index + 1} - {exercise.replace(/^\d+\./, '')}</li>
                     ))}
                   </ul>
                 </div>
@@ -118,7 +117,9 @@ const Page = () => {
       </main>
     </div>
   );
-}
+};
 
 
-export default Page;
+export default Page;  
+
+
