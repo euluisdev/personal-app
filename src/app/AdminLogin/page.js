@@ -49,41 +49,50 @@ export default function AdminLogin() {
   };  
 
   return (
-    <div className={styles['modal-overlay']} >
+    <div className={`${styles['modal-overlay']} ${styles['page-transition']}`}>
       <div className={styles['modal-container']}>
-      <div className={styles['login-header']}>
-      <h1 className={styles['modal-title']}>Login Administrador</h1>
-        <button 
-          onClick={handleToggleLogin}
-          className={styles['toggle-button']}
-        >
-          Se não é admin clique aqui!
-        </button>
-      </div>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email:</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
+        <div className={styles['switch-container']}>
+          <div className={styles['switch-track']} onClick={handleToggleLogin}>
+            <div className={`${styles['switch-thumb']} ${styles.admin}`}>
+              <span className={`${styles['switch-label']} ${styles.admin}`}>
+                Admin
+              </span>
+            </div>
+          </div>
         </div>
-        <div>
-          <label>Senha:</label>
-          <input
-            type="password"
-            name="senha"
-            value={formData.senha}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <button type="submit">Entrar</button>
-        {message && <p>{message}</p>}
-      </form>
+
+        <h1 className={styles['modal-title']}>Admin Login</h1>
+
+        <form onSubmit={handleSubmit} className={styles['form-container']}>
+          <div className={styles['input-group']}>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder=" "
+              required
+            />
+            <label>Email</label>
+          </div>
+          <div className={styles['input-group']}>
+            <input
+              type="password"
+              name="senha"
+              value={formData.senha}
+              onChange={handleChange}
+              placeholder=" "
+              required
+            />
+            <label>Senha</label>
+          </div>
+
+          <button type="submit" className={styles['submit-button']}>
+            Entrar como Admin
+          </button>
+        </form>
+
+        {message && <p className={styles['error-message']}>{message}</p>}
       </div>
     </div>
   ); 
