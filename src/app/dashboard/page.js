@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import UserNavBar from '@/components/UserNavBar';
 
 import styles from '../../styles/user-workout/page.module.css';
 
@@ -71,6 +72,8 @@ const Page = () => {
   if (!userData) return <div className={styles.loading}>Carregando...</div>;
 
   return (
+    <>
+    <div><UserNavBar /></div>
     <div className={styles.container}>
       <header className={styles.header}>
         <h1>Bem-vindo, {userData.name || 'Aluno'}</h1>
@@ -116,6 +119,7 @@ const Page = () => {
         )}
       </main>
     </div>
+    </>
   );
 };
 
