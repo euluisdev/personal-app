@@ -53,8 +53,9 @@ export default function UserLogin() {
 
   const handleForgotPassword = async (e) => {
     e.preventDefault();
+
     try {
-      const response = await fetch('/api/forgot-password', {
+      const response = await fetch('/api/user-forgot-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -63,7 +64,9 @@ export default function UserLogin() {
       });
 
       const data = await response.json();
+      console.log(data);
       setMessage(data.message);
+      
       if (response.ok) {
         setShowForgotPassword(false);
       }
