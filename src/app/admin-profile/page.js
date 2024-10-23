@@ -165,7 +165,6 @@ const AdminProfile = () => {
           </div>
         )}
       </div>
-      <Footer />
     </div>
   );
 };

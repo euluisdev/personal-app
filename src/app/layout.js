@@ -1,3 +1,4 @@
+import Footer from "@/components/footer";
 import "./globals.css";
 
 export const metadata = {
@@ -8,9 +9,17 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="pt-br">
+      <>
       <body>
-        <main>{children}</main> 
+        <main>
+          {children}
+        </main>       
+        <footer>
+          <Footer />
+      </footer>
       </body>
+
+      </>
     </html>
   );
 }

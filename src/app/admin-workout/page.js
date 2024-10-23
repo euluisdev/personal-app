@@ -191,7 +191,6 @@ const WorkoutHistory = () => {
           </div>
         )}
       </div>
-      <div><Footer /></div>
     </>
   );
 };
