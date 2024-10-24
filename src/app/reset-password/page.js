@@ -11,6 +11,7 @@ export default function ResetPassword() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState('');
   const [token, setToken] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const tokenFromUrl = new URLSearchParams(window.location.search).get('token');
@@ -37,7 +38,7 @@ export default function ResetPassword() {
       const data = await response.json();
       if (response.ok) {
         setMessage('Senha redefinida com sucesso!');
-        router.push('/'); 
+        setShowModal(true); 
 
       } else {
         setMessage(data.message);
@@ -48,6 +49,11 @@ export default function ResetPassword() {
       setMessage('Erro ao processar a requisição.');
     }
   };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    router.push('/');
+  }; 
 
   return (
     <div className={styles['container']}>
@@ -84,6 +90,15 @@ export default function ResetPassword() {
 
       </form>
       {message && <p className={styles['message']}>{message}</p>}
+
+      {showModal && (
+        <div className={styles['modal']} onClick={handleModalClose} >
+          <div className={styles['modal-content']}>
+            <h2>Senha Redefinida com Sucesso!</h2> 
+            <p>Clique em qualquer lugar para continuar.</p>
+          </div>
+        </div>
+      )} 
     </div>
   );
 };     
