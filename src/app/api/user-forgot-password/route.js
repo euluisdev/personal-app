@@ -5,6 +5,8 @@ import { Collection, MongoClient } from "mongodb";
 
 const uri = process.env.MONGODB_URI;
 
+const nextPublicUrl = process.env.NEXT_PUBLIC_APP_URL;
+
 if (!uri) {
     throw new Error('MongoDB URI não está definida.');
 };
@@ -54,7 +56,7 @@ export async function POST (req) {
             html: `
               <h1>Password Reset Request</h1>
               <p>Click the link below to reset your password. This link will expire in 1 hour.</p>
-              <a href="${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${resetToken}">
+              <a href="${nextPublicUrl}/reset-password?token=${resetToken}">
                 Reset Password
               </a>
             `,
