@@ -23,22 +23,22 @@ export default function ResetPassword() {
     if (password !== confirmPassword) {
       setMessage('As senhas não coincidem.');
       return;
-    }
+    };
 
     try {
-      const response = await fetch('/api/reset-password', {
+      const response = await fetch('/api/user-reset-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ token, password }),
+        body: JSON.stringify({ token, senha: password }),
       });
 
       const data = await response.json();
       if (response.ok) {
         setMessage('Senha redefinida com sucesso!');
-        router.push('/login'); 
-        
+        router.push('/'); 
+
       } else {
         setMessage(data.message);
       };
