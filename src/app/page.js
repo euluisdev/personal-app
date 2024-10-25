@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import Cookies from 'js-cookie';
 
 import styles from '../styles/admin-login/page.module.css';
 
@@ -34,17 +35,20 @@ export default function UserLogin() {
 
       if (response.ok) {
         if (data.token) {
-          document.cookie = `authToken=${data.token}; path=/`;
+          Cookies.set('authToken', data.token, { path: '/' });
           router.push('/dashboard');
-        }
+        };
+
         setFormData({
           nome: '',
           email: '',
           senha: '',
         });
+
       } else {
         setMessage(data.message);
-      }
+      };
+
     } catch (error) {
       console.error('Error:', error);
       setMessage('Erro ao processar a requisição.');
@@ -64,16 +68,16 @@ export default function UserLogin() {
       });
 
       const data = await response.json();
-      console.log(data);
       setMessage(data.message);
       
       if (response.ok) {
         setShowForgotPassword(false);
-      }
+      };
+
     } catch (error) {
       console.error('Error:', error);
       setMessage('Erro ao processar a solicitação de redefinição de senha.');
-    }
+    };
   };
 
   const handleChange = (e) => {
@@ -193,7 +197,7 @@ export default function UserLogin() {
       </div>
     </div>
   );
-}
+};    
  
  
  
