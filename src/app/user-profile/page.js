@@ -24,7 +24,6 @@ const StudentProfile = () => {
           credentials: 'include', 
         });
         const data = await response.json();
-        console.log('eu sou', data);
 
         if (response.ok) {
           setProfileData(data);
