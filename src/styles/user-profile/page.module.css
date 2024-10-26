@@ -1,7 +1,7 @@
 .container {
-    margin-top: 6rem;
+    margin-top: 4rem;
     min-height: 100vh;
-    width: 100%;
+    width: 100vw;
     background-color: #000000;
     color: #ffffff;
     padding: 20px;
@@ -12,10 +12,12 @@
 
 .profileContainer {
     width: 100vw;
+    min-width: 95%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 1.5rem;
+    padding: 0.5rem;
+    margin: 1rem;
 }
 
 .title {
@@ -29,7 +31,7 @@
 .profileContent {
     background-color: #1a1a1a;
     border-radius: 16px;
-    padding: 2rem;
+    padding: 1rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
@@ -150,6 +152,7 @@
 
 .buttonGroup {
     display: flex;
+    flex-direction: column;
     gap: 1rem;
     margin-top: 2rem;
 }
@@ -163,6 +166,7 @@
     cursor: pointer;
     transition: all 0.3s ease;
     border: none;
+    width: 100%;
 }
 
 .editButton,
@@ -212,23 +216,30 @@
 }
 
 /* Media Queries */
- @media (max-width: 768px) {
+ @media (min-width: 768px) {
     .profileContainer {
-        padding: 1.3rem;
+        max-width: 30%;
+        min-width: 30rem;
     }
 
-    .profileContent {
-        padding: 1.5rem;
+    .title {
+        font-size: 1.6rem;
     }
 
-    .buttonGroup {
-        flex-direction: column;
+    .name {
+        font-size: 1.2rem;
     }
-
-    .editButton,
-    .saveButton,
-    .cancelButton {
-        width: 100%;
+    
+    .role {
+        font-size: 1.2rem;
+    }
+    
+    .email {
+        font-size: 1.2rem;
+    }
+    
+    .bio {
+        font-size: 1.1rem;
     }
 }
 
