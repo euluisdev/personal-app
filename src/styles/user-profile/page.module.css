@@ -1,23 +1,29 @@
 .container {
     margin-top: 6rem;
     min-height: 100vh;
+    width: 100%;
     background-color: #000000;
     color: #ffffff;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .profileContainer {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem;
 }
 
 .title {
-    font-size: 2rem;
+    font-size: 1.1rem;
     font-weight: bold;
     text-align: center;
     color: #FFD700;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 
 .profileContent {
@@ -25,12 +31,17 @@
     border-radius: 16px;
     padding: 2rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .imageContainer {
     display: flex;
     justify-content: center;
     margin-bottom: 2rem;
+    align-items: center;
+    width: 100%;
 }
 
 .profileImage {
@@ -38,7 +49,8 @@
     height: 150px;
     border-radius: 50%;
     object-fit: cover;
-    border: 4px solid #FFD700;
+ /*    border: 1px solid #FFD700; */
+    margin: 0rem 0rem 2rem 0rem;
 }
 
 .profileImagePlaceholder {
@@ -49,7 +61,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 3rem;
+    font-size: 2rem;
     font-weight: bold;
     color: #FFD700;
     border: 4px solid #FFD700;
@@ -60,7 +72,7 @@
 }
 
 .name {
-    font-size: 1.5rem;
+    font-size: 1rem;
     font-weight: bold;
     color: #FFD700;
     margin-bottom: 0.5rem;
@@ -81,7 +93,7 @@
 .bio {
     font-size: 1rem;
     color: #cccccc;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
     line-height: 1.5;
 }
 
@@ -99,19 +111,20 @@
 
 .inputGroup label {
     color: #cccccc;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
 }
 
 .input,
 .textarea {
     width: 100%;
-    padding: 0.75rem;
+    padding: 0.5rem;
     background-color: #2a2a2a;
     border: 1px solid #3a3a3a;
     border-radius: 8px;
     color: white;
-    font-size: 1rem;
+    font-size: 0.8rem;
     transition: border-color 0.3s ease;
+    margin: 0.3rem 0rem 0.5rem 0rem;
 }
 
 .input:focus,
@@ -127,11 +140,12 @@
 
 .fileInput {
     width: 100%;
-    padding: 0.75rem;
+    padding: 0.4rem;
     background-color: #2a2a2a;
     border: 1px solid #3a3a3a;
     border-radius: 8px;
     color: white;
+    margin: 0.3rem 0rem 0.5rem 0rem;
 }
 
 .buttonGroup {
@@ -155,6 +169,7 @@
 .saveButton {
     background-color: #FFD700;
     color: #000000;
+    font-size: 0.8rem;
 }
 
 .editButton:hover,
@@ -166,6 +181,7 @@
 .cancelButton {
     background-color: #3a3a3a;
     color: white;
+    font-size: 0.8rem;
 }
 
 .cancelButton:hover {
@@ -179,7 +195,7 @@
     align-items: center;
     justify-content: center;
     color: #FFD700;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: bold;
 }
 
@@ -189,16 +205,16 @@
     align-items: center;
     justify-content: center;
     color: #ff4444;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: bold;
     text-align: center;
     padding: 0 1rem;
 }
 
-/* Media Queries para responsividade */
-@media (max-width: 768px) {
+/* Media Queries */
+ @media (max-width: 768px) {
     .profileContainer {
-        padding: 10px;
+        padding: 1.3rem;
     }
 
     .profileContent {
@@ -216,24 +232,5 @@
     }
 }
 
-@media (max-width: 480px) {
-    .title {
-        font-size: 1.5rem;
-    }
-
-    .profileImage,
-    .profileImagePlaceholder {
-        width: 120px;
-        height: 120px;
-    }
-
-    .name {
-        font-size: 1.2rem;
-    }
-}    
- 
- 
- 
 
 
-    
