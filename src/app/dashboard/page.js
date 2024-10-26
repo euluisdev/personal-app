@@ -102,8 +102,9 @@ const Page = () => {
                   <h2>{workout.description}</h2>
                   <p className={styles.date}>{workout.date || 'Data não definida'}</p>
                   <div className={styles.tags}>
-                    <span className={styles.level}>{workout.level}</span>
-                    <span className={styles.category}>{workout.category}</span>
+                   {/*  <span className={styles.level}>{workout.level}</span> */}
+                   {/*  <span className={styles.category}>{workout.category}</span> */}
+                    <span className={styles.category}>Treino: {workout.workoutStatus}</span>
                   </div>
                 </div>
                 <div className={styles.cardBack}>

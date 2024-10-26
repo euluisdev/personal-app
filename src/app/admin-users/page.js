@@ -4,9 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { User, Calendar, Target, Search, Check, X } from 'lucide-react';
 import axios from 'axios';
-
 import AdminNavBar from '@/components/AdminNavBar';
-import Footer from '@/components/footer';
 
 import styles from '../../styles/admin-users/page.module.css';
 
@@ -21,7 +19,8 @@ const Page = () => {
     category: '',
     description: '',
     date: '',
-    exercises: []
+    exercises: [], 
+    workoutStatus: 'Pendente'
   });
   const [generatedWorkouts, setGeneratedWorkouts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
