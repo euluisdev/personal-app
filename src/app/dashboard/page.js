@@ -69,6 +69,31 @@ const Page = () => {
     }));
   };
 
+  const updateWorkoutStatus = async (workoutId, newStatus) => {
+    try {
+      const response = await fetch(`/api/update-workout-status`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ workoutId, status: newStatus })
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao atualizar o status do treino');
+      };
+
+      setWorkouts(prevWorkouts => 
+        prevWorkouts.map(workout => 
+          workout._id === workoutId ? { ...workout, workoutStatus: newStatus } : workout
+        )
+      );
+
+    } catch (error) {
+      console.error('Erro ao atualizar o status:', error);
+    }
+  };
+
   if (!userData) return <div className={styles.loading}>Carregando...</div>;
 
   return (
@@ -104,7 +129,23 @@ const Page = () => {
                   <div className={styles.tags}>
                    {/*  <span className={styles.level}>{workout.level}</span> */}
                    {/*  <span className={styles.category}>{workout.category}</span> */}
-                    <span className={styles.category}>Treino: {workout.workoutStatus}</span>
+                    <span className={styles.category}>Treino: 
+
+                    {workout.workoutStatus === 'Pendente' ? (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            updateWorkoutStatus(workout._id, 'Pago');
+                          }}
+                          className={styles.statusButton}
+                        >
+                          {workout.workoutStatus}
+                        </button>
+                      ) : (
+                        <span className={styles.paidStatus}>Pago</span>
+                      )
+                    }</span>
+
                   </div>
                 </div>
                 <div className={styles.cardBack}>
