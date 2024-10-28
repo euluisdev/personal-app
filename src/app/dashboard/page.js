@@ -13,6 +13,8 @@ const Page = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [selectedWorkout, setSelectedWorkout] = useState(null);
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [profilePhoto, setProfilePhoto] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -52,6 +54,29 @@ const Page = () => {
 
     fetchData();
   }, [router]);
+
+  useEffect(() => {
+    const fetchProfilePhoto = async () => {
+      setIsLoading(true);
+
+      try {
+        const response = await fetch('/api/user-profile'); 
+        const data = await response.json();
+  
+        if (response.ok) {
+          setProfilePhoto(data); 
+        } else {
+          console.error(`Erro na resposta da API!`, data);
+        };
+
+      } catch (error) {
+        console.error(`Erro ao buscar file:`, error)
+      } finally {
+        setIsLoading(false);
+      };
+    }; 
+    fetchProfilePhoto();
+  }, []);
 
   const toggleCard = (workoutId) => {
     setFlippedCards(prev => ({
@@ -112,12 +137,19 @@ const Page = () => {
 
         <header className={styles.header}>
           <h1>Bem-vindo, {userData.name || 'Aluno'}</h1>
-          <p>Seus treinos personalizados</p>
           <div className={styles.userInfo}>
-            <p>Email: {userData.email}</p>
-            <button className={styles.logoutButton}>
-              Logout
-            </button>
+          <p>Email: {userData.email}</p>
+            {isLoading && <div className='loadingSpinner'/>}
+
+              {profilePhoto && (
+                <img 
+                  src={profilePhoto.photoUrl} 
+                  alt="Foto do Perfil"    
+                  className='profileImage'
+                />
+              )}
+
+
           </div>
         </header>
 
