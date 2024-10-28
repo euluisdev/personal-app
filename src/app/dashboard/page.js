@@ -174,7 +174,9 @@ const Page = () => {
                   <div className={styles.cardFront}>
                     <span className={styles.muscle}>{workout.muscle}</span>
                     <h2>{workout.description}</h2>
-                    <p className={styles.date}>{workout.date || 'Data não definida'}</p>
+                    <p className={styles.date}>
+                      {workout.date ? new Date(workout.date).toLocaleDateString('pt-BR') :  'Data não definida'}
+                    </p>
                     <div className={styles.tags}>
 
                         <span className={styles.category}>
