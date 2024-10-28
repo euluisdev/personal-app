@@ -160,7 +160,7 @@
 .editButton,
 .saveButton,
 .cancelButton {
-    padding: 0.75rem 1.5rem;
+    padding: 0.65rem 1.5rem;
     border-radius: 25px;
     font-weight: bold;
     cursor: pointer;
@@ -214,6 +214,26 @@
     text-align: center;
     padding: 0 1rem;
 }
+
+.logoutButton {
+    padding: 0.65rem 1.5rem;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    width: 100%;
+    background-color: #3a3a3a;
+    color: white;
+    font-size: 0.8rem;
+    margin-top: 3rem;
+  }
+  
+  .logoutButton:hover {
+    background-color: #4a4a4a;
+    transform: translateY(-2px);
+    color: #ffd700;
+  }
 
 /* Media Queries */
  @media (min-width: 768px) {
