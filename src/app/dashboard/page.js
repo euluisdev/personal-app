@@ -25,7 +25,7 @@ const Page = () => {
 
         if (!userResponse.ok) {
           if (userResponse.status === 401) {
-            router.push('/login');
+            router.push('/');
             return;
           }
           throw new Error('Falha ao buscar dados do usuário');
@@ -52,18 +52,6 @@ const Page = () => {
 
     fetchData();
   }, [router]);
-
-  const handleLogout = async () => {
-    try {
-      await fetch('/api/logout', {
-        method: 'GET',
-      });
-      router.push('/');
-
-    } catch (error) {
-      console.error(`Erro ao fazer logout:`, error);
-    }
-  };
 
   const toggleCard = (workoutId) => {
     setFlippedCards(prev => ({
@@ -127,7 +115,7 @@ const Page = () => {
           <p>Seus treinos personalizados</p>
           <div className={styles.userInfo}>
             <p>Email: {userData.email}</p>
-            <button onClick={handleLogout} className={styles.logoutButton}>
+            <button className={styles.logoutButton}>
               Logout
             </button>
           </div>
