@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import UserNavBar from '@/components/UserNavBar';
+import { useRouter } from 'next/navigation';
 
 import styles from '../../styles/user-profile/page.module.css';
 
@@ -16,6 +17,7 @@ const StudentProfile = () => {
   });
   const [fileData, setFileData] = useState(null);
   const [error, setError] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -107,6 +109,18 @@ const StudentProfile = () => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/logout', {
+        method: 'GET',
+      });
+      router.push('/');
+
+    } catch (error) {
+      console.error(`Erro ao fazer logout:`, error);
+    }
+  };
+
   if (!profileData && !error) {
     return <div className={styles.loading}>Carregando...</div>;
   };
@@ -191,8 +205,13 @@ const StudentProfile = () => {
             <h2 className={styles.name}>{profileData.nome}</h2>
             <p className={styles.email}>{profileData.email}</p>
             <p className={styles.bio}>{profileData.bio}</p>
+
             <button onClick={handleEditClick} className={styles.editButton}>
               Editar Perfil
+            </button>
+
+            <button onClick={handleLogout} className={styles.logoutButton}>
+              Logout
             </button>
           </div>
         )}
