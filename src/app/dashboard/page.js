@@ -146,7 +146,7 @@ const Page = () => {
         <header className={styles.header}>
         <h1 className={styles.titleWellCome}>{getGreeting()} {userData.name || 'Aluno'}</h1>
           <div className={styles.userInfo}>
-          <p>{userData.email}</p>
+            <p>{userData.email}</p>
             {isLoading && <div className='loadingSpinner'/>}
 
             {profilePhoto && (
@@ -192,16 +192,19 @@ const Page = () => {
                               {workout.workoutStatus}
                             </button>
                           ) : (
-                            <span className={styles.paidStatus}>Pago ✓ </span>
+                            <span className={styles.paidStatus}>Treino Pago ✓ </span>
                           )}
                         </span>
 
                     </div>
 
-                    <div>
-                      <span className={styles.date}>
-                        {workout.nome} - Personal Trainer.  <p>CREF: {workout.cref} - {workout.date ? new Date(workout.date).toLocaleDateString('pt-BR') :  'Data não definida'}</p>  
-                      </span>
+                    <div className={styles.date}>
+                      <span>
+                        {workout.nome} - Personal Trainer. 
+                      </span> 
+                      <p>
+                        CREF: {workout.cref} - {workout.date ? new Date(workout.date).toLocaleDateString('pt-BR') :  'Data não definida'}
+                      </p>  
                     </div>
 
                   </div>
