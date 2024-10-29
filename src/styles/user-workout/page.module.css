@@ -18,7 +18,7 @@
 
 .header {
   text-align: center;
-  margin-top: 6rem;
+  margin-top: 5rem;
   margin-bottom: 2rem;
   padding: 1.5rem;
   border-bottom: 2px solid #FFD700;
@@ -28,7 +28,14 @@
 .titleWellCome {
   font-size: 1.2rem;
   color: #fff;
+  margin: -0.5rem 0rem -0.7rem 0rem;
 }
+@media (min-width: 768px) {
+  .titleWellCome {
+    font-size: 1.5rem;
+  }
+}
+
 
 /* image */
 .profileImage {
@@ -74,6 +81,17 @@
   align-items: center;
   margin-top: 1rem;
   padding: 0 1rem;
+}
+
+.userInfo p {
+  color: #fff; 
+  font-size: 0.8rem;
+}
+@media (min-width: 768px) {
+  .userInfo p {
+    font-size: 1rem;
+    margin: 0rem 0rem -3rem 0rem;
+  }
 }
 
 .workoutGrid {
@@ -153,9 +171,17 @@
 }
 
 .date {
-  margin: 0.5rem 0rem -0.6rem 0rem;
+  padding: 0.5rem 0rem 0rem 0rem;
   color: #fff;
   font-size: 0.7rem;
+}
+.date p {
+  margin: 0rem 0rem -0.6rem 0rem;
+}
+@media (min-width: 768px) {
+  .date p {
+    margin: 0rem 0rem -1rem 0rem;
+  }
 }
 
 .tags {
