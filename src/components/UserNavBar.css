@@ -22,7 +22,12 @@
     font-size: 1.5rem;
     font-weight: bold;
     color: #ffd700;
-    letter-spacing: 2rem;
+    letter-spacing: 1.5rem;
+}
+@media (min-width: 400px) {
+    .brand p {
+        letter-spacing: 2rem;
+    }
 }
 
 .hamburger {
@@ -107,6 +112,9 @@
         justify-content: space-around;
         flex: 0.5;
     }
+    .brand p {
+        letter-spacing: 1.8rem;
+    }
 
     .hamburger {
         display: none;
@@ -135,46 +143,18 @@
     }
 }  
 
-
- 
-/* image */
-.profileImage {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #ffd700;
-    transition: transform 0.3s ease-in-out;
-}
-
-.navItem img:hover {
-    transform: scale(1.1);
-}
-
-
-@media (min-width: 768px) {
-    .profileImage {
-        width: 50px;
-        height: 50px;
-        margin-right: 1rem;
+@media (min-width: 900px) {
+    .brand p {
+        letter-spacing: 2.8rem;
     }
 }  
 
-
-
-.loadingSpinner {
-    width: 2rem;
-    height: 2rem;
-    border: 2px solid #ffd700;
-    border-top: 2px solid transparent;
-    border-radius: 50%;
-    margin: 2rem auto;
-    animation: spin 1s linear infinite;
-    margin-right: 1.5rem;
+@media (min-width: 1300px) {
+    .brand p {
+        letter-spacing: 4rem;
+    }
 }
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}   
+ 
+ 
+ 
  
