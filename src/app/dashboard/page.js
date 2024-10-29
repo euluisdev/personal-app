@@ -85,6 +85,14 @@ const Page = () => {
     }));
   };
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 12) return "Bom dia";
+    if (hour >= 12 && hour < 18) return "Boa tarde";
+    return "Boa noite";
+  };
+  
+
   const handleStatusUpdateClick = (e, workout) => {
     e.stopPropagation();
     setSelectedWorkout(workout);
@@ -136,26 +144,25 @@ const Page = () => {
       <div className={styles.container}>
 
         <header className={styles.header}>
-          <h1>Bem-vindo, {userData.name || 'Aluno'}</h1>
+        <h1 className={styles.titleWellCome}>{getGreeting()} {userData.name || 'Aluno'}</h1>
           <div className={styles.userInfo}>
-          <p>Email: {userData.email}</p>
+          <p>{userData.email}</p>
             {isLoading && <div className='loadingSpinner'/>}
 
-              {profilePhoto && (
-                <img 
-                  src={profilePhoto.photoUrl} 
-                  alt="Foto do Perfil"    
-                  className='profileImage'
-                />
-              )}
-
+            {profilePhoto && (
+              <img 
+                src={profilePhoto.photoUrl} 
+                alt="Foto do Perfil"    
+                className={styles.profileImage}
+              />
+            )}
 
           </div>
         </header>
 
         {showSuccessAlert && (
           <div className={styles.successAlert}>
-            <p>Treino Pago!</p>
+            <p>Treino Pago! 💪</p>
           </div>
         )}
 
@@ -173,14 +180,14 @@ const Page = () => {
                 <div className={styles.cardInner}>
                   <div className={styles.cardFront}>
                     <span className={styles.muscle}>{workout.muscle}</span>
-                    <h2>{workout.description}</h2>
+                    <h2 className={styles.description}>{workout.description}</h2>
                     <p className={styles.date}>
                       {workout.date ? new Date(workout.date).toLocaleDateString('pt-BR') :  'Data não definida'}
                     </p>
                     <div className={styles.tags}>
 
                         <span className={styles.category}>
-                          Treino:
+                          Treino
                           {workout.workoutStatus === 'Pendente' ? (
                             <button
                               onClick={(e) => handleStatusUpdateClick(e, workout)}
@@ -189,7 +196,7 @@ const Page = () => {
                               {workout.workoutStatus}
                             </button>
                           ) : (
-                            <span className={styles.paidStatus}>Pago</span>
+                            <span className={styles.paidStatus}>Pago ✓ </span>
                           )}
                         </span>
 
