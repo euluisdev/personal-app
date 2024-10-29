@@ -168,7 +168,7 @@ const Page = () => {
 
         <main className={styles.workoutGrid}>
           {workouts.length === 0 ? (
-            <p className={styles.noWorkouts}>Nenhum treino encontrado.</p>
+            <p className={styles.noWorkouts}>Nenhum treino encontrado ainda...</p>
           ) : (
             workouts.map((workout) => (
 
@@ -181,13 +181,9 @@ const Page = () => {
                   <div className={styles.cardFront}>
                     <span className={styles.muscle}>{workout.muscle}</span>
                     <h2 className={styles.description}>{workout.description}</h2>
-                    <p className={styles.date}>
-                      {workout.date ? new Date(workout.date).toLocaleDateString('pt-BR') :  'Data não definida'}
-                    </p>
                     <div className={styles.tags}>
 
                         <span className={styles.category}>
-                          Treino
                           {workout.workoutStatus === 'Pendente' ? (
                             <button
                               onClick={(e) => handleStatusUpdateClick(e, workout)}
@@ -201,6 +197,13 @@ const Page = () => {
                         </span>
 
                     </div>
+
+                    <div>
+                      <span className={styles.date}>
+                        {workout.nome} - Personal Trainer.  <p>CREF: {workout.cref} - {workout.date ? new Date(workout.date).toLocaleDateString('pt-BR') :  'Data não definida'}</p>  
+                      </span>
+                    </div>
+
                   </div>
                   <div className={styles.cardBack}>
                     <ul className={styles.exerciseList}>
