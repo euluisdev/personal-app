@@ -7,14 +7,33 @@ import { Bell, MessageSquare } from 'lucide-react';
 import AdminNavBar from '@/components/AdminNavBar';
 import styles from '../../styles/admin-dashboard/page.module.css';
 
-import Footer from '@/components/footer';
-
-export default function AdminDashboard() {
+const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [message, setMessage] = useState('');
   const [countUsers, setCountUsers] = useState(0);
   const [notifications, setNotifications] = useState([]);
+  const [profileData, setProfileData] = useState(null);
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await fetch('/api/admin-profile');
+        const data = await response.json();
+
+        if (response.ok) {
+          setProfileData(data);
+
+        } else {
+          console.error(`Erro na resposta da API!`, data);
+        }
+      } catch (error) {
+        console.error('Erro ao buscar dados do perfil:', error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -85,17 +104,19 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await fetch('/api/admin-logout', { method: 'GET' });
-      router.push('/AdminLogin');
-    } catch (error) {
-      console.error('Erro ao fazer logout:', error);
-      setMessage('Erro ao realizar logout.');
-    }
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+      if (hour >= 5 && hour < 12) return "Bom dia";
+      if (hour >= 12 && hour < 18) return "Boa tarde";
+    return "Boa noite";
   };
 
-  // Dados de exemplo para o gráfico
+  const getDayOfWeek = () => {
+    const days = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+    const dayIndex = new Date().getDay(); 
+    return days[dayIndex]; 
+  };
+
   const chartData = [
     { month: 'Jan', value: 30 },
     { month: 'Feb', value: 40 },
@@ -109,11 +130,13 @@ export default function AdminDashboard() {
     <div className={styles.container}>
       <AdminNavBar />
       <div className={styles.content}>
-        <h1 className={styles.title}>Painel Administrativo</h1>
+        <h1 className={styles.title}>
+          {getGreeting()}, 
+           {profileData ? profileData.nome : 'Professor'}! 
+          Hoje é {getDayOfWeek()}.
+        </h1>
+
         {message && <p className={styles.errorMessage}>{message}</p>}
-        <button onClick={handleLogout} className={styles.logoutButton}>
-          Logout
-        </button>
 
         <div className={styles.cardGrid}>
           <div className={styles.card}>
@@ -153,7 +176,7 @@ export default function AdminDashboard() {
           <div className={styles.card}>
             <h2 className={styles.cardTitle}>Análise de Desempenho</h2>
             <div className={styles.cardContent}>
-              <ResponsiveContainer width="100%" height={200}>
+              <ResponsiveContainer>
                 <BarChart data={chartData}>
                   <XAxis 
                     dataKey="month" 
@@ -189,6 +212,11 @@ export default function AdminDashboard() {
     </div>
   );
 }; 
+
+export default AdminDashboard;      
+
+ 
+
 
 
    
