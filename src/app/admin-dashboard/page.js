@@ -8,6 +8,8 @@ import AdminNavBar from '@/components/AdminNavBar';
 import styles from '../../styles/admin-dashboard/page.module.css';
 
 const AdminDashboard = () => {
+  const [profilePhoto, setProfilePhoto] = useState(null); 
+  const [isLoading, setIsLoading] = useState(false);  
   const [users, setUsers] = useState([]);
   const [message, setMessage] = useState('');
   const [countUsers, setCountUsers] = useState(0);
@@ -34,6 +36,29 @@ const AdminDashboard = () => {
 
     fetchProfile();
   }, []);
+
+  useEffect(() => {
+    const fetchProfilePhoto = async () => {
+        setIsLoading(true);
+        try {
+            const response = await fetch('api/admin-profile');
+            const data = await response.json(); 
+
+            if (response.ok) {
+                setProfilePhoto(data)
+            } else {
+                console.error(`Erro na resposta da API!`, data);
+            }
+
+        } catch (error) {
+            console.error('Erro ao buscar file:', error); 
+
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    fetchProfilePhoto();   
+}, [])
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -111,10 +136,10 @@ const AdminDashboard = () => {
     return "Boa noite";
   };
 
-  const getDayOfWeek = () => {
-    const days = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
-    const dayIndex = new Date().getDay(); 
-    return days[dayIndex]; 
+  const getFormattedDate = () => {
+    const now = new Date();
+    const options = { weekday: 'long', day: 'numeric', month: 'short' };
+    return now.toLocaleDateString('pt-BR', options);
   };
 
   const chartData = [
@@ -131,10 +156,24 @@ const AdminDashboard = () => {
       <AdminNavBar />
       <div className={styles.content}>
         <h1 className={styles.title}>
-          {getGreeting()}, 
-           {profileData ? profileData.nome : 'Professor'}! 
-          Hoje é {getDayOfWeek()}.
+          {getGreeting()},&nbsp;
+           {profileData ? profileData.nome : 'Professor'}!<br />
+          Hoje é {getFormattedDate()}
         </h1>
+
+        <h1 className={styles.profileImage}>
+          {isLoading && <div className='loadingSpinner'/>}
+
+          {profilePhoto && (
+            <img 
+              src={profilePhoto.photoUrl} 
+              alt="Foto do Perfil"    
+              className={styles.image}
+            />
+          )}
+        </h1>
+
+        
 
         {message && <p className={styles.errorMessage}>{message}</p>}
 
