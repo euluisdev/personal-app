@@ -170,7 +170,7 @@ const Page = () => {
           {workouts.length === 0 ? (
             <p className={styles.noWorkouts}>Nenhum treino encontrado ainda...</p>
           ) : (
-            workouts.map((workout) => (
+            workouts.slice(-2).map((workout) => (
 
               <div
                 key={workout._id}
@@ -200,10 +200,10 @@ const Page = () => {
 
                     <div className={styles.date}>
                       <span>
-                        {workout.nome} - Personal Trainer. 
+                        {workout.nome  || 'Professor'} - Personal Trainer
                       </span> 
                       <p>
-                        CREF: {workout.cref} - {workout.date ? new Date(workout.date).toLocaleDateString('pt-BR') :  'Data não definida'}
+                        CREF: {workout.cref || '1234-5'} - {workout.date ? new Date(workout.date).toLocaleDateString('pt-BR') :  'Data não definida'}
                       </p>  
                     </div>
 
