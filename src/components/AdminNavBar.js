@@ -3,32 +3,7 @@ import Link from 'next/link';
 import './AdminNavBar.css';
 
 const AdminNavBar = () => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [profilePhoto, setProfilePhoto] = useState(null); 
-    const [isLoading, setIsLoading] = useState(false);  
-
-    useEffect(() => {
-        const fetchProfilePhoto = async () => {
-            setIsLoading(true);
-            try {
-                const response = await fetch('api/admin-profile');
-                const data = await response.json(); 
-
-                if (response.ok) {
-                    setProfilePhoto(data)
-                } else {
-                    console.error(`Erro na resposta da API!`, data);
-                }
-
-            } catch (error) {
-                console.error('Erro ao buscar file:', error); 
-
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        fetchProfilePhoto();   
-    }, [])
+    const [isOpen, setIsOpen] = useState(false); 
 
     const toggleMenu = () => {
         setIsOpen(!isOpen);
@@ -58,17 +33,6 @@ const AdminNavBar = () => {
                     <Link href="/admin-profile">Perfil</Link>
                 </li>
             </ul>
-
-            {isLoading && <div className='loadingSpinner'/>}
-
-            {profilePhoto && (
-              <img 
-                src={profilePhoto.photoUrl} 
-                alt="Foto do Perfil"    
-                className='profileImage'
-              />
-            )}
-
         </nav>
     );
 };
