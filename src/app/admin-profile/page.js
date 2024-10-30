@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import AdminNavBar from '@/components/AdminNavBar';
+import { useRouter } from 'next/navigation';
 
 import styles from '../../styles/admin-profile/page.module.css';
 
@@ -15,6 +16,7 @@ const AdminProfile = () => {
     photoUrl: '',
   });
   const [fileData, setFileData] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchProfile = async () => {
