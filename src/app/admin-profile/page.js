@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import AdminNavBar from '@/components/AdminNavBar';
-import Footer from '@/components/footer';
 
 import styles from '../../styles/admin-profile/page.module.css';
 
@@ -94,12 +93,23 @@ const AdminProfile = () => {
 
     if (selectedFile) {
       setFileData(selectedFile);
-    }
+    };
+  };
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/admin-logout', { method: 'GET' });
+      router.push('/AdminLogin');
+
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error);
+      setMessage('Erro ao realizar logout.');
+    };
   };
 
   if (!profileData) {
     return <div>Carregando...</div>;
-  }
+  };
 
   return (
     <div className={styles.container}>
@@ -159,8 +169,13 @@ const AdminProfile = () => {
             <p className={styles.role}>Personal Trainer</p>
             <p className={styles.email}>{profileData.email}</p>
             <p className={styles.bio}>{profileData.bio}</p>
+
             <button onClick={handleEditClick} className={styles.editButton}>
               Editar
+            </button>
+            
+            <button onClick={handleLogout} className={styles.cancelButton}>
+              Logout
             </button>
           </div>
         )}
