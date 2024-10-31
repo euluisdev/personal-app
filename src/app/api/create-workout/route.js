@@ -58,14 +58,15 @@ export async function POST(req) {
       });
     };
 
-    //create workout
     const result = await workoutsCollection.insertOne({
-        userId: new ObjectId(userId),
-        ...workoutData,
-        createdAt: new Date(), 
-        updatedAt: new Date(), 
-      });   
-      console.log('Treino criado com sucesso:', result);
+      userId: new ObjectId(userId),
+      muscleGroups: workoutData.muscleGroups,
+      date: new Date(workoutData.date),
+      description: workoutData.description,
+      workoutStatus: workoutData.workoutStatus,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });   
 
     return new Response(JSON.stringify({ message: 'Treino criado com sucesso', workoutId: result.insertedId }), {
       status: 201,
