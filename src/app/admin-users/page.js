@@ -19,9 +19,10 @@ const Page = () => {
     category: '',
     description: '',
     date: '',
-    exercises: [], 
-    workoutStatus: 'Pendente'
+    exercises: [],
+    workoutStatus: 'Pendente',
   });
+  const [muscleGroups, setMuscleGroups] = useState([]);
   const [generatedWorkouts, setGeneratedWorkouts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [prompt, setPrompt] = useState('');
@@ -129,6 +130,12 @@ const Page = () => {
 
       const workoutList = response.data.generations[0].text.split('\n').filter(line => line.trim() !== '');
       setGeneratedWorkouts(workoutList);
+
+      setWorkoutForm({
+        level: '',
+        category: '',
+      });
+
     } catch (error) {
       console.error('Erro ao gerar treino:', error);
       setMessage('Erro ao gerar o pré-visualização do treino. Por favor, tente novamente.');
@@ -159,10 +166,26 @@ const Page = () => {
   };
 
   const addExerciseToWorkout = (exercise) => {
-    setWorkoutForm(prev => ({
-      ...prev,
-      exercises: [...prev.exercises, exercise]
-    }));
+    const existingGroupIndex = muscleGroups.findIndex(group =>
+      group.muscle === workoutForm.muscle
+    );
+
+    if (existingGroupIndex === -1) {
+      setMuscleGroups(prev => [...prev, {
+        muscle: workoutForm.muscle,
+        exercises: [exercise]
+      }]);
+    } else {
+      setMuscleGroups(prev => prev.map((group, index) => {
+        if (index === existingGroupIndex) {
+          return {
+            ...group,
+            exercises: [...group.exercises, exercise]
+          };
+        }
+        return group;
+      }));
+    }
   };
 
   const handleSubmitWorkout = (e) => {
@@ -172,12 +195,12 @@ const Page = () => {
       return;
     }
 
-    if (workoutForm.exercises.length === 0) {
-      setMessage('Adicione um exercício ao treino.');
+    if (muscleGroups.length === 0) {
+      setMessage('Adicione exercícios ao treino.');
       return;
     }
 
-    if (workoutForm.date === 0) {
+    if (workoutForm.date === '') {
       setMessage('Selecione uma data para o treino.');
       return;
     }
@@ -196,13 +219,10 @@ const Page = () => {
           body: JSON.stringify({
             userId: user._id,
             workoutData: {
-              ...workoutForm,
-              muscle: workoutForm.muscle,
-              level: workoutForm.level,
-              category: workoutForm.category,
-              description: prompt,
+              muscleGroups: muscleGroups,
               date: workoutForm.date,
-              exercises: workoutForm.exercises
+              description: prompt,
+              workoutStatus: 'Pendente'
             }
           }),
         });
@@ -227,6 +247,7 @@ const Page = () => {
           date: '',
           exercises: []
         });
+        setMuscleGroups([]);
         setGeneratedWorkouts([]);
         setSelectedUsers([]);
       }, 2000);
@@ -271,20 +292,19 @@ const Page = () => {
                         <span>{user.email}</span>
                       </div>
                     </div>
-                    <div className={styles.userGoal}>
+                    {/*                     <div className={styles.userGoal}>
                       <Target className={styles.icon} />
                       <span>{user.objetivoPrincipal || 'Não definido'}</span>
-                    </div>
+                    </div> */}
                     <button
-                      className={`${styles.selectButton} ${
-                        selectedUsers.some((selected) => selected.email === user.email) 
-                        ? styles.selected 
-                        : ''
-                      }`}
+                      className={`${styles.selectButton} ${selectedUsers.some((selected) => selected.email === user.email)
+                          ? styles.selected
+                          : ''
+                        }`}
                       onClick={() => handleSelectUser(user)}
                     >
-                      {selectedUsers.some((selected) => selected.email === user.email) 
-                        ? 'Selecionado' 
+                      {selectedUsers.some((selected) => selected.email === user.email)
+                        ? 'Selecionado'
                         : 'Selecionar'
                       }
                     </button>
@@ -301,7 +321,7 @@ const Page = () => {
               Criar Treino {selectedUsers.length > 0 ? `para ${selectedUsers.map(user => user.nome).join(', ')}` : ''}
             </h2>
 
-            <form  className={styles.workoutForm}>
+            <form className={styles.workoutForm}>
               <div className={styles.formGroup}>
                 <label htmlFor="muscle">Músculo a ser treinado:</label>
                 <select
@@ -367,28 +387,28 @@ const Page = () => {
                 {isLoading ? 'Gerando...' : 'Gerar Pré-visualização'}
               </button>
             </form>
-            
+
             {generatedWorkouts.length > 0 && (
-                <div className={styles.previewSection}>
-                  <h3 className={styles.previewTitle}>Exercícios Gerados</h3>
-                  <div className={styles.generatedWorkouts}>
-                    {generatedWorkouts.map((workout, index) => (
-                      <div key={index} className={styles.workoutCard}>
-                        <p>{workout}</p>
-                        <button
-                          onClick={() => addExerciseToWorkout(workout)}
-                          className={styles.addButton}
-                        >
-                          Adicionar ao Treino
-                        </button>
-                      </div>
-                    ))}
-                  </div>
+              <div className={styles.previewSection}>
+                <h3 className={styles.previewTitle}>Exercícios Gerados</h3>
+                <div className={styles.generatedWorkouts}>
+                  {generatedWorkouts.map((workout, index) => (
+                    <div key={index} className={styles.workoutCard}>
+                      <p>{workout}</p>
+                      <button
+                        onClick={() => addExerciseToWorkout(workout)}
+                        className={styles.addButton}
+                      >
+                        Adicionar ao Treino
+                      </button>
+                    </div>
+                  ))}
                 </div>
-              )}
+              </div>
+            )}
           </div>
 
-          {workoutForm.exercises.length > 0 && (
+          {/*           {workoutForm.exercises.length > 0 && (
             <div className={styles.card}>
               <h2 className={styles.cardTitle}>
                 Exercícios Selecionados para {workoutForm.muscle}
@@ -443,6 +463,67 @@ const Page = () => {
               </div>
             </div>
           )}
+        </div> */}
+
+          {muscleGroups.length > 0 && (
+            <div className={styles.card}>
+              {muscleGroups.map((group, index) => (
+                <div key={index}>
+                  <h2 className={styles.cardTitle}>
+                    Exercícios Selecionados para {group.muscle}
+                  </h2>
+                  <ul className={styles.selectedExercises}>
+                    {group.exercises.map((exercise, exerciseIndex) => (
+                      <li
+                        key={exerciseIndex}
+                        onDoubleClick={() => handleEdit(exerciseIndex)}
+                        className={styles.exerciseItem}
+                      >
+                        {isEditing === index ? (
+                        <input
+                          type="text"
+                          value={editValue}
+                          onChange={handleEditChange}
+                          onBlur={handleEditConfirm}
+                          onKeyDown={(e) => e.key === 'Enter' && handleEditConfirm()}
+                          autoFocus
+                          className={styles.editInput}
+                        />
+                    ) : (
+                      exercise
+                    )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+
+              <div className={styles.finalizeWorkout}>
+                <div className={styles.formGroup}>
+                  <label htmlFor="date">Data do Treino:</label>
+                  <div className={styles.dateInputWrapper}>
+                    <Calendar className={styles.icon} />
+                    <input
+                      type="date"
+                      id="date"
+                      name="date"
+                      value={workoutForm.date}
+                      onChange={handleWorkoutFormChange}
+                      className={styles.dateInput}
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className={styles.submitButton}
+                  onClick={handleSubmitWorkout}
+                >
+                  Salvar Treino
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {showConfirmModal && (
@@ -453,13 +534,13 @@ const Page = () => {
                 <p>Você está prestes a criar um treino para {selectedUsers.length} aluno(s).</p>
                 <p>Tem certeza que deseja prosseguir?</p>
                 <div className={styles.modalButtons}>
-                  <button 
+                  <button
                     onClick={() => setShowConfirmModal(false)}
                     className={styles.cancelButton}
                   >
                     Cancelar
                   </button>
-                  <button 
+                  <button
                     onClick={confirmAndSubmitWorkout}
                     className={styles.confirmButton}
                   >
@@ -482,7 +563,7 @@ const Page = () => {
           </div>
         )}
 
-        
+
       </div>
     </div>
   );
