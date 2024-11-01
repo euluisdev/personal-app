@@ -63,7 +63,9 @@ export async function POST(req) {
       muscleGroups: workoutData.muscleGroups,
       date: new Date(workoutData.date),
       description: workoutData.description,
-      workoutStatus: workoutData.workoutStatus,
+      workoutStatus: workoutData.workoutStatus, 
+      adminName: workoutData.nome, 
+      adminCref: workoutData.cref,  
       createdAt: new Date(),
       updatedAt: new Date(),
     });   
