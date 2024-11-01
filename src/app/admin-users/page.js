@@ -2,11 +2,11 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { User, Calendar, Target, Search, Check, X } from 'lucide-react';
+import { User, Calendar, Target, Search, Check, X, Trash2 } from 'lucide-react';
 import axios from 'axios';
 import AdminNavBar from '@/components/AdminNavBar';
 
-import styles from '../../styles/admin-users/page.module.css';
+import styles from '../../styles/admin-users/page.module.css'; 
 
 const Page = () => {
   const [approvedUsers, setApprovedUsers] = useState([]);
@@ -144,25 +144,47 @@ const Page = () => {
     }
   };
 
-  const handleEdit = (index) => {
-    setIsEditing(index);
-    setEditValue(workoutForm.exercises[index]);
-  };
-
-  const handleEditChange = (e) => {
-    setEditValue(e.target.value);
+  const handleEdit = (groupIndex, exerciseIndex) => {
+    setIsEditing(`${groupIndex}-${exerciseIndex}`);
+    const exercise = muscleGroups[groupIndex].exercises[exerciseIndex];
+    setEditValue(exercise);
   };
 
   const handleEditConfirm = () => {
-    if (isEditing !== null) {
-      const updatedExercises = [...workoutForm.exercises];
-      updatedExercises[isEditing] = editValue;
-      setWorkoutForm(prev => ({
-        ...prev,
-        exercises: updatedExercises
+    if (isEditing) {
+      const [groupIndex, exerciseIndex] = isEditing.split('-').map(Number);
+
+      setMuscleGroups(prev => prev.map((group, gIdx) => {
+        if (gIdx === groupIndex) {
+          const updatedExercises = [...group.exercises];
+          updatedExercises[exerciseIndex] = editValue;
+          return {
+            ...group,
+            exercises: updatedExercises
+          };
+        }
+        return group;
       }));
+
       setIsEditing(null);
+      setEditValue('');
     }
+  };
+
+  const removeExercise = (groupIndex, exerciseIndex) => {
+    setMuscleGroups(prev => prev.map((group, idx) => {
+      if (idx === groupIndex) {
+        return {
+          ...group,
+          exercises: group.exercises.filter((_, exIdx) => exIdx !== exerciseIndex)
+        };
+      }
+      return group;
+    }).filter(group => group.exercises.length > 0));
+  };
+
+  const removeMuscleGroup = (groupIndex) => {
+    setMuscleGroups(prev => prev.filter((_, idx) => idx !== groupIndex));
   };
 
   const addExerciseToWorkout = (exercise) => {
@@ -298,8 +320,8 @@ const Page = () => {
                     </div> */}
                     <button
                       className={`${styles.selectButton} ${selectedUsers.some((selected) => selected.email === user.email)
-                          ? styles.selected
-                          : ''
+                        ? styles.selected
+                        : ''
                         }`}
                       onClick={() => handleSelectUser(user)}
                     >
@@ -467,31 +489,53 @@ const Page = () => {
 
           {muscleGroups.length > 0 && (
             <div className={styles.card}>
-              {muscleGroups.map((group, index) => (
-                <div key={index}>
-                  <h2 className={styles.cardTitle}>
-                    Exercícios Selecionados para {group.muscle}
-                  </h2>
+              {muscleGroups.map((group, groupIndex) => (
+                <div key={groupIndex} className={styles.muscleGroupContainer}>
+                  <div className={styles.muscleGroupHeader}>
+                    <h2 className={styles.cardTitle}>
+                      Exercícios Selecionados para {group.muscle}
+                    </h2>
+                    <button
+                      onClick={() => removeMuscleGroup(groupIndex)}
+                      className={styles.removeGroupButton}
+                      title="Remover grupo muscular"
+                    >
+                      <Trash2 size={20} />
+                    </button>
+                  </div>
                   <ul className={styles.selectedExercises}>
                     {group.exercises.map((exercise, exerciseIndex) => (
                       <li
                         key={exerciseIndex}
-                        onDoubleClick={() => handleEdit(exerciseIndex)}
                         className={styles.exerciseItem}
                       >
-                        {isEditing === index ? (
-                        <input
-                          type="text"
-                          value={editValue}
-                          onChange={handleEditChange}
-                          onBlur={handleEditConfirm}
-                          onKeyDown={(e) => e.key === 'Enter' && handleEditConfirm()}
-                          autoFocus
-                          className={styles.editInput}
-                        />
-                    ) : (
-                      exercise
-                    )}
+                        <div
+                          className={styles.exerciseContent}
+                          onDoubleClick={() => handleEdit(groupIndex, exerciseIndex)}
+                        >
+                          {isEditing === `${groupIndex}-${exerciseIndex}` ? (
+                            <input
+                              type="text"
+                              value={editValue}
+                              onChange={(e) => setEditValue(e.target.value)}
+                              onBlur={handleEditConfirm}
+                              onKeyDown={(e) => e.key === 'Enter' && handleEditConfirm()}
+                              autoFocus
+                              className={styles.editInput}
+                            />
+                          ) : (
+                            <span className={styles.exerciseText}>
+                              {exercise}
+                            </span>
+                          )}
+                        </div>
+                        <button
+                          onClick={() => removeExercise(groupIndex, exerciseIndex)}
+                          className={styles.removeExerciseButton}
+                          title="Remover exercício"
+                        >
+                          <X size={16} />
+                        </button>
                       </li>
                     ))}
                   </ul>
