@@ -53,7 +53,9 @@ export async function PUT(req) {
         const updateData = {};
         if (formData.has('nome')) updateData.nome = formData.get('nome');
         if (formData.has('email')) updateData.email = formData.get('email');
-        if (formData.has('bio')) updateData.bio = formData.get('bio');
+        if (formData.has('bio')) updateData.bio = formData.get('bio'); 
+        if (formData.has('telefone')) updateData.telefone = formData.get('telefone');
+        if (formData.has('cref')) updateData.cref = formData.get('cref');
 
         const file = formData.get('photoUrl');
         if (file && file instanceof File) {
