@@ -10,10 +10,12 @@ const AdminProfile = () => {
   const [profileData, setProfileData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    nome: '', 
+    nome: '',
     email: '',
-    bio: '', 
+    bio: '',
     photoUrl: '',
+    telefone: '',
+    cref: '',
   });
   const [fileData, setFileData] = useState(null);
   const router = useRouter();
@@ -29,8 +31,10 @@ const AdminProfile = () => {
           setFormData({
             nome: data.nome,
             email: data.email,
-            bio: data.bio, 
-            photoUrl: data.photoUrl, 
+            bio: data.bio,
+            photoUrl: data.photoUrl,
+            telefone: data.telefone || '',
+            cref: data.cref || '',
           });
         } else {
           console.error(`Erro na resposta da API!`, data);
@@ -49,8 +53,10 @@ const AdminProfile = () => {
       updatedFormData.append('nome', formData.nome);
       updatedFormData.append('email', formData.email);
       updatedFormData.append('bio', formData.bio);
+      updatedFormData.append('telefone', formData.telefone);
+      updatedFormData.append('cref', formData.cref);
     
-      if (fileData) { 
+      if (fileData) {
         updatedFormData.append('photoUrl', fileData);
       }
   
@@ -61,7 +67,7 @@ const AdminProfile = () => {
   
       if (response.ok) {
         const { profile } = await response.json();
-        setProfileData(profile); 
+        setProfileData(profile);
         setFormData((prev) => ({ ...prev, photoUrl: profile.photoUrl }))
         setIsEditing(false);
       } else {
@@ -92,100 +98,157 @@ const AdminProfile = () => {
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
-
     if (selectedFile) {
       setFileData(selectedFile);
-    };
+    }
   };
 
   const handleLogout = async () => {
     try {
       await fetch('/api/admin-logout', { method: 'GET' });
       router.push('/AdminLogin');
-
     } catch (error) {
       console.error('Erro ao fazer logout:', error);
-      setMessage('Erro ao realizar logout.');
-    };
+    }
   };
 
   if (!profileData) {
-    return <div>Carregando...</div>;
-  };
+    return <div className={styles.loading}>Carregando...</div>;
+  }
 
   return (
     <div className={styles.container}>
       <AdminNavBar />
-      <div className={styles.profileContainer}>
-        <h1 className={styles.title}>Perfil</h1> 
-        
-        {profileData.photoUrl && (
-          <img 
-            src={profileData.photoUrl} 
-            alt="Foto do Perfil" 
-            className={styles.profileImage} 
-          />
-        )}
-
-        {isEditing ? (
-          <div>
-            <input
-              type='file'
-              name='photoUrl'
-              accept='image/*'
-              onChange={handleFileChange}
-              className={styles.input} 
-            />
-            <input
-              type="text"
-              name="nome"
-              value={formData.nome} 
-              onChange={handleChange}
-              className={styles.input}
-            />
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className={styles.input}
-            />
-            <textarea
-              name="bio"
-              value={formData.bio}
-              onChange={handleChange}
-              className={styles.textarea}
-            />
-
-            <button onClick={handleCancelClick} className={styles.cancelButton}>
-              Cancelar
-            </button>
-            
-            <button onClick={handleSaveClick} className={styles.saveButton}>
-              Salvar
-            </button>
-          </div>
-        ) : (
-          <div>
-            <h2 className={styles.name}>{profileData.nome}</h2> 
-            <p className={styles.role}>Personal Trainer</p>
-            <p className={styles.email}>{profileData.email}</p>
-            <p className={styles.bio}>{profileData.bio}</p>
-
+      <main className={styles.profileContainer}>
+        <div className={styles.profileHeader}>
+          <h1 className={styles.title}>Perfil Profissional</h1>
+          {!isEditing && (
             <button onClick={handleEditClick} className={styles.editButton}>
-              Editar
+              Editar Perfil
             </button>
-            
-            <button onClick={handleLogout} className={styles.cancelButton}>
-              Logout
-            </button>
+          )}
+        </div>
+
+        <div className={styles.profileContent}>
+          <div className={styles.profileImageContainer}>
+            {profileData.photoUrl && (
+              <img
+                src={profileData.photoUrl}
+                alt="Foto do Perfil"
+                className={styles.profileImage}
+              />
+            )}
+            {isEditing && (
+              <div className={styles.fileInputContainer}>
+                <input
+                  type="file"
+                  name="photoUrl"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className={styles.fileInput}
+                />
+              </div>
+            )}
           </div>
-        )}
-      </div>
+
+          <div className={styles.profileInfo}>
+            {isEditing ? (
+              <div className={styles.editForm}>
+                <div className={styles.inputGroup}>
+                  <label>Nome</label>
+                  <input
+                    type="text"
+                    name="nome"
+                    value={formData.nome}
+                    onChange={handleChange}
+                    className={styles.input}
+                  />
+                </div>
+
+                <div className={styles.inputGroup}>
+                  <label>Email</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className={styles.input}
+                  />
+                </div>
+
+                <div className={styles.inputGroup}>
+                  <label>Telefone</label>
+                  <input
+                    type="tel"
+                    name="telefone"
+                    value={formData.telefone}
+                    onChange={handleChange}
+                    className={styles.input}
+                    placeholder="(XX) XXXXX-XXXX"
+                  />
+                </div>
+
+                <div className={styles.inputGroup}>
+                  <label>CREF</label>
+                  <input
+                    type="text"
+                    name="cref"
+                    value={formData.cref}
+                    onChange={handleChange}
+                    className={styles.input}
+                    placeholder="000000-G/XX"
+                  />
+                </div>
+
+                <div className={styles.inputGroup}>
+                  <label>Biografia</label>
+                  <textarea
+                    name="bio"
+                    value={formData.bio}
+                    onChange={handleChange}
+                    className={styles.textarea}
+                    rows="4"
+                  />
+                </div>
+
+                <div className={styles.buttonGroup}>
+                  <button onClick={handleSaveClick} className={styles.saveButton}>
+                    Salvar
+                  </button>
+                  <button onClick={handleCancelClick} className={styles.cancelButton}>
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className={styles.profileDetails}>
+                <h2 className={styles.name}>{profileData.nome}</h2>
+                <p className={styles.role}>Personal Trainer</p>
+                <div className={styles.credentials}>
+                  <p className={styles.credentialItem}>
+                    <span className={styles.label}>CREF:</span> {profileData.cref}
+                  </p>
+                  <p className={styles.credentialItem}>
+                    <span className={styles.label}>Telefone:</span> {profileData.telefone}
+                  </p>
+                  <p className={styles.credentialItem}>
+                    <span className={styles.label}>Email:</span> {profileData.email}
+                  </p>
+                </div>
+                <div className={styles.bioContainer}>
+                  <h3>Sobre mim</h3>
+                  <p className={styles.bio}>{profileData.bio}</p>
+                </div>
+                <button onClick={handleLogout} className={styles.logoutButton}>
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </main>
     </div>
   );
 };
 
-export default AdminProfile; 
-
-
+export default AdminProfile;
