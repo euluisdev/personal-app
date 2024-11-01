@@ -20,7 +20,9 @@ const Page = () => {
     description: '',
     date: '',
     exercises: [],
-    workoutStatus: 'Pendente',
+    workoutStatus: 'Pendente', 
+    nome: '', 
+    cref: '',
   });
   const [muscleGroups, setMuscleGroups] = useState([]);
   const [generatedWorkouts, setGeneratedWorkouts] = useState([]);
@@ -30,6 +32,7 @@ const Page = () => {
   const [editValue, setEditValue] = useState('');
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [profileData, setProfileData] = useState('');
   const router = useRouter();
 
   const muscles = ['Peitoral', 'Deltoides', 'Trapézio', 'Costas', 'Bíceps ', 'Tríceps', 'Abdômen', 'Quadríceps', 'Isquiotibiais', 'Adutores', 'Gastrocnêmio ', 'Abdutores', 'Glúteos', 'Antebraços'];
@@ -144,6 +147,26 @@ const Page = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await fetch('/api/admin-profile');
+        const data = await response.json();
+
+        if (response.ok) {
+          setProfileData(data);
+
+        } else {
+          console.error(`Erro na resposta da API!`, data);
+        }
+      } catch (error) {
+        console.error('Erro ao buscar dados do perfil:', error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
   const handleEdit = (groupIndex, exerciseIndex) => {
     setIsEditing(`${groupIndex}-${exerciseIndex}`);
     const exercise = muscleGroups[groupIndex].exercises[exerciseIndex];
@@ -244,7 +267,9 @@ const Page = () => {
               muscleGroups: muscleGroups,
               date: workoutForm.date,
               description: prompt,
-              workoutStatus: 'Pendente'
+              workoutStatus: 'Pendente', 
+              nome: profileData.nome, 
+              cref: profileData.cref, 
             }
           }),
         });
@@ -429,63 +454,6 @@ const Page = () => {
               </div>
             )}
           </div>
-
-          {/*           {workoutForm.exercises.length > 0 && (
-            <div className={styles.card}>
-              <h2 className={styles.cardTitle}>
-                Exercícios Selecionados para {workoutForm.muscle}
-              </h2>
-              <ul className={styles.selectedExercises}>
-                {workoutForm.exercises.map((exercise, index) => (
-                  <li
-                    key={index}
-                    onDoubleClick={() => handleEdit(index)}
-                    className={styles.exerciseItem}
-                  >
-                    {isEditing === index ? (
-                      <input
-                        type="text"
-                        value={editValue}
-                        onChange={handleEditChange}
-                        onBlur={handleEditConfirm}
-                        onKeyDown={(e) => e.key === 'Enter' && handleEditConfirm()}
-                        autoFocus
-                        className={styles.editInput}
-                      />
-                    ) : (
-                      exercise
-                    )}
-                  </li>
-                ))}
-              </ul>
-
-              <div className={styles.finalizeWorkout}>
-                <div className={styles.formGroup}>
-                  <label htmlFor="date">Data do Treino:</label>
-                  <div className={styles.dateInputWrapper}>
-                    <Calendar className={styles.icon} />
-                    <input
-                      type="date"
-                      id="date"
-                      name="date"
-                      value={workoutForm.date}
-                      onChange={handleWorkoutFormChange}
-                      className={styles.dateInput}
-                    />
-                  </div>
-                </div>
-
-                <button 
-                  type="submit" 
-                  className={styles.submitButton}
-                  onClick={handleSubmitWorkout}
-                >
-                  Salvar Treino
-                </button>
-              </div>
-            </div>
-          )}
-        </div> */}
 
           {muscleGroups.length > 0 && (
             <div className={styles.card}>
