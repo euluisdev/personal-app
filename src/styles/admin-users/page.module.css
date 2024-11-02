@@ -6,7 +6,7 @@
 }
 
 .content {
-    padding: 0.75rem;
+    padding: 0.5rem;
     max-width: 100%;
     margin: 0 auto;
 }
@@ -18,10 +18,11 @@
 }
 
 .title {
-    font-size: 1.5rem;
+    font-size: 1.05rem;
     font-weight: bold;
     margin-bottom: 1rem;
     text-align: center;
+    color: #FFF;
 }
 
 @media (min-width: 640px) {
@@ -44,7 +45,7 @@
 .cardGrid {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.1rem;
 }
 
 @media (min-width: 768px) {
@@ -57,17 +58,17 @@
 
 .searchContainer {
     position: relative;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .searchInput {
     width: 100%;
-    padding: 0.75rem 1rem 0.75rem 2.5rem;
-    border: 2px solid #ffd700;
+    padding: 0.4rem 0.5rem 0.4rem 2.5rem;
+    border: 0.5px solid #ffd700;
     background-color: #000000;
-    color: #ffffff;
+    color: #FFF;
     border-radius: 0.25rem;
-    font-size: 1rem;
+    font-size: 0.8rem;
 }
 
 .searchIcon {
@@ -99,9 +100,9 @@
 .cardTitle {
     background-color: #333;
     color: #FFD700;
-    font-size: 1.125rem;
+    font-size: 1rem;
     font-weight: bold;
-    padding: 0.875rem;
+    padding: 0.5rem 0.5rem 0.5rem 0.5rem;
 }
 
 @media (min-width: 640px) {
@@ -122,7 +123,7 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    padding: 0.875rem;
+    padding: 0.5rem;
     border-bottom: 1px solid #444;
 }
 
@@ -144,29 +145,28 @@
 .userInfo div {
     display: flex;
     flex-direction: column;
-    margin-left: 0.5rem;
 }
 
 .userInfo strong {
-    font-size: 1rem;
-    margin-bottom: 0.25rem;
+    font-size: 0.8rem;
+    margin-bottom: 0.1rem;
 }
 
 .userInfo span {
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     color: #ccc;
 }
 
 .userGoal {
     display: flex;
     align-items: center;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     color: #ccc;
 }
 
 .icon {
-    width: 1.25rem;
-    height: 1.25rem;
+    width: 1.2rem;
+    height: 1.2rem;
     color: #FFD700;
     margin-right: 0.5rem;
 }
@@ -176,11 +176,12 @@
     background-color: #FFD700;
     color: #000;
     border: none;
-    padding: 0.75rem;
-    border-radius: 0.25rem;
+    padding: 0.3rem;
+    border-radius: 10rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-weight: 500;
+    font-weight: 200;
+    font-size: 0.7rem;
 }
 
 @media (min-width: 640px) {
@@ -196,7 +197,7 @@
 }
 
 .workoutForm {
-    padding: 0.875rem;
+    padding: 0.5rem;
 }
 
 @media (min-width: 640px) {
@@ -206,24 +207,24 @@
 }
 
 .formGroup {
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .formGroup label {
     display: block;
     margin-bottom: 0.5rem;
-    font-size: 0.875rem;
+    font-size: 0.8rem;
     color: #ccc;
 }
 
 .select {
     width: 100%;
-    padding: 0.75rem;
+    padding: 0.3rem;
     background-color: #333;
     color: #FFD700;
     border: 1px solid #FFD700;
     border-radius: 0.25rem;
-    font-size: 1rem;
+    font-size: 0.8rem;
     appearance: none;
 }
 
@@ -234,7 +235,7 @@
     background-color: #333;
     color: #FFD700;
     border-radius: 0.25rem;
-    font-size: 1rem;
+    font-size: 0.8rem;
 }
 
 .dateInputWrapper {
@@ -253,13 +254,13 @@
     background-color: #FFD700;
     color: #000;
     border: none;
-    padding: 0.875rem;
+    padding: 0.3rem;
     border-radius: 0.25rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-weight: 500;
-    font-size: 1rem;
-    margin-top: 1rem;
+    font-weight: 400;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
 }
 
 .submitButton:hover:not(.disabled) {
@@ -403,7 +404,7 @@
 .addButton:active,
 .submitButton:active {
     transform: scale(0.98);
-}  
+}
 
 
 .cardUsers {
@@ -412,14 +413,14 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-  }
-  
-  .userList {
+}
+
+.userList {
     flex: 1;
     overflow-y: auto;
-  }
-  
-  .exerciseItem {
+}
+
+.exerciseItem {
     position: relative;
     padding: 0.75rem;
     background-color: #333;
@@ -428,13 +429,13 @@
     font-size: 0.875rem;
     cursor: pointer;
     transition: all 0.2s ease;
-  }
-  
-  .exerciseItem:hover {
+}
+
+.exerciseItem:hover {
     background-color: #444;
-  }
-  
-  .editInput {
+}
+
+.editInput {
     width: 100%;
     padding: 0.5rem;
     background-color: #222;
@@ -442,16 +443,16 @@
     color: #FFD700;
     border-radius: 0.25rem;
     font-size: 0.875rem;
-  }
-  
-  .editInput:focus {
+}
+
+.editInput:focus {
     outline: none;
     border-color: #FFD700;
     box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
-  }
-  
-  /* Modal Styles */
-  .modalOverlay {
+}
+
+/* Modal Styles */
+.modalOverlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -463,9 +464,9 @@
     align-items: center;
     z-index: 1000;
     animation: fadeIn 0.2s ease-out;
-  }
-  
-  .modal {
+}
+
+.modal {
     background-color: #222;
     border: 1px solid #FFD700;
     border-radius: 0.5rem;
@@ -473,102 +474,200 @@
     max-width: 90%;
     width: 400px;
     animation: slideIn 0.3s ease-out;
-  }
-  
-  .successModal {
+}
+
+.successModal {
     border-color: #4CAF50;
     text-align: center;
-  }
-  
-  .modalContent {
+}
+
+.modalContent {
     color: #FFD700;
-  }
-  
-  .modalContent h2 {
+}
+
+.modalContent h2 {
     font-size: 1.25rem;
     margin-bottom: 1rem;
-  }
-  
-  .modalContent p {
+}
+
+.modalContent p {
     color: #ccc;
     margin-bottom: 0.5rem;
     font-size: 0.875rem;
-  }
-  
-  .modalButtons {
+}
+
+.modalButtons {
     display: flex;
     justify-content: flex-end;
     gap: 0.75rem;
     margin-top: 1.5rem;
-  }
-  
-  .cancelButton,
-  .confirmButton {
+}
+
+.cancelButton,
+.confirmButton {
     padding: 0.5rem 1rem;
     border-radius: 0.25rem;
     font-size: 0.875rem;
     cursor: pointer;
     transition: all 0.3s ease;
-  }
-  
-  .cancelButton {
+}
+
+.cancelButton {
     background-color: transparent;
     border: 1px solid #FFD700;
     color: #FFD700;
-  }
-  
-  .confirmButton {
+}
+
+.confirmButton {
     background-color: #FFD700;
     border: 1px solid #FFD700;
     color: #000;
-  }
-  
-  .cancelButton:hover {
+}
+
+.cancelButton:hover {
     background-color: rgba(255, 215, 0, 0.1);
-  }
-  
-  .confirmButton:hover {
+}
+
+.confirmButton:hover {
     background-color: #ccac00;
-  }
-  
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  
-  @keyframes slideIn {
+}
+
+@keyframes fadeIn {
     from {
-      transform: translateY(-20px);
-      opacity: 0;
+        opacity: 0;
     }
+
     to {
-      transform: translateY(0);
-      opacity: 1;
+        opacity: 1;
     }
-  }
-  
-  @media (max-width: 768px) {
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
     .cardUsers {
-      max-height: 400px !important;
-      height: 400px;
+        max-height: 400px !important;
+        height: 400px;
     }
-    
+
     .modal {
-      padding: 1rem;
-      max-width: 95%;
-      margin: 1rem;
+        padding: 1rem;
+        max-width: 95%;
+        margin: 1rem;
     }
-    
+
     .modalButtons {
-      flex-direction: column-reverse;
-      gap: 0.5rem;
+        flex-direction: column-reverse;
+        gap: 0.5rem;
     }
-    
+
     .cancelButton,
     .confirmButton {
-      width: 100%;
-      padding: 0.75rem;
+        width: 100%;
+        padding: 0.75rem;
     }
-  }
+}
 
-  
+
+
+
+
+
+
+
+
+
+
+.muscleGroupContainer {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+}
+
+.muscleGroupHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.removeGroupButton {
+    background: none;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.2s;
+}
+
+.removeGroupButton:hover {
+    background-color: #fee2e2;
+}
+
+.exerciseItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+    background-color: #f9fafb;
+    border-radius: 0.375rem;
+    transition: background-color 0.2s;
+}
+
+.exerciseContent {
+    flex: 1;
+    cursor: pointer;
+    padding: 0.25rem;  
+    border-radius: 0.25rem;
+    transition: background-color 0.2s;
+}
+
+.exerciseContent:hover {
+    background-color: #f3f4f6;
+}
+
+.exerciseText {
+    display: block;
+    min-height: 1.5rem;
+}
+
+.editInput {
+    width: 100%;
+    padding: 0.375rem 0.5rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.25rem;
+    font-size: inherit;
+    background-color: white;
+}
+
+.removeExerciseButton {
+    background: none;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    padding: 0.25rem;
+    margin-left: 0.5rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.2s;
+}
+
+.removeExerciseButton:hover {
+    background-color: #fee2e2;
+}
+
+    
+ 
+ 
