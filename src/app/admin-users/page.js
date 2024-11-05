@@ -25,7 +25,7 @@ const Page = () => {
     cref: '',
   });
   const [muscleGroups, setMuscleGroups] = useState([]);
-  const [generatedWorkouts, setGeneratedWorkouts] = useState([]);
+  const [generatedWorkouts, setGeneratedWorkouts] = useState(['1 - Treino de Adutores Avançado Hipertrofia - Adutores Avançado de Hipertrofia Adutores Avançado Hipertrofia', '2 - Treino de tríceps Avançado Hipertrofia']);
   const [isLoading, setIsLoading] = useState(false);
   const [prompt, setPrompt] = useState('');
   const [isEditing, setIsEditing] = useState(null);
@@ -38,11 +38,6 @@ const Page = () => {
   const muscles = ['Peitoral', 'Deltoides', 'Trapézio', 'Costas', 'Bíceps ', 'Tríceps', 'Abdômen', 'Quadríceps', 'Isquiotibiais', 'Adutores', 'Gastrocnêmio ', 'Abdutores', 'Glúteos', 'Antebraços'];
   const levels = ['Iniciante', 'Intermediário', 'Avançado', 'Bodybuilder'];
   const categorys = ['Hipertrofia', 'Cardio', 'Máquinas', 'Peso Corporal', 'Elásticos'];
-
-  const canGeneratePreview = selectedUsers.length > 0 &&
-    workoutForm.muscle &&
-    workoutForm.level &&
-    workoutForm.category;
 
   useEffect(() => {
     const fetchApprovedUsers = async () => {
@@ -107,6 +102,11 @@ const Page = () => {
     }
   };
 
+  const canGeneratePreview = selectedUsers.length > 0 &&
+  workoutForm.muscle &&
+  workoutForm.level &&
+  workoutForm.category;
+
   const generateWorkoutPreview = async () => {
     setIsLoading(true);
     try {
@@ -134,10 +134,10 @@ const Page = () => {
       const workoutList = response.data.generations[0].text.split('\n').filter(line => line.trim() !== '');
       setGeneratedWorkouts(workoutList);
 
-      setWorkoutForm({
+/*       setWorkoutForm({
         level: '',
         category: '',
-      });
+      }); */
 
     } catch (error) {
       console.error('Erro ao gerar treino:', error);
@@ -339,10 +339,10 @@ const Page = () => {
                         <span>{user.email}</span>
                       </div>
                     </div>
-                    {/*                     <div className={styles.userGoal}>
+                    <div className={styles.userGoal}>
                       <Target className={styles.icon} />
                       <span>{user.objetivoPrincipal || 'Não definido'}</span>
-                    </div> */}
+                    </div>
                     <button
                       className={`${styles.selectButton} ${selectedUsers.some((selected) => selected.email === user.email)
                         ? styles.selected
@@ -426,6 +426,7 @@ const Page = () => {
               </div>
 
               <button
+                title='Preencha os campos acima para gerar o treino!'
                 type="button"
                 onClick={generateWorkoutPreview}
                 className={`${styles.submitButton} ${!canGeneratePreview ? styles.disabled : ''}`}
@@ -440,14 +441,13 @@ const Page = () => {
                 <h3 className={styles.previewTitle}>Exercícios Gerados</h3>
                 <div className={styles.generatedWorkouts}>
                   {generatedWorkouts.map((workout, index) => (
-                    <div key={index} className={styles.workoutCard}>
+                    <div 
+                      key={index} 
+                      className={styles.workoutCard} 
+                      onDoubleClick={() => addExerciseToWorkout(workout)}
+                      title="Duplo clique para adicionar ao treino"
+                    >
                       <p>{workout}</p>
-                      <button
-                        onClick={() => addExerciseToWorkout(workout)}
-                        className={styles.addButton}
-                      >
-                        Adicionar ao Treino
-                      </button>
                     </div>
                   ))}
                 </div>
@@ -460,7 +460,7 @@ const Page = () => {
               {muscleGroups.map((group, groupIndex) => (
                 <div key={groupIndex} className={styles.muscleGroupContainer}>
                   <div className={styles.muscleGroupHeader}>
-                    <h2 className={styles.cardTitle}>
+                    <h2 className={styles.muscleGroupTitle}>
                       Exercícios Selecionados para {group.muscle}
                     </h2>
                     <button
@@ -514,7 +514,6 @@ const Page = () => {
                 <div className={styles.formGroup}>
                   <label htmlFor="date">Data do Treino:</label>
                   <div className={styles.dateInputWrapper}>
-                    <Calendar className={styles.icon} />
                     <input
                       type="date"
                       id="date"
@@ -522,6 +521,7 @@ const Page = () => {
                       value={workoutForm.date}
                       onChange={handleWorkoutFormChange}
                       className={styles.dateInput}
+                      required
                     />
                   </div>
                 </div>
