@@ -16,18 +16,18 @@ const WorkoutHistory = () => {
   const [selectedWorkout, setSelectedWorkout] = useState(null);
 
   const calculateBMI = (weight, height) => {
-    if (!weight || !height) return null; 
-    const bmi = weight / height; 
-    return bmi.toFixed(1); 
-  }; 
+    if (!weight || !height) return;
+    const bmi = weight / (height * height);
+    return bmi.toFixed(1);
+  };
 
   const getBMICategory = (bmi) => {
     if (!bmi) return 'IMC não calculado';
     if (bmi < 18.5) return 'Abaixo do peso';
-    if (bmi < 24.9) return 'Peso normal';
-    if (bmi < 29.9) return 'Sobrepeso';
-    if (bmi < 34.9) return 'Obesidade grau I';
-    if (bmi < 39.9) return 'Obesidade grau II (severa)';
+    if (bmi <= 24.9) return 'Peso normal';
+    if (bmi <= 29.9) return 'Sobrepeso';
+    if (bmi <= 34.9) return 'Obesidade grau I';
+    if (bmi <= 39.9) return 'Obesidade grau II (severa)';
     return 'Obesidade grau III (mórbida)';
   };
 
@@ -169,7 +169,7 @@ const WorkoutHistory = () => {
                 <div className={styles.userInfo}>
                   <User className={styles.iconUser} />
                   <h3>{user.nome}</h3>
-                  <div className={styles.chevronIconOne}><ChevronRight  /></div>
+                  <div className={styles.chevronIconOne}><ChevronRight /></div>
                 </div>
                 <div className={styles.userEmail}>
                   <Mail className={styles.icon} />
@@ -187,29 +187,33 @@ const WorkoutHistory = () => {
                   <Ruler className={styles.icon} />
                   <span>{user.height || 'Altura não definido'} m</span>
                 </div>
-                {bmi && (
-                    <div className={styles.userGoal}>
-                      <svg
-                        className={styles.icon}
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M2 20h20" />
-                        <path d="M6 16V4" />
-                        <path d="M18 16V4" />
-                        <path d="M14 16V4" />
-                        <path d="M10 16V4" />
-                      </svg>
-                      <span>IMC: {bmi} - {bmiCategory}</span>
-                    </div>
+
+                <div className={styles.userGoal}>
+                  <svg
+                    className={styles.icon}
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M2 20h20" />
+                    <path d="M6 16V4" />
+                    <path d="M18 16V4" />
+                    <path d="M14 16V4" />
+                    <path d="M10 16V4" />
+                  </svg>
+                  {user.weight && user.height ? (
+                    <span>IMC: {calculateBMI(user.weight, user.height)} - {getBMICategory(calculateBMI(user.weight, user.height))}</span>
+                  ) : (
+                    <span>Dados insuficientes para cálculo do IMC</span>
                   )}
+                </div>
+
               </div>
             ))}
           </div>
