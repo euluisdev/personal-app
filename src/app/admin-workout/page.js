@@ -187,6 +187,29 @@ const WorkoutHistory = () => {
                   <Ruler className={styles.icon} />
                   <span>{user.height || 'Altura não definido'} m</span>
                 </div>
+                {bmi && (
+                    <div className={styles.userGoal}>
+                      <svg
+                        className={styles.icon}
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M2 20h20" />
+                        <path d="M6 16V4" />
+                        <path d="M18 16V4" />
+                        <path d="M14 16V4" />
+                        <path d="M10 16V4" />
+                      </svg>
+                      <span>IMC: {bmi} - {bmiCategory}</span>
+                    </div>
+                  )}
               </div>
             ))}
           </div>
