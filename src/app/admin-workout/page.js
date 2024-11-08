@@ -1,24 +1,23 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { User, Target, Search, X, Clock, Share2, Calendar, Dumbbell, ChevronRight } from 'lucide-react';
+import { User, Target, Search, X, Check, MinusCircle, Calendar, Dumbbell, ChevronRight, Mail, Weight, Ruler } from 'lucide-react';
 
 import AdminNavBar from '@/components/AdminNavBar';
-import Footer from '@/components/footer';
 
 import styles from '../../styles/admin-workout/page.module.css';
 
 const WorkoutHistory = () => {
   const [approvedUsers, setApprovedUsers] = useState([]);
-  const [errorMessage, setErrorMessage] = useState(''); 
+  const [errorMessage, setErrorMessage] = useState('');
   const [selectedUser, setSelectedUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [isLoading, setIsLoading] = useState(false); 
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedWorkout, setSelectedWorkout] = useState(null);
 
   useEffect(() => {
     const fetchApprovedUsers = async () => {
-      setIsLoading(true); 
+      setIsLoading(true);
       try {
         const response = await fetch('/api/list-users');
         if (response.ok) {
@@ -30,7 +29,7 @@ const WorkoutHistory = () => {
       } catch (error) {
         setErrorMessage('Erro ao buscar usuários aprovados');
       } finally {
-        setIsLoading(false); 
+        setIsLoading(false);
       }
     };
 
@@ -43,11 +42,11 @@ const WorkoutHistory = () => {
 
   const handleWorkoutClick = (workout) => {
     setSelectedWorkout(workout);
-  }; 
+  };
 
   const handleCloseWorkoutDetails = () => {
     setSelectedWorkout(null);
-  };  
+  };
 
   const filteredUsers = approvedUsers.filter((user) =>
     user.nome.toLowerCase().includes(searchTerm.toLowerCase())
@@ -59,26 +58,32 @@ const WorkoutHistory = () => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
-        setSelectedUser({ ...user, workoutHistory: data.workoutHistory || [] }); 
+
+        setSelectedUser({ ...user, workoutHistory: data || [] });
 
       } else {
         console.error('Erro ao buscar histórico de treinos.');
-      }
+      };
 
     } catch (error) {
       console.error('Erro ao buscar histórico de treinos:', error);
-    }
+    };
+  };
+
+  const getFormattedDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { weekday: 'long', day: 'numeric', month: 'short' };
+    return date.toLocaleDateString('pt-BR', options);
   };
 
   return (
     <>
       <div><AdminNavBar /></div>
       <div className={styles.container}>
-        <h1 className={styles.title}>Histórico de Treino</h1>
+        <h1 className={styles.title}>Histórico de Treinos</h1>
 
-        {errorMessage && <p className={styles.error}>{errorMessage}</p>} 
-        {isLoading && <div className={styles.loadingSpinner} />} 
+        {errorMessage && <p className={styles.error}>{errorMessage}</p>}
+        {isLoading && <div className={styles.loadingSpinner} />}
 
         <div className={styles.searchContainer}>
           <input
@@ -97,7 +102,7 @@ const WorkoutHistory = () => {
               <div className={styles.userHeaderInfo}>
                 <User className={styles.headerIcon} />
                 <div>
-                  <h2 className={styles.cardTitle}>{selectedUser.nome}</h2> 
+                  <h2 className={styles.cardTitle}>{selectedUser.nome}</h2>
                   <p className={styles.userEmail}></p>
                 </div>
               </div>
@@ -119,10 +124,18 @@ const WorkoutHistory = () => {
                         <div className={styles.workoutInfo}>
                           <Dumbbell className={styles.workoutIcon} />
                           <div>
-                            <h4 className={styles.workoutTitle}>{workout.description}</h4>
-                            <span className={styles.workoutDate}>{workout.date}</span>
+                            <h4 className={styles.workoutTitle}>
+                              Treino {workout.workoutStatus}
+
+                            </h4>
+                            <span className={styles.workoutDate}>{getFormattedDate(workout.date)}</span>
                           </div>
                         </div>
+                        {workout.workoutStatus === 'Pago' ? (
+                          <Check className={styles.statusIconPago} />
+                        ) : (
+                          <MinusCircle className={styles.statusIcon} />
+                        )}
                         <ChevronRight className={styles.chevronIcon} />
                       </div>
                     </div>
@@ -138,13 +151,25 @@ const WorkoutHistory = () => {
             {filteredUsers.map((user) => (
               <div key={user.email} className={styles.userCard} onClick={() => handleSelectUser(user)}>
                 <div className={styles.userInfo}>
-                  <User className={styles.icon} />
+                  <User className={styles.iconUser} />
                   <h3>{user.nome}</h3>
+                  <div className={styles.chevronIconOne}><ChevronRight  /></div>
                 </div>
-                <p className={styles.userEmail}>{user.email}</p>
+                <div className={styles.userEmail}>
+                  <Mail className={styles.icon} />
+                  <p>{user.email}</p>
+                </div>
                 <div className={styles.userGoal}>
                   <Target className={styles.icon} />
-                  <span>{user.objetivoPrincipal || 'Objetivo não definido'}</span>
+                  <span>{user.mainObject || 'Objetivo não definido'}</span>
+                </div>
+                <div className={styles.userGoal}>
+                  <Weight className={styles.icon} />
+                  <span>{user.weight || 'Peso não definido'} Kg</span>
+                </div>
+                <div className={styles.userGoal}>
+                  <Ruler className={styles.icon} />
+                  <span>{user.height || 'Altura não definido'} m</span>
                 </div>
               </div>
             ))}
@@ -164,25 +189,25 @@ const WorkoutHistory = () => {
               <div className={styles.modalBody}>
                 <div className={styles.workoutMeta}>
                   <div className={styles.workoutDate}>
-                    <Calendar className={styles.metaIcon} /> 
-                    <span>{selectedWorkout.date}</span>
+                    <Calendar className={styles.metaIcon} />
+                    <span className={styles.metaDate}>{getFormattedDate(selectedWorkout.date)}</span>
                   </div>
-                  <button className={styles.shareButton}>
-                    <Share2 />
-                  </button>
                 </div>
 
                 <h3 className={styles.workoutDescription}>
-                  {selectedWorkout.description}
+                  <p>Objetivo {selectedUser.mainObject}</p>
                 </h3>
 
                 <div className={styles.exercisesList}>
-                  {selectedWorkout.exercises?.map((exercise, index) => (
+                  {selectedWorkout.muscleGroups?.map((muscleGroup, index) => (
+
                     <div key={index} className={styles.exerciseCard}>
-                      <h4 className={styles.exerciseName}>{index + 1} - {exercise.replace(/^\d+\./, '')}</h4>
-                      <div className={styles.exerciseDetails}>
-                        <Clock className={styles.exerciseIcon} />
-                      </div>
+                      <h4 className={styles.exerciseNameMuscle}>{muscleGroup.muscle}</h4>
+                      <ul>
+                        {muscleGroup.exercises.map((exercise, exerciseIndex) => (
+                          <li className={styles.exerciseName} key={exerciseIndex}>{exercise}</li>
+                        ))}
+                      </ul>
                     </div>
                   ))}
                 </div>
