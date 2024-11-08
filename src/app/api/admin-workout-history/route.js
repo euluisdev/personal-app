@@ -23,27 +23,31 @@ export async function GET(req, res) {
       const collection = db.collection('workouts');
 
       const objectId = new ObjectId(userId);
-      console.log(objectId)
 
       const workout = await collection.find({
         userId: objectId 
       }).sort({ 
         date: -1 
-      }).limit(7).toArray();
+      }).toArray();
 
-      console.log(workout);
-
-      const workoutHistory = workout.map(workout => {
+/*       const workoutHistory = workout.map(workout => {
         return { 
           id: workout._id,
           description: workout.description,
           date: workout.date,
           exercises: workout.exercises,
+          muscleGroups: workout.muscleGroups,
+          workoutStatus: workout.workoutStatus,
         };
       });
 
-      return NextResponse.json({workoutHistory}, { status: 200 }); 
+      console.log(workoutHistory); */
+
+      return NextResponse.json(workout, { status: 200 }); 
     } catch (error) {
       return NextResponse.json({ error: 'Erro ao buscar histórico de treinos' }, { status: 500 });
-    }      
+    
+    } finally {
+      await client.close();
+    };
 };
