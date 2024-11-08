@@ -15,6 +15,22 @@ const WorkoutHistory = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedWorkout, setSelectedWorkout] = useState(null);
 
+  const calculateBMI = (weight, height) => {
+    if (!weight || !height) return null; 
+    const bmi = weight / height; 
+    return bmi.toFixed(1); 
+  }; 
+
+  const getBMICategory = (bmi) => {
+    if (!bmi) return 'IMC não calculado';
+    if (bmi < 18.5) return 'Abaixo do peso';
+    if (bmi < 24.9) return 'Peso normal';
+    if (bmi < 29.9) return 'Sobrepeso';
+    if (bmi < 34.9) return 'Obesidade grau I';
+    if (bmi < 39.9) return 'Obesidade grau II (severa)';
+    return 'Obesidade grau III (mórbida)';
+  };
+
   useEffect(() => {
     const fetchApprovedUsers = async () => {
       setIsLoading(true);
