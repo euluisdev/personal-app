@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { User, Target, Search, X, Check, MinusCircle, Calendar, Dumbbell, ChevronRight, Mail, Weight, Ruler } from 'lucide-react';
+import { User, Target, Search, X, Check, MinusCircle, Calendar, Dumbbell, ChevronRight, Mail, Weight, Ruler, Phone } from 'lucide-react';
 
 import AdminNavBar from '@/components/AdminNavBar';
 
@@ -174,6 +174,10 @@ const WorkoutHistory = () => {
                 <div className={styles.userEmail}>
                   <Mail className={styles.icon} />
                   <p>{user.email}</p>
+                </div>
+                <div className={styles.userEmail}>
+                  <Phone className={styles.icon} />
+                  <p>{user.phone || 'Número não definido'}</p>
                 </div>
                 <div className={styles.userGoal}>
                   <Target className={styles.icon} />
