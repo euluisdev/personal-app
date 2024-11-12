@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { User, Target, Search, X, Check, MinusCircle, Calendar, Dumbbell, ChevronRight, Mail, Weight, Ruler, Phone } from 'lucide-react';
+import { User, Target, Search, X, Check, MinusCircle, Calendar, Dumbbell, ChevronRight, Mail, Weight, Ruler, Phone, ChevronDown } from 'lucide-react';
 
 import AdminNavBar from '@/components/AdminNavBar';
 
@@ -14,6 +14,11 @@ const WorkoutHistory = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [selectedWorkout, setSelectedWorkout] = useState(null);
+  const [expandedUserId, setExpandedUserId] = useState(null);
+
+  const toggleUserCard = (userId) => {
+    setExpandedUserId(expandedUserId === userId ? null : userId);
+  };
 
   const calculateBMI = (weight, height) => {
     if (!weight || !height) return;
@@ -112,6 +117,84 @@ const WorkoutHistory = () => {
           <Search className={styles.searchIcon} />
         </div>
 
+       
+        {!selectedUser && (
+          <div className={styles.userGrid}>
+            {filteredUsers.map((user) => (
+              <div key={user.email} className={styles.userCard}>
+                <div className={styles.userHeader} onClick={() => toggleUserCard(user._id)}>
+                  <div className={styles.userHeaderContent}>
+                    <User className={styles.iconUser} />
+                    <h3>{user.nome}</h3>
+                  </div>
+                  <ChevronDown 
+                    className={`${styles.chevronIcon} ${expandedUserId === user._id ? styles.chevronRotated : ''}`}
+                  />
+                </div>
+                
+                <div className={`${styles.userDetails} ${expandedUserId === user._id ? styles.expanded : ''}`}>
+                  <div className={styles.userEmail}>
+                    <Mail className={styles.icon} />
+                    <p>{user.email}</p>
+                  </div>
+                  <div className={styles.userEmail}>
+                    <Phone className={styles.icon} />
+                    <p>{user.phone || 'Número não definido'}</p>
+                  </div>
+                  <div className={styles.userGoal}>
+                    <Target className={styles.icon} />
+                    <span>{user.mainObject || 'Objetivo não definido'}</span>
+                  </div>
+                  <div className={styles.userGoal}>
+                    <Weight className={styles.icon} />
+                    <span>{user.weight || 'Peso não definido'} Kg</span>
+                  </div>
+                  <div className={styles.userGoal}>
+                    <Ruler className={styles.icon} />
+                    <span>{user.height || 'Altura não definido'} m</span>
+                  </div>
+
+                  <div className={styles.userGoal}>
+                    <svg
+                      className={styles.icon}
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M2 20h20" />
+                      <path d="M6 16V4" />
+                      <path d="M18 16V4" />
+                      <path d="M14 16V4" />
+                      <path d="M10 16V4" />
+                    </svg>
+                    {user.weight && user.height ? (
+                      <span>IMC: {calculateBMI(user.weight, user.height)} - {getBMICategory(calculateBMI(user.weight, user.height))}</span>
+                    ) : (
+                      <span>Dados insuficientes para cálculo do IMC</span>
+                    )}
+                  </div>
+
+                  <button 
+                    className={styles.viewHistoryBtn}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSelectUser(user);
+                    }}
+                  >
+                    Ver Histórico
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         {selectedUser ? (
           <div className={styles.card}>
             <div className={styles.cardHeader}>
@@ -142,7 +225,6 @@ const WorkoutHistory = () => {
                           <div>
                             <h4 className={styles.workoutTitle}>
                               Treino {workout.workoutStatus}
-
                             </h4>
                             <span className={styles.workoutDate}>{getFormattedDate(workout.date)}</span>
                           </div>
@@ -162,66 +244,7 @@ const WorkoutHistory = () => {
               </div>
             </div>
           </div>
-        ) : (
-          <div className={styles.userGrid}>
-            {filteredUsers.map((user) => (
-              <div key={user.email} className={styles.userCard} onClick={() => handleSelectUser(user)}>
-                <div className={styles.userInfo}>
-                  <User className={styles.iconUser} />
-                  <h3>{user.nome}</h3>
-                  <div className={styles.chevronIconOne}><ChevronRight /></div>
-                </div>
-                <div className={styles.userEmail}>
-                  <Mail className={styles.icon} />
-                  <p>{user.email}</p>
-                </div>
-                <div className={styles.userEmail}>
-                  <Phone className={styles.icon} />
-                  <p>{user.phone || 'Número não definido'}</p>
-                </div>
-                <div className={styles.userGoal}>
-                  <Target className={styles.icon} />
-                  <span>{user.mainObject || 'Objetivo não definido'}</span>
-                </div>
-                <div className={styles.userGoal}>
-                  <Weight className={styles.icon} />
-                  <span>{user.weight || 'Peso não definido'} Kg</span>
-                </div>
-                <div className={styles.userGoal}>
-                  <Ruler className={styles.icon} />
-                  <span>{user.height || 'Altura não definido'} m</span>
-                </div>
-
-                <div className={styles.userGoal}>
-                  <svg
-                    className={styles.icon}
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M2 20h20" />
-                    <path d="M6 16V4" />
-                    <path d="M18 16V4" />
-                    <path d="M14 16V4" />
-                    <path d="M10 16V4" />
-                  </svg>
-                  {user.weight && user.height ? (
-                    <span>IMC: {calculateBMI(user.weight, user.height)} - {getBMICategory(calculateBMI(user.weight, user.height))}</span>
-                  ) : (
-                    <span>Dados insuficientes para cálculo do IMC</span>
-                  )}
-                </div>
-
-              </div>
-            ))}
-          </div>
-        )}
+        ) : null}
 
         {selectedWorkout && (
           <div className={styles.modal} onClick={handleCloseWorkoutDetails}>
