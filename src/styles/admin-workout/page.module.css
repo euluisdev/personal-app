@@ -1,17 +1,17 @@
 .container {
     max-width: 100%;
     min-height: 100vh;
-    margin: 0rem 0rem 0rem 0rem; 
-    padding: 7rem 0.5rem 2rem 0.5rem; 
+    margin: 0rem 0rem 0rem 0rem;
+    padding: 7rem 0.5rem 2rem 0.5rem;
     background-color: #000000;
     color: #ffffff;
 }
 
 .title {
     text-align: center;
-    font-size: 1.1rem; 
+    font-size: 1.1rem;
     font-weight: bold;
-    margin-bottom: 1rem; 
+    margin-bottom: 1rem;
     color: #ffd700;
 }
 
@@ -35,29 +35,35 @@
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .searchContainer {
     position: relative;
-    margin-bottom: 1rem;
+    margin: 1.5rem 0rem;
 }
 
 .searchInput {
     width: 100%;
-    padding: 0.5rem 1rem 0.5rem 3rem;
+    padding: 0.5rem 1rem 0.6rem 4rem;
     font-size: 0.9rem;
-    border: 1px solid #ffd700;
-    background-color: rgba(255, 215, 0, 0.1);
+    border-bottom: 1px solid #ffd9008f;
+    border: none;
+    background-color: rgba(0, 0, 0, 0.1);
     color: #ffffff;
-    border-radius: 0.5rem;
     transition: all 0.3s ease;
 }
 
 .searchInput:focus {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.3);
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid #ffd9008f;
 }
 
 .searchIcon {
@@ -70,8 +76,8 @@
 
 .userGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-    gap: 1rem; 
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
 }
 
 .userCard {
@@ -132,7 +138,7 @@
     background-color: rgba(26, 26, 26, 0.95);
     border: 1px solid #ffd700;
     border-radius: 1rem;
-    padding: 0.1rem; 
+    padding: 0.1rem;
     overflow: hidden;
 }
 
@@ -157,7 +163,7 @@
 }
 
 .cardTitle {
-    font-size: 1rem; 
+    font-size: 1rem;
     font-weight: bold;
     color: #ffd700;
     margin-bottom: 0.25rem;
@@ -178,7 +184,7 @@
 }
 
 .historyTitle {
-    font-size: 1rem; 
+    font-size: 1rem;
     font-weight: 400;
     padding: 0.3rem;
 }
@@ -238,7 +244,7 @@
 .workoutTitle {
     font-size: 0.9rem;
     font-weight: 500;
-    margin-bottom: 0.25rem; 
+    margin-bottom: 0.25rem;
 }
 
 .workoutDate {
@@ -253,15 +259,15 @@
 .chevronIcon {
     color: #ffd700;
     opacity: 0;
-    transition: opacity 0.3s ease;   
+    transition: opacity 0.3s ease;
 }
 
 .workoutItem:hover .chevronIcon {
-    opacity: 1; 
+    opacity: 1;
 }
 
 
-/* modal style */  
+/* modal style */
 .modal {
     position: fixed;
     top: 0rem;
@@ -272,8 +278,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;  
-}   
+    z-index: 1000;
+}
 
 .modalContent {
     background-color: #1a1a1a;
@@ -283,7 +289,7 @@
     max-width: 600px;
     max-height: 75vh;
     overflow-y: auto;
-}  
+}
 
 .modalHeader {
     display: flex;
@@ -319,7 +325,7 @@
 
 .metaDate {
     padding: 0rem 0rem 0.5rem 0.5rem;
-} 
+}
 
 .workoutDescription {
     font-size: 0.9rem;
@@ -409,3 +415,84 @@
     }
 }
 
+
+
+
+
+
+.userCard {
+    background-color: rgba(26, 26, 26, 0.8);
+    border: 1px solid #ffd700;
+    border-radius: 1rem;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+}
+
+.userHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    cursor: pointer;
+    border-radius: 1rem;
+    font-size: 1rem;
+}
+
+.userHeaderContent {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.userDetails {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    padding: 0 1rem;
+}
+
+.userDetails.expanded {
+    max-height: 300px;
+    padding: 1rem;
+    border-top: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.chevronIcon {
+    color: #ffd700;
+    transition: transform 0.3s ease;
+}
+
+.chevronRotated {
+    transform: rotate(180deg);
+}
+
+.viewHistoryBtn {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0.5rem;
+    background-color: rgba(255, 215, 0, 0.1);
+    border: 1px solid #ffd90073;
+    color: #ffd700;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.viewHistoryBtn:hover {
+    background-color: rgba(255, 215, 0, 0.2);
+}
+
+.userEmail,
+.userGoal {
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    font-size: 0.875rem;
+    color: #cccccc;
+}
+
+.icon {
+    color: #ffd700;
+    margin-right: 0.5rem;
+    width: 0.9rem;
+}
