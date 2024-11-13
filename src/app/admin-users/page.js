@@ -6,7 +6,7 @@ import { User, Calendar, Target, Search, Check, X, Trash2 } from 'lucide-react';
 import axios from 'axios';
 import AdminNavBar from '@/components/AdminNavBar';
 
-import styles from '../../styles/admin-users/page.module.css'; 
+import styles from '../../styles/admin-users/page.module.css';
 
 const Page = () => {
   const [approvedUsers, setApprovedUsers] = useState([]);
@@ -20,24 +20,25 @@ const Page = () => {
     description: '',
     date: '',
     exercises: [],
-    workoutStatus: 'Pendente', 
-    nome: '', 
+    workoutStatus: 'Pendente',
+    nome: '',
     cref: '',
   });
   const [muscleGroups, setMuscleGroups] = useState([]);
-  const [generatedWorkouts, setGeneratedWorkouts] = useState(['1 - Treino de Adutores Avançado Hipertrofia - Adutores Avançado de Hipertrofia Adutores Avançado Hipertrofia', '2 - Treino de tríceps Avançado Hipertrofia']);
+  const [generatedWorkouts, setGeneratedWorkouts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [prompt, setPrompt] = useState('');
   const [isEditing, setIsEditing] = useState(null);
   const [editValue, setEditValue] = useState('');
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [profileData, setProfileData] = useState('');
+  const [profileData, setProfileData] = useState(''); 
+  const [selectedUser, setSelectedUser] = useState(null);
   const router = useRouter();
 
   const muscles = ['Peitoral', 'Deltoides', 'Trapézio', 'Costas', 'Bíceps ', 'Tríceps', 'Abdômen', 'Quadríceps', 'Isquiotibiais', 'Adutores', 'Gastrocnêmio ', 'Abdutores', 'Glúteos', 'Antebraços'];
   const levels = ['Iniciante', 'Intermediário', 'Avançado', 'Bodybuilder'];
-  const categorys = ['Hipertrofia', 'Cardio', 'Máquinas', 'Peso Corporal', 'Elásticos'];
+  const categorys = ['Hipertrofia', 'Perder Peso', 'Ganho de Força', 'Resistência', 'Cardio'];
 
   useEffect(() => {
     const fetchApprovedUsers = async () => {
@@ -103,9 +104,9 @@ const Page = () => {
   };
 
   const canGeneratePreview = selectedUsers.length > 0 &&
-  workoutForm.muscle &&
-  workoutForm.level &&
-  workoutForm.category;
+    workoutForm.muscle &&
+    workoutForm.level &&
+    workoutForm.category;
 
   const generateWorkoutPreview = async () => {
     setIsLoading(true);
@@ -134,10 +135,10 @@ const Page = () => {
       const workoutList = response.data.generations[0].text.split('\n').filter(line => line.trim() !== '');
       setGeneratedWorkouts(workoutList);
 
-/*       setWorkoutForm({
-        level: '',
-        category: '',
-      }); */
+      /*       setWorkoutForm({
+              level: '',
+              category: '',
+            }); */
 
     } catch (error) {
       console.error('Erro ao gerar treino:', error);
@@ -267,9 +268,9 @@ const Page = () => {
               muscleGroups: muscleGroups,
               date: workoutForm.date,
               description: prompt,
-              workoutStatus: 'Pendente', 
-              nome: profileData.nome, 
-              cref: profileData.cref, 
+              workoutStatus: 'Pendente',
+              nome: profileData.nome,
+              cref: profileData.cref,
             }
           }),
         });
@@ -326,39 +327,31 @@ const Page = () => {
         {message && <p className={styles.message}>{message}</p>}
 
         <div className={styles.cardGrid}>
-          <div className={styles.cardUsers}>
+          <div className={styles.card}>
             <h2 className={styles.cardTitle}>Selecione o Aluno para criar o treino</h2>
             <ul className={styles.userList}>
               {usersToDisplay.length > 0 ? (
                 usersToDisplay.map((user) => (
-                  <li key={user.email} className={styles.userItem}>
-                    <div className={styles.userInfo}>
-                      <User className={styles.icon} />
-                      <div>
-                        <strong>{user.nome}</strong>
-                        <span>{user.email}</span>
-                      </div>
-                    </div>
-                    <div className={styles.userGoal}>
-                      <Target className={styles.icon} />
-                      <span>{user.objetivoPrincipal || 'Não definido'}</span>
-                    </div>
-                    <button
-                      className={`${styles.selectButton} ${selectedUsers.some((selected) => selected.email === user.email)
+                  <div
+                    key={user.email}
+                    className={` ${selectedUser && selectedUser.email === user.email
                         ? styles.selected
                         : ''
-                        }`}
-                      onClick={() => handleSelectUser(user)}
-                    >
-                      {selectedUsers.some((selected) => selected.email === user.email)
-                        ? 'Selecionado'
-                        : 'Selecionar'
-                      }
-                    </button>
-                  </li>
+                      }`}
+                    onDoubleClick={() => handleSelectUser(user)}
+                  >
+                    <div className={styles.userInfo}>
+                      <div>
+                        <strong><User className={styles.iconUser}/></strong>
+                        <strong className={styles.nome}> {user.nome}</strong>
+                      </div>  
+                    </div>  
+                    <span className={styles.mainObject}>({user.mainObject || 'Não definido'})</span>
+                    
+                  </div>
                 ))
               ) : (
-                <p>Não há usuários aprovados.</p>
+                <div>Não há usuários aprovados.</div>    
               )}
             </ul>
           </div>
@@ -441,9 +434,9 @@ const Page = () => {
                 <h3 className={styles.previewTitle}>Exercícios Gerados</h3>
                 <div className={styles.generatedWorkouts}>
                   {generatedWorkouts.map((workout, index) => (
-                    <div 
-                      key={index} 
-                      className={styles.workoutCard} 
+                    <div
+                      key={index}
+                      className={styles.workoutCard}
                       onDoubleClick={() => addExerciseToWorkout(workout)}
                       title="Duplo clique para adicionar ao treino"
                     >
@@ -456,7 +449,7 @@ const Page = () => {
           </div>
 
           {muscleGroups.length > 0 && (
-            <div className={styles.card}>
+            <div className={styles.cardMuscleGroup}>
               {muscleGroups.map((group, groupIndex) => (
                 <div key={groupIndex} className={styles.muscleGroupContainer}>
                   <div className={styles.muscleGroupHeader}>
