@@ -18,7 +18,7 @@
 }
 
 .title {
-    font-size: 1.05rem;
+    font-size: 1.1rem;
     font-weight: bold;
     margin-bottom: 1rem;
     text-align: center;
@@ -40,20 +40,6 @@
     margin-bottom: 1rem;
     border-radius: 0.25rem;
     font-size: 0.875rem;
-}
-
-.cardGrid {
-    display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
-}
-
-@media (min-width: 768px) {
-    .cardGrid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.5rem;
-    }
 }
 
 .searchContainer {
@@ -81,12 +67,11 @@
     height: 1.25rem;
 }
 
-.cardUsers {
-    background-color: #222;
-    border: 1px solid #FFF;
-    border-radius: 0.5rem;
-    margin-bottom: 1rem;
-    overflow: hidden;
+.cardGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    width: 100%;
 }
 
 .card {
@@ -94,7 +79,19 @@
     border: 1px solid #FFF;
     border-radius: 0.5rem;
     margin-bottom: 1rem;
-    overflow: hidden;
+}
+
+@media (min-width: 768px) {
+    .cardGrid {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.7rem;
+    }
+    
+    .card {
+        flex: 1 1 45%;
+    }
 }
 
 .cardTitle {
@@ -103,6 +100,7 @@
     font-size: 1rem;
     font-weight: bold;
     padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+    border-radius: 0.5rem 0.5rem 0 0;
 }
 
 @media (min-width: 640px) {
@@ -114,86 +112,72 @@
 
 .userList {
     list-style-type: none;
-    padding: 0;
     overflow-y: auto;
-    max-height: 60vh;
+    max-height: 40vh;
 }
 
-.userItem {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: 0.5rem;
-    border-bottom: 1px solid #444;
-}
-
-@media (min-width: 640px) {
-    .userItem {
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        padding: 1rem;
+@media (min-width: 768px) {
+    .userList {
+        max-height: 80vh;
     }
 }
 
 .userInfo {
     display: flex;
-    align-items: center;
-    flex: 1;
+    justify-content: flex-start;
+    margin: 0rem 0rem 0rem 0rem;
+    padding: 0.3rem 0rem 0rem 0rem;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
 }
 
 .userInfo div {
     display: flex;
-    flex-direction: column;
 }
 
-.userInfo strong {
+.iconUser {
+    color: #FFD700;
+    margin: 0rem 1rem 0rem 1.2rem;
+    padding: 0rem 0rem 0rem 0rem;
+}
+
+.nome {
+    font-size: 1rem;
+    padding: 0rem 0rem 0rem 0rem;
+}
+
+.mainObject {
     font-size: 0.8rem;
-    margin-bottom: 0.1rem;
-}
-
-.userInfo span {
-    font-size: 0.75rem;
+    font-weight: 300;
     color: #ccc;
-}
-
-.userGoal {
+    margin: -0.4rem 1rem 0rem 3.7rem;
+    padding: 0rem 0rem 0.4rem 0rem;
     display: flex;
-    align-items: center;
-    font-size: 0.75rem;
-    color: #ccc;
+    flex-direction: column;
+    border-bottom: 1px solid #ffffff23;
 }
 
-.icon {
-    width: 1.2rem;
-    height: 1.2rem;
-    color: #FFD700;
-    margin-right: 0.5rem;
-}
-
-.selectButton {
-    width: 100%;
-    background-color: #FFD700;
-    color: #000;
-    border: none;
-    padding: 0.3rem;
-    border-radius: 10rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 200;
-    font-size: 0.7rem;
-}
-
-@media (min-width: 640px) {
-    .selectButton {
-        width: auto;
-        padding: 0.5rem 1rem;
+@media (min-width: 1500px) {
+    .userInfo {
+        padding: 0.5rem 0rem 0rem 0rem;
     }
-}
 
-.selectButton:hover {
-    background-color: #333;
-    color: #FFD700;
+    .iconUser {
+        margin: 0rem 1.2rem 0rem 1.5rem;
+    }
+    
+    .nome {
+        font-size: 1.2rem;
+
+    }
+    
+    .mainObject {
+        font-size: 0.9rem;
+        margin: -0.3rem 1rem 0rem 4.3rem;
+        padding: 0rem 0rem 0.6rem 0rem;
+        flex-direction: column;
+        border-bottom: 1px solid #ffffff23;
+    }
 }
 
 .workoutForm {
@@ -221,7 +205,7 @@
     width: 100%;
     padding: 0.3rem;
     background-color: #333;
-    color: #FFD700;
+    color: #ffffff;
     border: 1px solid #FFD700;
     border-radius: 0.25rem;
     font-size: 0.8rem;
@@ -312,9 +296,10 @@
     background-color: #000000;
 }
 
-@media (min-width: 790px) {
+@media (min-width: 768px) {
     .workoutCard {
-        flex-direction: row;
+        flex-wrap: wrap;
+        flex: 1 1 45%;
         align-items: center;
         justify-content: space-between;
         padding: 1rem;
@@ -587,6 +572,15 @@
 }
 
 
+.cardMuscleGroup {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    background-color: #222;
+    border: 1px solid #FFF;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+}
 
 .muscleGroupContainer {
     padding: 0.5rem;
@@ -671,6 +665,31 @@
 
 .removeExerciseButton:hover {
     background-color: #fee2e2;
+}
+
+@media (min-width: 768px) {
+    .cardMuscleGroup {
+        flex-wrap: wrap;
+        flex: 1 1 100%;
+        display: block;
+        flex-direction: column;
+        min-width: 20rem;
+        width: 100%;
+        background-color: #222;
+        border: 1px solid #FFF;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+    }
+}
+
+@media (min-width: 1200px) {
+    .cardMuscleGroup {
+        width: 70%;
+        background-color: #222;
+        border: 1px solid #FFF;
+        border-radius: 0.5rem;
+        margin: 0rem 0rem 1rem 0rem;
+    }
 }
 
     
