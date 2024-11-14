@@ -9,10 +9,9 @@ if (!uri) {
   throw new Error('MongoDB URI não está definida.');
 }
 
-// Cria um novo cliente MongoDB
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-// Conecta ao banco de dados
+const client = new MongoClient(uri);
+
 async function connectToDatabase() {
   try {
     await client.connect();
@@ -25,16 +24,20 @@ async function connectToDatabase() {
   }
 }
 
-// Registra um novo usuário
 export async function POST(req) {
   try {
-    // Extrair os dados da requisição
-    const { nome, email, senha } = await req.json();
+    const { 
+      nome, 
+      email, 
+      senha,
+      mainObject,
+      height,
+      weight,
+      phone, 
+    } = await req.json();
 
-    // Conecta ao banco de dados
     const { collection } = await connectToDatabase();
 
-    // Verifica se o usuário já está cadastrado pelo email
     const existingUser = await collection.findOne({ email });
     if (existingUser) {
       return new Response(
@@ -43,17 +46,19 @@ export async function POST(req) {
       );
     }
 
-    // Criptografa a senha do usuário
     const hashedPassword = await bcrypt.hash(senha, 10);
     const newUser = {
       nome,
       email,
-      senha: hashedPassword,
+      senha: hashedPassword, 
+      mainObject, 
+      height,
+      weight,
+      phone,
       status: 'pendente',
       createdAt: new Date(),
     };
 
-    // Adiciona novo usuário à coleção no banco de dados
     await collection.insertOne(newUser);
 
     return new Response(
