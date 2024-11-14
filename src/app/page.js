@@ -14,13 +14,31 @@ export default function UserLogin() {
     nome: '',
     email: '',
     senha: '',
-
+    mainObject: '',
+    height: '',
+    weight: '',
+    phone: '',
   });
   const [message, setMessage] = useState('');
+
+  const objetivos = [
+    'Hipertrofia',
+    'Perder peso',
+    'Ganhar massa',
+    'Condicionamento',
+    'Força',
+    'Saúde geral'
+  ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const endpoint = formType === 'login' ? '/api/login' : '/api/register';
+
+/*     const formattedData = {
+      ...formData,
+      height: formData.height.replace(',', '.'),
+      weight: formData.weight.replace(',', '.')
+    }; */
 
     try {
       const response = await fetch(endpoint, {
@@ -43,6 +61,10 @@ export default function UserLogin() {
           nome: '',
           email: '',
           senha: '',
+          mainObject: '',
+          height: '',
+          weight: '',
+          phone: '', 
         });
 
       } else {
@@ -81,6 +103,15 @@ export default function UserLogin() {
   };
 
   const handleChange = (e) => {
+    let value = e.target.value;
+    
+    if (e.target.name === 'phone') {
+      value = value.replace(/\D/g, '');
+      if (value.length >= 11) {
+        value = `(${value.slice(0,2)})${value.slice(2,11)}`;
+      };
+    };
+
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -132,18 +163,63 @@ export default function UserLogin() {
         ) : (
           <form onSubmit={handleSubmit} className={styles['form-container']}>
             {formType === 'register' && (
-              <div className={styles['input-group']}>
-                <input
-                  type="text"
-                  name="nome"
-                  value={formData.nome}
-                  onChange={handleChange}
-                  placeholder=" "
-                  required
-                />
-                <label>Nome</label>
-              </div>
+              <>
+                <div className={styles['input-group']}>
+                  <input
+                    type="text"
+                    name="nome"
+                    value={formData.nome}
+                    onChange={handleChange}
+                    placeholder=" "
+                    required
+                  />
+                  <label>Nome</label>
+                </div>
+
+                <div className={styles['input-group']}>
+                  <select
+                    name="mainObject"
+                    value={formData.mainObject}
+                    onChange={handleChange}
+                    required
+                    className={styles['select-input']}
+                  >
+                    <option className={styles['option-label']} value="" >Objetivo Principal</option>
+                    {objetivos.map((objetivo) => (
+                      <option key={objetivo} value={objetivo}>
+                        {objetivo}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className={styles['row-inputs']}>
+                  <div className={styles['input-group-half']}>
+                    <input
+                      type="text"
+                      name="height"
+                      value={formData.height}
+                      onChange={handleChange}
+                      placeholder=" "
+                      required
+                    />
+                    <label>Altura (m)</label>
+                  </div>
+                  <div className={styles['input-group-half']}>
+                    <input
+                      type="text"
+                      name="weight"
+                      value={formData.weight}
+                      onChange={handleChange}
+                      placeholder=" "
+                      required
+                    />
+                    <label>Peso (kg)</label>
+                  </div>
+                </div>
+              </>
             )}
+            
             <div className={styles['input-group']}>
               <input
                 type="email"
@@ -155,6 +231,22 @@ export default function UserLogin() {
               />
               <label>Email</label>
             </div>
+
+            {formType === 'register' && (
+              <div className={styles['input-group']}>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder=" "
+                  maxLength="12"
+                  required
+                />
+                <label>Telefone</label>
+              </div>
+            )}
+
             <div className={styles['input-group']}>
               <input
                 type="password"
@@ -197,7 +289,7 @@ export default function UserLogin() {
       </div>
     </div>
   );
-};    
+}   
  
  
  
