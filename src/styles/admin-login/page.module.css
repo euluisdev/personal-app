@@ -153,11 +153,27 @@
     color: white;
     font-size: 1rem;
     transition: all 0.3s ease;
+    padding-right: 2.5rem;
+}
+
+.input-group .password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    transform: translateY(-50%);
+    color: #FFD700;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.input-group .password-toggle.show {
+    color: #fff;
 }
 
 @media (min-width: 768px) {
     .input-group input {
-        padding: 1rem;
+        padding: 1rem 1rem 1rem 1rem;
     }
 }
 
@@ -200,6 +216,18 @@
 .submit-button:hover {
     background: #fff;
     transform: translateY(-2px);
+}
+
+.submit-button-disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+    opacity: 0.7;
+    pointer-events: none;
+}
+  
+.submit-button-disabled:hover {
+    background-color: #cccccc;
 }
 
 .forgot-password {
@@ -292,17 +320,17 @@
 
 @media (min-width: 768px) {
     .row-inputs {
-        flex-direction: row; 
-        gap: 0.5rem; 
+        flex-direction: row;
+        gap: 0.5rem;
         width: 100%;
     }
 
     .input-group-half {
-        width: 50%; 
+        width: 50%;
     }
 
     .input-group-half input {
-        font-size: 0.9rem; 
+        font-size: 0.9rem;
         padding: 0.5rem;
     }
 }
@@ -382,5 +410,91 @@
 
     .input-group-half {
         width: 100%;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+.success-modal {
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.success-modal-content {
+    background-color: #000;
+    border-radius: 15px;
+    padding: 2rem;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.1);
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.success-modal-title {
+    color: #FFD700;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: 3px;
+}
+
+.success-modal-message {
+    color: #fff;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.success-modal-button {
+    background: #FFD700;
+    color: #000;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    display: block;
+    margin: 0 auto;
+}
+
+.success-modal-button:hover {
+    background: #fff;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 767px) {
+    .success-modal-content {
+        padding: 1.5rem;
+    }
+
+    .success-modal-title {
+        font-size: 1.2rem;
+    }
+
+    .success-modal-message {
+        font-size: 0.9rem;
+    }
+
+    .success-modal-button {
+        font-size: 0.8rem;
     }
 }
