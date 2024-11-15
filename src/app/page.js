@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 
 import styles from '../styles/admin-login/page.module.css';
@@ -20,6 +20,15 @@ export default function UserLogin() {
     phone: '',
   });
   const [message, setMessage] = useState('');
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
+
+  const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ]+(\s+[A-Za-zÀ-ÖØ-öø-ÿ]+)+$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const phoneRegex = /^\d{11}$/;
+  const heightRegex = /^\d+(\.\d+)?$/;
+  const weightRegex = /^\d+(\.\d+)?$/;
 
   const objetivos = [
     'Hipertrofia',
@@ -30,15 +39,63 @@ export default function UserLogin() {
     'Saúde geral'
   ];
 
+  const validateForm = (currentFormData) => {
+    return currentFormData.nome.match(nameRegex) &&
+      currentFormData.email.match(emailRegex) &&
+      currentFormData.phone.match(phoneRegex) &&
+      currentFormData.senha.length >= 8 &&
+      currentFormData.height.match(heightRegex) &&
+      currentFormData.weight.match(weightRegex) &&
+      currentFormData.mainObject !== '';
+  };
+
+  useEffect(() => {
+    if (formType === 'register') {
+      setIsSubmitDisabled(!validateForm(formData));
+    } else {
+      setIsSubmitDisabled(false);
+    }
+  }, [formData, formType]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const endpoint = formType === 'login' ? '/api/login' : '/api/register';
 
-/*     const formattedData = {
+    const nameRegex = /^[A-Za-z]+\s[A-Za-z]+$/;
+    if (!nameRegex.test(formData.nome)) {
+      setMessage('Por favor, insira seu nome completo (nome e sobrenome).');
+      return;
+    };
+
+    const formattedData = {
       ...formData,
       height: formData.height.replace(',', '.'),
       weight: formData.weight.replace(',', '.')
-    }; */
+    };
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setMessage('Por favor, insira um email válido.');
+      return;
+    };
+
+    const phoneRegex = /^\d{11}$/;
+    if (!phoneRegex.test(formData.phone)) {
+      setMessage('Por favor, insira um número de telefone válido com 11 dígitos.');
+      return;
+    }
+
+    if (formData.senha.length < 8) {
+      setMessage('A senha deve ter no mínimo 8 caracteres.');
+      return;
+    };
+
+    const heightRegex = /^\d+(\.\d+)?$/;
+    const weightRegex = /^\d+(\.\d+)?$/;
+    if (!heightRegex.test(formData.height) || !weightRegex.test(formData.weight)) {
+      setMessage('Altura e peso devem conter apenas números e, opcionalmente, um ponto.');
+      return;
+    };
 
     try {
       const response = await fetch(endpoint, {
@@ -55,17 +112,24 @@ export default function UserLogin() {
         if (data.token) {
           Cookies.set('authToken', data.token, { path: '/' });
           router.push('/dashboard');
-        };
+        } else {
 
-        setFormData({
-          nome: '',
-          email: '',
-          senha: '',
-          mainObject: '',
-          height: '',
-          weight: '',
-          phone: '', 
-        });
+          setFormData({
+            nome: '',
+            email: '',
+            senha: '',
+            mainObject: '',
+            height: '',
+            weight: '',
+            phone: '',
+          });
+
+        };
+        setShowSuccessModal(true);
+        setTimeout(() => {
+          setShowSuccessModal(false);
+          router.push('/');
+        }, 5000);
 
       } else {
         setMessage(data.message);
@@ -91,7 +155,7 @@ export default function UserLogin() {
 
       const data = await response.json();
       setMessage(data.message);
-      
+
       if (response.ok) {
         setShowForgotPassword(false);
       };
@@ -104,19 +168,27 @@ export default function UserLogin() {
 
   const handleChange = (e) => {
     let value = e.target.value;
-    
-    if (e.target.name === 'phone') {
+    const name = e.target.name;
+
+    if (e.target.name === 'nome') {
+      value = value.replace(/\d/, '');
+    } else if (name === 'phone') {
       value = value.replace(/\D/g, '');
-      if (value.length >= 11) {
-        value = `(${value.slice(0,2)})${value.slice(2,11)}`;
-      };
+    } else if (e.target.name === 'height' || e.target.name === 'weight') {
+      value = value.replace(/[^0-9.]/g, '');
     };
 
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const newFormData = { ...formData, [name]: value };
+    setFormData(newFormData);
+    setIsSubmitDisabled(!validateForm(newFormData));
   };
 
   const navigateToAdminLogin = () => {
     router.push('/AdminLogin');
+  };
+
+  const togglePassword = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -173,7 +245,7 @@ export default function UserLogin() {
                     placeholder=" "
                     required
                   />
-                  <label>Nome</label>
+                  <label>Nome Completo</label>
                 </div>
 
                 <div className={styles['input-group']}>
@@ -219,10 +291,10 @@ export default function UserLogin() {
                 </div>
               </>
             )}
-            
+
             <div className={styles['input-group']}>
               <input
-                type="email"
+                type={showPassword ? 'text' : 'email'}
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
@@ -240,7 +312,7 @@ export default function UserLogin() {
                   value={formData.phone}
                   onChange={handleChange}
                   placeholder=" "
-                  maxLength="12"
+                  maxLength="11"
                   required
                 />
                 <label>Telefone</label>
@@ -249,7 +321,7 @@ export default function UserLogin() {
 
             <div className={styles['input-group']}>
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 name="senha"
                 value={formData.senha}
                 onChange={handleChange}
@@ -257,6 +329,13 @@ export default function UserLogin() {
                 required
               />
               <label>Senha</label>
+              <div
+                className={`${styles['password-toggle']} ${showPassword ? styles['show'] : ''
+                  }`}
+                onClick={togglePassword}
+              >
+                {showPassword ? '👁' : '👁️‍🗨️'}
+              </div>
             </div>
 
             {formType === 'login' && (
@@ -269,7 +348,11 @@ export default function UserLogin() {
               </button>
             )}
 
-            <button type="submit" className={styles['submit-button']}>
+            <button
+              type="submit"
+              className={`${styles['submit-button']} ${formType === 'register' && isSubmitDisabled ? styles['submit-button-disabled'] : ''}`}
+              disabled={formType === 'register' && isSubmitDisabled}
+            >
               {formType === 'login' ? 'Entrar' : 'Cadastrar'}
             </button>
 
@@ -287,11 +370,32 @@ export default function UserLogin() {
 
         {message && <p className={styles['error-message']}>{message}</p>}
       </div>
+
+      {showSuccessModal && (
+        <div className={styles['success-modal']}>
+          <div className={styles['success-modal-content']}>
+            <h3 className={styles['success-modal-title']}>Cadastro Enviado</h3>
+            <p className={styles['success-modal-message']}>
+              Seu cadastro foi enviado para aprovação do nosso personal. Faça o Login!
+            </p>
+            <button
+              className={styles['success-modal-button']}
+              onClick={() => {
+                setShowSuccessModal(false);
+                router.push('/');
+              }}
+            >
+              Fechar
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
-}   
- 
- 
- 
+}
+
+
+
 
 
