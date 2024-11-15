@@ -40,13 +40,18 @@ export default function UserLogin() {
   ];
 
   const validateForm = (currentFormData) => {
-    return currentFormData.nome.match(nameRegex) &&
-      currentFormData.email.match(emailRegex) &&
-      currentFormData.phone.match(phoneRegex) &&
-      currentFormData.senha.length >= 8 &&
-      currentFormData.height.match(heightRegex) &&
-      currentFormData.weight.match(weightRegex) &&
-      currentFormData.mainObject !== '';
+    if (formType === 'register') {
+      return (
+        currentFormData.nome.match(nameRegex) &&
+        currentFormData.email.match(emailRegex) &&
+        currentFormData.phone.match(phoneRegex) &&
+        currentFormData.senha.length >= 8 &&
+        currentFormData.height.match(heightRegex) &&
+        currentFormData.weight.match(weightRegex) &&
+        currentFormData.mainObject !== ''
+      );
+    }
+    return true;
   };
 
   useEffect(() => {
@@ -56,45 +61,48 @@ export default function UserLogin() {
       setIsSubmitDisabled(false);
     }
   }, [formData, formType]);
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const endpoint = formType === 'login' ? '/api/login' : '/api/register';
 
-    const nameRegex = /^[A-Za-z]+\s[A-Za-z]+$/;
-    if (!nameRegex.test(formData.nome)) {
-      setMessage('Por favor, insira seu nome completo (nome e sobrenome).');
-      return;
-    };
+    if (formType === 'register') {
+      const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ]+(\s[A-Za-zÀ-ÖØ-öø-ÿ]+)+$/;                                    
+      if (!nameRegex.test(formData.nome)) {
+        setMessage('Por favor, insira seu nome completo (nome e sobrenome).');
+        return;
+      };
 
-    const formattedData = {
-      ...formData,
-      height: formData.height.replace(',', '.'),
-      weight: formData.weight.replace(',', '.')
-    };
+      const formattedData = {
+        ...formData,
+        height: formData.height.replace(',', '.'),
+        weight: formData.weight.replace(',', '.')
+      };
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      setMessage('Por favor, insira um email válido.');
-      return;
-    };
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        setMessage('Por favor, insira um email válido.');
+        return;
+      };
 
-    const phoneRegex = /^\d{11}$/;
-    if (!phoneRegex.test(formData.phone)) {
-      setMessage('Por favor, insira um número de telefone válido com 11 dígitos.');
-      return;
-    }
+      const phoneRegex = /^\d{11}$/;
+      if (!phoneRegex.test(formData.phone)) {
+        setMessage('Por favor, insira um número de telefone válido com 11 dígitos.');
+        return;
+      }
 
-    if (formData.senha.length < 8) {
-      setMessage('A senha deve ter no mínimo 8 caracteres.');
-      return;
-    };
+      if (formData.senha.length < 8) {
+        setMessage('A senha deve ter no mínimo 8 caracteres.');
+        return;
+      };
 
-    const heightRegex = /^\d+(\.\d+)?$/;
-    const weightRegex = /^\d+(\.\d+)?$/;
-    if (!heightRegex.test(formData.height) || !weightRegex.test(formData.weight)) {
-      setMessage('Altura e peso devem conter apenas números e, opcionalmente, um ponto.');
-      return;
+      const heightRegex = /^\d+(\.\d+)?$/;
+      const weightRegex = /^\d+(\.\d+)?$/;
+      if (!heightRegex.test(formData.height) || !weightRegex.test(formData.weight)) {
+        setMessage('Altura e peso devem conter apenas números e, opcionalmente, um ponto.');
+        return;
+      };
     };
 
     try {
@@ -113,7 +121,6 @@ export default function UserLogin() {
           Cookies.set('authToken', data.token, { path: '/' });
           router.push('/dashboard');
         } else {
-
           setFormData({
             nome: '',
             email: '',
@@ -123,13 +130,12 @@ export default function UserLogin() {
             weight: '',
             phone: '',
           });
-
+          setShowSuccessModal(true);
+          setTimeout(() => {
+            setShowSuccessModal(false);
+            router.push('/');
+          }, 5000);
         };
-        setShowSuccessModal(true);
-        setTimeout(() => {
-          setShowSuccessModal(false);
-          router.push('/');
-        }, 5000);
 
       } else {
         setMessage(data.message);
