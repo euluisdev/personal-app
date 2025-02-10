@@ -9,7 +9,7 @@ import styles from '../../styles/user-workout/page.module.css';
 const Page = () => {
   const [userData, setUserData] = useState(null);
   const [workouts, setWorkouts] = useState([]);
-  const [flippedCards, setFlippedCards] = useState({}); 
+  const [flippedCards, setFlippedCards] = useState({});
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [selectedWorkout, setSelectedWorkout] = useState(null);
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
@@ -44,6 +44,7 @@ const Page = () => {
           };
 
           const workoutsData = await workoutsResponse.json();
+          console.log(workoutsData);
           setWorkouts(workoutsData);
         };
 
@@ -60,11 +61,11 @@ const Page = () => {
       setIsLoading(true);
 
       try {
-        const response = await fetch('/api/user-profile'); 
+        const response = await fetch('/api/user-profile');
         const data = await response.json();
-  
+
         if (response.ok) {
-          setProfilePhoto(data); 
+          setProfilePhoto(data);
         } else {
           console.error(`Erro na resposta da API!`, data);
         };
@@ -74,7 +75,7 @@ const Page = () => {
       } finally {
         setIsLoading(false);
       };
-    }; 
+    };
     fetchProfilePhoto();
   }, []);
 
@@ -91,7 +92,13 @@ const Page = () => {
     if (hour >= 12 && hour < 18) return "Boa tarde";
     return "Boa noite";
   };
-  
+
+  const getFormattedDate = () => {
+    const now = new Date();
+    const options = { weekday: 'long', day: 'numeric', month: 'short' };
+    return now.toLocaleDateString('pt-BR', options);
+  };
+
 
   const handleStatusUpdateClick = (e, workout) => {
     e.stopPropagation();
@@ -112,12 +119,12 @@ const Page = () => {
         },
         body: JSON.stringify({ workoutId, status: newStatus })
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Erro ao atualizar o status do treino');
       }
-  
+
       setWorkouts(prevWorkouts =>
         prevWorkouts.map(workout =>
           workout._id === selectedWorkout._id ? { ...workout, workoutStatus: 'Pago' } : workout
@@ -126,7 +133,7 @@ const Page = () => {
 
       setShowConfirmModal(false);
       setShowSuccessAlert(true);
-      
+
       setTimeout(() => {
         setShowSuccessAlert(false);
       }, 2000);
@@ -144,15 +151,18 @@ const Page = () => {
       <div className={styles.container}>
 
         <header className={styles.header}>
-        <h1 className={styles.titleWellCome}>{getGreeting()} {userData.name || 'Aluno'}</h1>
+          <h1 className={styles.titleWellCome}>
+            {getGreeting()} {userData.name || 'Aluno'}!&nbsp;<br />
+            
+          </h1>
           <div className={styles.userInfo}>
-            <p>{userData.email}</p>
-            {isLoading && <div className='loadingSpinner'/>}
+            <p>Hoje é {getFormattedDate()}</p>
+            {isLoading && <div className='loadingSpinner' />}
 
             {profilePhoto && (
-              <img 
-                src={profilePhoto.photoUrl} 
-                alt="Foto do Perfil"    
+              <img
+                src={profilePhoto.photoUrl}
+                alt="Foto do Perfil"
                 className={styles.profileImage}
               />
             )}
@@ -179,41 +189,60 @@ const Page = () => {
               >
                 <div className={styles.cardInner}>
                   <div className={styles.cardFront}>
-                    <span className={styles.muscle}>{workout.muscle}</span>
-                    <h2 className={styles.description}>{workout.description}</h2>
+                    <div className={styles.muscle}>
+                      <span>Workout Card</span>
+                    </div>
+                    <h2 className={styles.description}>
+                      {workout.date
+                        ? new Date(workout.date).toLocaleDateString('pt-BR', {
+                          weekday: 'long',
+                          day: 'numeric',
+                          month: 'short',
+                        })
+                        : 'Data não definida'
+                      }
+                    </h2>
                     <div className={styles.tags}>
 
-                        <span className={styles.category}>
-                          {workout.workoutStatus === 'Pendente' ? (
-                            <button
-                              onClick={(e) => handleStatusUpdateClick(e, workout)}
-                              className={styles.statusButton}
-                            >
-                              {workout.workoutStatus}
-                            </button>
-                          ) : (
-                            <span className={styles.paidStatus}>Treino Pago ✓ </span>
-                          )}
-                        </span>
+                      <span className={styles.category}>
+                        {workout.workoutStatus === 'Pendente' ? (
+                          <button
+                            onClick={(e) => handleStatusUpdateClick(e, workout)}
+                            className={styles.statusButton}
+                          >
+                            {workout.workoutStatus}
+                          </button>
+                        ) : (
+                          <span className={styles.paidStatus}>Treino Pago ✓ </span>
+                        )}
+                      </span>
 
                     </div>
 
                     <div className={styles.date}>
                       <span>
-                        {workout.nome  || 'Professor'} - Personal Trainer
-                      </span> 
+                        Treino criado por {workout.nome || 'Professor'}
+                      </span>
                       <p>
-                        CREF: {workout.cref || '1234-5'} - {workout.date ? new Date(workout.date).toLocaleDateString('pt-BR') :  'Data não definida'}
-                      </p>  
+                        Personal - CREF: {workout.cref || '1234-5'}
+                      </p>
                     </div>
 
                   </div>
                   <div className={styles.cardBack}>
-                    <ul className={styles.exerciseList}>
-                      {workout.exercises && workout.exercises.map((exercise, index) => (
-                        <li key={index}>{index + 1} - {exercise.replace(/^\d+\./, '')}</li>
-                      ))}
-                    </ul>
+                    {workout.muscleGroups?.map((muscleGroup, muscleIndex) => (
+                      <div key={`group-${muscleIndex}`}>
+                        <h3 className={styles.cardBackTitle}>{muscleGroup.muscle}</h3>
+                        <ul className={styles.exerciseList}>
+                          {muscleGroup.exercises.map((exercise, exerciseIndex) => (
+                            <li key={`${muscleIndex}-${exerciseIndex}`}>
+                              {exerciseIndex + 1} - {exercise.replace(/^\d+\./, '').trim()}
+                              <input type="radio" name={`exercise-${muscleIndex}-${exerciseIndex}`} />
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -230,7 +259,7 @@ const Page = () => {
                 <button onClick={closeModal} className={styles.modalCancel}>
                   Cancelar
                 </button>
-                <button onClick={() => updateWorkoutStatus(selectedWorkout._id, 'Pago')} className={styles.modalConfirm}>    
+                <button onClick={() => updateWorkoutStatus(selectedWorkout._id, 'Pago')} className={styles.modalConfirm}>
                   Confirmar
                 </button>
               </div>
