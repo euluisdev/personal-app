@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import styles from '../../styles/admin-profile/page.module.css';
 
 const AdminProfile = () => {
-  const [profileData, setProfileData] = useState(null);
+ 
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     nome: '',
@@ -17,7 +17,7 @@ const AdminProfile = () => {
     telefone: '',
     cref: '',
   });
-  const [fileData, setFileData] = useState(null);
+  const [profileData, setProfileData] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
