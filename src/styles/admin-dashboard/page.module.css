@@ -115,7 +115,7 @@
     border-radius: 1rem;
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+}  
 
 .card:hover {
     transform: translateY(-5px);
@@ -225,11 +225,21 @@
     color: #FFD700;
 }
 
+.cardTitleChat {
+    background: rgba(34, 34, 34, 0.8);
+    color: #FFD700;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0.5rem 01rem 0.5rem 1rem;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+    display: flex;
+    justify-content: space-between;
+}
+
 .chatIcon {
-    width: 4rem;
-    height: 4rem;
-    margin: 2rem auto;
-    display: block;
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
     color: #FFD700;
     opacity: 0.8;
     transition: transform 0.3s ease, opacity 0.3s ease;
@@ -241,6 +251,38 @@
 .chatIcon:hover {
     transform: scale(1.1);
     opacity: 1;
+}
+
+.searchContainer {
+    position: relative;
+    margin: 0.5rem 0rem;
+    width: 100%;
+}
+
+.searchInput {
+    width: 95%;
+    padding: 0.5rem 1rem 0.6rem 4rem;
+    margin: 0rem 1rem;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #ffd9008f;
+    border: none;
+    background-color: rgba(34, 34, 34, 0.5);
+    color: #ffffff;
+    transition: all 0.3s ease;
+}
+
+.searchInput:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.3);
+    border: 1px solid #ffd9008f;
+}
+
+.searchIcon {
+    position: absolute;
+    left: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ffd700;
 }
 
 @media (min-height: 800px) {
