@@ -115,7 +115,7 @@
 .workoutCard {
   width: 320px;
   perspective: 1000px;
-  height: 450px;
+  height: 470px;
   cursor: pointer;
   margin: 0rem 0.5rem 0rem 0.5rem;
   display: flex;
@@ -144,7 +144,7 @@
   padding: 1.5rem;
   border-radius: 35px;
   background: linear-gradient(145deg, #1a1a1a, #000);
-  border: 1.5px solid #FFD700;
+  border: 1px solid #ffffff17;
   display: flex;
   flex-direction: column;
 }
@@ -156,24 +156,25 @@
 
 .cardBack {
   transform: rotateY(180deg);
-  background: #FFD700;
-  color: #000;
+  background: #1b1b1b;
+  color: #fff;
   overflow-y: auto;
 }
 
 .muscle {
   font-size: 0.9rem;
   color: #fff;
-  background-color: rgba(255, 215, 0, 0.2);
+  background-color: #ffffff05;
   padding: 0.3rem 0.8rem;
-  border-radius: 12px;
+  border-radius: 8px;
   display: inline-block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.3rem;
 }
 
 .description {
   color: #ffd700;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 400;
 }
 
 .date {
@@ -206,12 +207,12 @@
 
 .statusButton {
   background-color: transparent;
-  border: 2px solid #ffd700;
+  border: 1px solid #ffd900d8;
   color: #ffd700;
-  padding: 4px 12px;
-  border-radius: 16px;
+  padding: 4px 15px;
+  border-radius: 8px;
   margin-left: 8px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -222,12 +223,20 @@
 
 .paidStatus {
   display: inline-block;
-  background-color: #ffd700;
-  color: #1a1a1a;
-  padding: 4px 12px;
-  border-radius: 16px;
+  background-color: #ffffff10;
+  color: #FFD700;
+  padding: 4px 15px;
+  border-radius: 8px;
   margin-left: 8px;
-  font-weight: 600;
+  font-weight: 500;  
+  border: 1px solid #fffffe0a;
+}
+
+.cardBackTitle {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 0rem 0rem 0.7rem 0rem;
+  color: #FFD700;
 }
 
 .exerciseList {
@@ -238,14 +247,35 @@
 }
 
 .exerciseList li {
-  padding: 0.3rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 0.3rem 0rem 0.3rem 0rem;
+  border-top: 1px solid rgba(247, 247, 247, 0.055);
   font-size: 0.8rem;
+  font-weight: 300;
   line-height: 1.4;
 }
 
 .exerciseList li:last-child {
   border-bottom: none;
+}
+
+.exerciseList li input[type="radio"] {
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border: 1px solid #666;
+  border-radius: 50%;
+  margin-left: 8px;
+  cursor: pointer;
+}
+
+.exerciseList li input[type="radio"]:checked {
+  background-color: #FFD700;
+  border-color: #FFD700;
+}
+
+.exerciseList li input[type="radio"]:checked + span {
+  text-decoration: line-through;
+  color: #666;
 }
 
 
