@@ -2,19 +2,21 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { Bell, MessageSquare } from 'lucide-react';
+import { Bell, MessageSquare, Search, User } from 'lucide-react';
 import AdminNavBar from '@/components/AdminNavBar';
+
 import styles from '../../styles/admin-dashboard/page.module.css';
 
 const AdminDashboard = () => {
-  const [profilePhoto, setProfilePhoto] = useState(null); 
-  const [isLoading, setIsLoading] = useState(false);  
+  const [profilePhoto, setProfilePhoto] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const [message, setMessage] = useState('');
   const [countUsers, setCountUsers] = useState(0);
   const [notifications, setNotifications] = useState([]);
   const [profileData, setProfileData] = useState(null);
+  const [approvedUsers, setApprovedUsers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const router = useRouter();
 
   useEffect(() => {
@@ -39,26 +41,26 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     const fetchProfilePhoto = async () => {
-        setIsLoading(true);
-        try {
-            const response = await fetch('api/admin-profile');
-            const data = await response.json(); 
+      setIsLoading(true);
+      try {
+        const response = await fetch('api/admin-profile');
+        const data = await response.json();
 
-            if (response.ok) {
-                setProfilePhoto(data)
-            } else {
-                console.error(`Erro na resposta da API!`, data);
-            }
-
-        } catch (error) {
-            console.error('Erro ao buscar file:', error); 
-
-        } finally {
-            setIsLoading(false);
+        if (response.ok) {
+          setProfilePhoto(data)
+        } else {
+          console.error(`Erro na resposta da API!`, data);
         }
+
+      } catch (error) {
+        console.error('Erro ao buscar file:', error);
+
+      } finally {
+        setIsLoading(false);
+      }
     };
-    fetchProfilePhoto();   
-}, [])
+    fetchProfilePhoto();
+  }, [])
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -129,10 +131,36 @@ const AdminDashboard = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchApprovedUsers = async () => {
+      try {
+        const response = await fetch('/api/list-users');
+        if (response.ok) {
+          const data = await response.json();
+          setApprovedUsers(data);
+        } else {
+          console.error('Erro ao buscar usuários aprovados');
+        }
+      } catch (error) {
+        console.error('Erro ao buscar usuários aprovados:', error);
+      }
+    };
+
+    fetchApprovedUsers();
+  }, [router]);
+
+  const filteredUsers = approvedUsers.filter((user) =>
+    user.nome.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const usersToDisplay = searchTerm
+    ? [...filteredUsers, ...approvedUsers.filter(user => !filteredUsers.includes(user))]
+    : approvedUsers;
+
   const getGreeting = () => {
     const hour = new Date().getHours();
-      if (hour >= 5 && hour < 12) return "Bom dia";
-      if (hour >= 12 && hour < 18) return "Boa tarde";
+    if (hour >= 5 && hour < 12) return "Bom dia";
+    if (hour >= 12 && hour < 18) return "Boa tarde";
     return "Boa noite";
   };
 
@@ -142,38 +170,27 @@ const AdminDashboard = () => {
     return now.toLocaleDateString('pt-BR', options);
   };
 
-  const chartData = [
-    { month: 'Jan', value: 30 },
-    { month: 'Feb', value: 40 },
-    { month: 'Mar', value: 45 },
-    { month: 'Apr', value: 50 },
-    { month: 'May', value: 55 },
-    { month: 'Jun', value: 60 },
-  ];
-
   return (
     <div className={styles.container}>
       <AdminNavBar />
       <div className={styles.content}>
         <h1 className={styles.title}>
           {getGreeting()},&nbsp;
-           {profileData ? profileData.nome : 'Professor'}!<br />
+          {profileData ? profileData.nome : 'Professor'}!<br />
           Hoje é {getFormattedDate()}
         </h1>
 
         <h1 className={styles.profileImage}>
-          {isLoading && <div className='loadingSpinner'/>}
+          {isLoading && <div className='loadingSpinner' />}
 
           {profilePhoto && (
-            <img 
-              src={profilePhoto.photoUrl} 
-              alt="Foto do Perfil"    
+            <img
+              src={profilePhoto.photoUrl}
+              alt="Foto do Perfil"
               className={styles.image}
             />
           )}
         </h1>
-
-        
 
         {message && <p className={styles.errorMessage}>{message}</p>}
 
@@ -187,7 +204,7 @@ const AdminDashboard = () => {
                 {users.map((user) => (
                   <li key={user.email} className={styles.userItem}>
                     {user.nome} - {user.email}
-                    <button 
+                    <button
                       className={styles.approveButton}
                       onClick={() => handleApprove(user.email)}
                     >
@@ -211,51 +228,53 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-
           <div className={styles.card}>
-            <h2 className={styles.cardTitle}>Análise de Desempenho</h2>
-            <div className={styles.cardContent}>
-              <ResponsiveContainer>
-                <BarChart data={chartData}>
-                  <XAxis 
-                    dataKey="month" 
-                    stroke="#FFD700"
-                    tick={{ fill: '#FFD700' }}
-                    axisLine={{ stroke: '#FFD700' }}
-                  />
-                  <YAxis 
-                    stroke="#FFD700"
-                    tick={{ fill: '#FFD700' }}
-                    axisLine={{ stroke: '#FFD700' }}
-                  />
-                  <Tooltip 
-                    contentStyle={{ backgroundColor: '#333', border: '1px solid #FFD700', color: '#FFD700' }}
-                    labelStyle={{ color: '#FFD700' }}
-                  />
-                  <Bar dataKey="value" fill="#FFD700" />
-                </BarChart>
-              </ResponsiveContainer>
+            <h2 className={styles.cardTitleChat}>Comunicação com Alunos <MessageSquare className={styles.chatIcon} /></h2>
+            <div className={styles.searchContainer}>
+              <input
+                type="text"
+                placeholder="Buscar aluno por nome..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className={styles.searchInput}
+              />
+              <Search className={styles.searchIcon} />
             </div>
-          </div>
-
-
-          <div className={styles.card}>
-            <h2 className={styles.cardTitle}>Comunicação com Alunos</h2>
             <div className={styles.cardContent}>
-              <p>Sistema de chat em desenvolvimento</p>
-              <MessageSquare className={styles.chatIcon} />
+              <div className={styles.card}>
+                <ul className={styles.userList}>
+                  {usersToDisplay.length > 0 ? (
+                    usersToDisplay.map((user) => (
+                      <div
+                        key={user.email}
+                      >
+                        <div className={styles.userInfo}>
+                          <div>
+                            <strong><User className={styles.iconUser} /></strong>
+                            <strong className={styles.nome}> {user.nome}</strong>
+                          </div>
+                        </div>
+                        <span className={styles.mainObject}>({user.mainObject || 'Não definido'})</span>
+
+                      </div>
+                    ))
+                  ) : (
+                    <div>Não há usuários aprovados.</div>
+                  )}
+                </ul>
+              </div>
+
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-}; 
+};
 
-export default AdminDashboard;      
-
- 
+export default AdminDashboard;
 
 
 
-   
+
+
