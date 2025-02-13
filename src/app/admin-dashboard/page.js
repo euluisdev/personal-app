@@ -96,18 +96,39 @@ const AdminDashboard = () => {
       }
     };
 
-    const fetchNotifications = async () => {
-      setNotifications([
-        { id: 1, message: "Novo aluno registrado: Maria Silva" },
-        { id: 2, message: "João Pereira completou 10 sessões" },
-        { id: 3, message: "Atualização de plano necessária para 3 usuários" },
-      ]);
-    };
+    /*     const fetchNotifications = async () => {
+          setNotifications([
+            { id: 1, message: "Novo aluno registrado: Maria Silva" },
+            { id: 2, message: "João Pereira completou 10 sessões" },
+            { id: 3, message: "Atualização de plano necessária para 3 usuários" },
+          ]);
+        }; */
 
     fetchCountUsers();
     fetchUsers();
-    fetchNotifications();
+    /*     fetchNotifications(); */
   }, [router]);
+
+
+  useEffect(() => {
+    const fetchWorkouts = async () => {
+      try {
+        const response = await fetch('/api/admin-notifications');
+        const data = await response.json();
+        console.log(data);
+        setNotifications(data);
+      } catch (error) {
+        console.error('Erro ao buscar os últimos treinos pagos:', error);
+      }
+    };
+
+    fetchWorkouts();
+
+    const interval = setInterval(fetchWorkouts, 120000);
+
+    return () => clearInterval(interval);
+  }, []);
+
 
   const handleApprove = async (email) => {
     try {
@@ -219,12 +240,21 @@ const AdminDashboard = () => {
           <div className={styles.card}>
             <h2 className={styles.cardTitle}>Notificações</h2>
             <div className={styles.cardContent}>
-              {notifications.map((notification) => (
-                <div key={notification.id} className={styles.notification}>
-                  <Bell className={styles.notificationIcon} />
-                  <p>{notification.message}</p>
-                </div>
-              ))}
+              {notifications.length > 0 ? (
+                <ul className={styles.userList}>
+                  {notifications.map((workout, index) => (
+                    <li key={index} className={styles.userItem}>
+                      <strong>
+                        {workout.userName} concluiu o treino!&nbsp;
+                      </strong>
+                      <strong>Status:&nbsp;{workout.workoutStatus}</strong>
+                      {workout.updatedAt}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>Nenhum treino pago encontrado.</p>
+              )}
             </div>
           </div>
 
