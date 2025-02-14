@@ -44,7 +44,7 @@ const Page = () => {
           };
 
           const workoutsData = await workoutsResponse.json();
-          console.log(workoutsData);
+          /* console.log(workoutsData); */
           setWorkouts(workoutsData);
         };
 
@@ -180,7 +180,7 @@ const Page = () => {
           {workouts.length === 0 ? (
             <p className={styles.noWorkouts}>Nenhum treino encontrado ainda...</p>
           ) : (
-            workouts.slice(-2).map((workout) => (
+            workouts.map((workout) => (
 
               <div
                 key={workout._id}
