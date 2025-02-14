@@ -23,7 +23,7 @@ export async function POST(req) {
 
     const updatedWorkout = await workoutsCollection.findOneAndUpdate(
       { _id: new ObjectId(workoutId) },
-      { $set: { workoutStatus: status } },
+      { $set: { workoutStatus: status, updatedAt: new Date() } },
       { returnDocument: 'after' }
     );
 
