@@ -37,7 +37,8 @@ export async function GET(req) {
 
     const workouts = await collection
       .find({ userId: objectId })
-      .sort({ date: 1 }) 
+      .sort({ date: -1 }) 
+      .limit(2)
       .toArray();
 
     if (!workouts || workouts.length === 0) {
