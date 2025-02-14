@@ -96,17 +96,8 @@ const AdminDashboard = () => {
       }
     };
 
-    /*     const fetchNotifications = async () => {
-          setNotifications([
-            { id: 1, message: "Novo aluno registrado: Maria Silva" },
-            { id: 2, message: "João Pereira completou 10 sessões" },
-            { id: 3, message: "Atualização de plano necessária para 3 usuários" },
-          ]);
-        }; */
-
     fetchCountUsers();
     fetchUsers();
-    /*     fetchNotifications(); */
   }, [router]);
 
 
@@ -124,9 +115,9 @@ const AdminDashboard = () => {
 
     fetchWorkouts();
 
-    const interval = setInterval(fetchWorkouts, 120000);
+/*     const interval = setInterval(fetchWorkouts, 120000);
 
-    return () => clearInterval(interval);
+    return () => clearInterval(interval); */
   }, []);
 
 
