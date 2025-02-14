@@ -61,7 +61,7 @@ export async function POST(req) {
     const result = await workoutsCollection.insertOne({
       userId: new ObjectId(userId),
       muscleGroups: workoutData.muscleGroups,
-      date: new Date(workoutData.date),
+      date: new Date(),
       description: workoutData.description,
       workoutStatus: workoutData.workoutStatus, 
       nome: workoutData.nome, 
