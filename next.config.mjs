@@ -5,12 +5,12 @@ const nextConfig = {
       {
         source: '/old-route',
         destination: '/new-route',
-        permanent: true, // Define se o redirecionamento é permanente ou temporário
+        permanent: true, 
       },
       {
         source: '/old-dashboard',
         destination: '/dashboard',
-        permanent: false, // Redirecionamento temporário
+        permanent: false, 
       },
     ];
   },
@@ -18,7 +18,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'https://external-api.com/:path*', // Exemplo de reescrita para proxy
+        destination: 'https://external-api.com/:path*', 
       },
     ];
   },
