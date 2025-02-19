@@ -24,7 +24,7 @@ const UserNavBar = () => {
                     <Link href="/dashboard">Dashboard</Link>
                 </li>
                 <li className='navItem'>
-                    <Link href="/users-hitory">Histórico</Link>
+                    <Link href="/user-analize">Análise</Link>
                 </li>
                 <li className='navItem'>
                     <Link href="/user-workout">Treinos</Link>
