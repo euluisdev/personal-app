@@ -23,6 +23,7 @@ async function connectToDatabase() {
     const db = client.db('BestFitData');
     const collection = db.collection('users');
     return { db, collection };
+
   } catch (error) {
     console.error('Erro ao conectar ao MongoDB:', error);
     throw new Error('Falha na conexão com o banco de dados');
@@ -33,12 +34,8 @@ async function connectToDatabase() {
 export async function POST(req) {
   try {
     const { email, senha } = await req.json();
-    console.log('Dados recebidos:', { email, senha });
-
-    //conecta ao banco de dados
     const { collection } = await connectToDatabase();
 
-    //procura o usuário pelo email
     const user = await collection.findOne({ email });
     console.log('Usuário encontrado:', user);
 
@@ -64,7 +61,6 @@ export async function POST(req) {
       );
     }
 
-    //crietes a token from section
     if (!jwtSecret) {
       console.error('JWT_SECRET não está definido');
       return new Response(
@@ -75,29 +71,26 @@ export async function POST(req) {
     
     const token = jwt.sign({ id: user._id, email: user.email }, jwtSecret, {
       expiresIn: '1h',
+      algorithm: 'HS256'
     });
 
     //cookie http-only
     cookies().set('authToken', token, {
       httpOnly: true, 
       secure: nodeEnv, 
-      sameSite: 'strict', 
+      sameSite: 'lax', 
       maxAge: 3600, 
       path: '/',
+      domain: 'localhost'
     });  
 
-    //responde com sucesso, autenticação ok
+    //response auth ok
     return new Response(JSON.stringify({ 
         message: 'Login bem-sucedido.',
         userName: user.nome,
         userEmail: user.email,
         token: token,
-      }), { 
-        status: 200, 
-        headers: {
-          'Set-Cookie': `authToken=${token}; HttpOnly; Secure; SameSite=Strict; Max-Age=3600; Path=/`
-        }
-      }
+      })
     );  
 
   } catch (error) {
